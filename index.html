@@ -55,6 +55,13 @@
 
         .filter-content {
             margin-top: 10px;
+            overflow: hidden;
+            max-height: 300px;
+            transition: max-height 0.3s ease;
+        }
+
+        .filter-content.collapsed {
+            max-height: 0;
         }
 
         .filter-group {
@@ -109,15 +116,22 @@
 
         #abstract-content img {
             display: block;
-            width: 80%;
+            width: 76%;
             margin: auto;
         }
-        
+        #abstract-content {
+            overflow: hidden;
+            max-height: 500px; 
+            transition: max-height 0.3s ease;
+        }
+        #abstract-content.collapsed {
+            max-height: 0; 
+        }
         .Label_Parks {
-            background: none !important;      /* remove background */
-            border: none !important;          /* remove border */
-            box-shadow: none !important;      /* remove shadow */
-            padding: 0 !important;            /* remove padding */
+            background: none !important;      
+            border: none !important;          
+            box-shadow: none !important;      
+            padding: 0 !important;            
             font-family: 'Verdana', sans-serif;
             font-size: 10pt;
             font-style: italic;
@@ -153,7 +167,7 @@
     <script src="https://cdn.jsdelivr.net/gh/jjimenezshaw/Leaflet.Control.Layers.Tree@master/L.Control.Layers.Tree.js"></script>
     <script src="https://unpkg.com/leaflet.vectorgrid@latest/dist/Leaflet.VectorGrid.bundled.js"></script>
     <script>
-
+    //**This first section of the script puts in place the basic elements to build our map from**
     var map = L.map('map', {zoomControl:true, maxZoom:15, minZoom:6}).setView([49.9, -117.9], 8);
 
     L.control.scale({
@@ -163,7 +177,7 @@
         maxWidth: 200           
     }).addTo(map);
 
-    // Create custom panes for better layer organization
+    // Creating custom panes for better layer organization
     map.createPane('terrainPane');
     map.getPane('terrainPane').style.zIndex = 250;
     
@@ -179,6 +193,32 @@
     map.createPane('pointsPane');
     map.getPane('pointsPane').style.zIndex = 550;
 
+
+    //Linking to tile layers used as our basemaps
+    var cartoDB = L.tileLayer("https://a.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png", {
+        attribution: '<a href="https://cartodb.com/basemaps/">Map tiles by CartoDB, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</a>',
+    }).addTo(map);
+
+    var esri = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
+        attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+    });
+
+    var hillshadeLayer = L.tileLayer("hillshade_tiles/{z}/{x}/{y}.png", {
+        pane: 'terrainPane',
+        maxZoom: 14,
+        minZoom: 8,
+        opacity: 0.7,
+    }).addTo(map);
+
+    var contoursLayer = L.vectorGrid.protobuf('https://api.maptiler.com/tiles/contours-v2/{z}/{x}/{y}.pbf?key=MjRuIt3YXiPwNbQiRoht', {
+        pane: 'terrainPane',
+        vectorTileLayerStyles: {"contour": {color: "#c4d4f2", weight: 0.5}, "contour_ft": {opacity: 0}, "high-res": {opacity: 0}},
+        maxZoom: 14,
+        minZoom: 8,
+        attribution: '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>'
+    });
+
+    //**This next secion establishes the functions that are used within the web map, such as filters and the legend**
     // Global variables for filtering
     var existingRoutesFeatures = [];
     var routeFilters = {
@@ -202,51 +242,13 @@
             }
         }
 
-    var cartoDB = L.tileLayer("https://a.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png", {
-        attribution: '<a href="https://cartodb.com/basemaps/">Map tiles by CartoDB, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</a>',
-    }).addTo(map);
-
-    var esri = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
-        attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
-    });
-
-    var hillshadeLayer = L.tileLayer("hillshade_tiles/{z}/{x}/{y}.png", {
-        pane: 'terrainPane',
-        maxZoom: 14,
-        minZoom: 8,
-        opacity: 0.7,
-        attribution: 'Terrain'
-    }).addTo(map);
-
-    var contoursLayer = L.vectorGrid.protobuf('https://api.maptiler.com/tiles/contours-v2/{z}/{x}/{y}.pbf?key=MjRuIt3YXiPwNbQiRoht', {
-        pane: 'terrainPane',
-        vectorTileLayerStyles: {"contour": {color: "#c4d4f2", weight: 0.5}, "contour_ft": {opacity: 0}, "high-res": {opacity: 0}},
-        maxZoom: 14,
-        minZoom: 8,
-    });
-
-    // Declare layer variables
-    var Existing_Routes = L.layerGroup().addTo(map); 
-    var Proposed_Routes = L.layerGroup().addTo(map); 
-    var Municipal_Parks = L.layerGroup().addTo(map); 
-    var Provincial_Parks= L.layerGroup().addTo(map);
-    var Municipal_Boundaries= L.layerGroup();
-    var Regional_Districts_Boundaries= L.layerGroup().addTo(map);
-    var Bike_Shops = L.layerGroup(); 
-    var Recreation_Sites = L.layerGroup();
-    var BC_Transit_Stops = L.layerGroup();
-    var Frog_Peak_Loop= L.layerGroup();
-    var Kootenay_Confluence= L.layerGroup(); 
-    var Santa_Rosa_Valleys_and_Vistas = L.layerGroup();
-    var Bonnington_Scrambler= L.layerGroup();
-
     // Function to get route style based on filter state
     function getRouteStyle(feature, isDimmed) {
         if (isDimmed) {
             return {
                 color: "rgba(17,116,6,0.3)", 
-                weight: 1, 
-                opacity: 0.3
+                weight: 3, 
+                opacity: 0.4
             };
         } else {
             return {
@@ -272,7 +274,7 @@
         }
         
         // Check Trans Canada Trail filter
-        if (routeFilters.transCanadaTrail && props.Trans_Canada_Trail !== 'Yes') {
+        if (routeFilters.transCanadaTrail && props.Trans_Canada_Trail !== true) {
             return false;
         }
         
@@ -292,6 +294,7 @@
     $.getJSON("data/Existing_Routes.geojson", function(data) {
         L.geoJSON(data, {
             pane: 'routesPane',
+            attribution: "© 2025 West Kootenay Cycling Coalition and Contributors",
             style: function(feature) {
                 return getRouteStyle(feature, false);
             },
@@ -363,11 +366,31 @@
             surfaceSelect.appendChild(option);
         });
     }
+
+    //**This section deals with establishing, loading and styling layers. Follow New_Layer comments as a guide to insert a new layer into the project**
+    // Declare layer variables for future use
+    var Existing_Routes = L.layerGroup().addTo(map); 
+    var Proposed_Routes = L.layerGroup().addTo(map); 
+    var Municipal_Parks = L.layerGroup().addTo(map); 
+    var Provincial_Parks= L.layerGroup().addTo(map);
+    var Municipal_Boundaries= L.layerGroup();
+    var Regional_Districts_Boundaries= L.layerGroup().addTo(map);
+    var Bike_Shops = L.layerGroup(); 
+    var Recreation_Sites = L.layerGroup();
+    var BC_Transit_Stops = L.layerGroup();
+    var Frog_Peak_Loop= L.layerGroup();
+    var Kootenay_Confluence= L.layerGroup(); 
+    var Santa_Rosa_Valleys_and_Vistas = L.layerGroup();
+    var Bonnington_Scrambler= L.layerGroup();
+    var NEW_Layer = L.layerGroup();
     
-    // Load Proposed Routes
+    
+    
+    // Load and style Proposed Routes
     $.getJSON("data/Proposed_Routes.geojson", function(data) {
         L.geoJSON(data, {
             pane: 'routesPane',
+            attribution: "© 2025 West Kootenay Cycling Coalition and Contributors",
             style: {
                 opacity: 1,
                 color: 'rgba(252,0,0,1.0)',
@@ -381,9 +404,10 @@
         }).addTo(Proposed_Routes);
     });
 
-    // Load Municipal Parks
+    // Load and style Municipal Parks
     $.getJSON("data/Municipal_Parks.geojson", function(data) {
         L.geoJSON(data, {
+            attribution: '©<a href="https://www2.gov.bc.ca/gov/content/data/policy-standards/data-policies/open-data/open-government-licence-bc">Open Government Licence - British Columbia</a>',
             style: {
                 opacity: 1,
                 color: 'rgba(37,96,18,1.0)',
@@ -400,9 +424,10 @@
         }).addTo(Municipal_Parks);
     });
 
-    // Load Provincial Parks
+    // Load and style Provincial Parks
     $.getJSON("data/Provincial_Parks.geojson", function(data) {
         L.geoJSON(data, {
+            attribution: '©<a href="https://www2.gov.bc.ca/gov/content/data/policy-standards/data-policies/open-data/open-government-licence-bc">Open Government Licence - British Columbia</a>',
             style: {   
                 opacity: 1,
                 color: 'rgba(37,96,18,1.0)',
@@ -419,10 +444,11 @@
         }).addTo(Provincial_Parks);
     });
 
-    // Load Municipal Boundaries
+    // Load and style Municipal Boundaries
     $.getJSON("data/Municipal_Boundaries.geojson", function(data) {
         L.geoJSON(data, {
             pane: 'boundariesPane',
+            attribution: '©<a href="https://www2.gov.bc.ca/gov/content/data/policy-standards/data-policies/open-data/open-government-licence-bc">Open Government Licence - British Columbia</a>',
             style: {   
                 opacity: 0.15,
                 color: 'rgba(255,142,37)',
@@ -440,9 +466,10 @@
         }).addTo(Municipal_Boundaries);
     });
     
-    // Load Regional Districts Boundaries
+    // Load and style Regional Districts Boundaries
     $.getJSON("data/Regional_Districts_Boundaries.geojson", function(data) {
         L.geoJSON(data, {
+            attribution: '©<a href="https://www2.gov.bc.ca/gov/content/data/policy-standards/data-policies/open-data/open-government-licence-bc">Open Government Licence - British Columbia</a>',
             pane: 'boundariesPane',
             style: { 
                 opacity: 0.3,
@@ -457,7 +484,7 @@
         }).addTo(Regional_Districts_Boundaries);   
     });
 
-    // Load Bike Shops
+    // Load and style Bike Shops
     $.getJSON("data/Bike_Shops.geojson", function(data) {
         L.geoJSON(data, {
             pane: 'pointsPane',
@@ -470,6 +497,7 @@
                     })
                 });
             },
+            //Allowing and formatting popups
             interactive: true,
             onEachFeature: function(feature, layer) {
                 var url = feature.properties.URL || "";
@@ -491,18 +519,20 @@
         }).addTo(Bike_Shops);
     });
 
-    // Load Recreation Sites
+    // Load and style Recreation Sites
     $.getJSON("data/Recreation_Sites.geojson", function(data) {
         L.geoJSON(data, {
+            attribution: '©<a href="https://www2.gov.bc.ca/gov/content/data/policy-standards/data-policies/open-data/open-government-licence-bc">Open Government Licence - British Columbia</a>',
             pane: 'pointsPane',
             pointToLayer: function(feature, latlng) {
-                var triangleIcon = L.icon({
-                    iconUrl: 'markers/BC_Parks_logo.png',
-                    iconSize: [12, 12],
+                var RecSite = L.icon({
+                    iconUrl: 'markers/picnic-2.png',
+                    iconSize: [20, 20],
                     iconAnchor: [5, 5] 
                 });
-                return L.marker(latlng, { icon: triangleIcon });
+                return L.marker(latlng, { icon: RecSite });
             },
+            //Allowing and formating popups
             interactive: true,
             onEachFeature: function(feature, layer) {
                 layer.bindPopup(
@@ -519,9 +549,10 @@
         }).addTo(Recreation_Sites);
     });
 
-    // Load BC Transit Stops
+    // Load and style BC Transit Stops
     $.getJSON("data/BC_Transit_Stops.geojson", function(data) {
         L.geoJSON(data, {
+            attribution: '©<a href="https://www.bctransit.com/open-data/terms-of-use/">BC Transit Terms of Use</a>',
             pane: 'pointsPane',
             pointToLayer: function(feature, latlng) {
                 return L.marker(latlng, {
@@ -535,10 +566,11 @@
         }).addTo(BC_Transit_Stops);
     });
 
-    // Load Named Routes
+    // Load and style Named Routes
     $.getJSON("data/Frog_Peak_Loop.geojson", function(data) {
         L.geoJSON(data, {
             pane: 'BikePackingPane',
+            attribution: '©<a href="https://bikepacking.com/west-kootenay/">Moe Nadeau - BikePacking.com</a>',
             style: {
                 opacity: 1,
                 color: 'rgba(247,72,33,1.0)',
@@ -548,6 +580,7 @@
                 weight: 2.0,
                 fillOpacity: 0
             },
+            //Allowing and formatting popups
             interactive: true,
             onEachFeature: function(feature, layer) {
                 var url = feature.properties.Source || "";
@@ -564,10 +597,11 @@
             }
         }).addTo(Frog_Peak_Loop);
     });
-
+    //Load and style Kootenay Confluence
     $.getJSON("data/Kootenay_Confluence.geojson", function(data) {
         L.geoJSON(data, {
             pane: 'BikePackingPane',
+            attribution: '©<a href="https://bikepacking.com/west-kootenay/">Moe Nadeau - BikePacking.com</a>',
             style: {
                 opacity: 1,
                 color: 'rgba(247,222,33,1.0)',
@@ -577,6 +611,7 @@
                 weight: 2.0,
                 fillOpacity: 0
             },
+            //Allowing and formatting popups
             interactive: true,
             onEachFeature: function(feature, layer) {
                 var url = feature.properties.Source || "";
@@ -593,10 +628,11 @@
             }
         }).addTo(Kootenay_Confluence);
     });
-
+    //Load and style Santa Rosa Valleys and Vistas 
     $.getJSON("data/Santa_Rosa_Valleys_and_Vistas.geojson", function(data) {
         L.geoJSON(data, {
             pane: 'BikePackingPane',
+            attribution: '©<a href="https://bikepacking.com/west-kootenay/">Moe Nadeau - BikePacking.com</a>',
             style: {
                 opacity: 1,
                 color: 'rgba(132,55,38,1.0)',
@@ -606,6 +642,7 @@
                 weight: 2.0,
                 fillOpacity: 0
             },
+            //Allowing and formatting popups
             interactive: true,
             onEachFeature: function(feature, layer) {
                 var url = feature.properties.Source || "";
@@ -622,9 +659,10 @@
             }
         }).addTo(Santa_Rosa_Valleys_and_Vistas);
     });
-
+    //Load and sryle Bonnington Scrambler
     $.getJSON("data/Bonnington_Scrambler.geojson", function(data) {
         L.geoJSON(data, {
+            attribution: '©<a href="https://bikepacking.com/west-kootenay/">Moe Nadeau - BikePacking.com</a>',
             pane: 'BikePackingPane',
             style: {
                 opacity: 1,
@@ -635,6 +673,7 @@
                 weight: 2.0,
                 fillOpacity: 0
             },
+            //Allowing and formatting popups
             interactive: true,
             onEachFeature: function(feature, layer) {
                 var url = feature.properties.Source || "";
@@ -651,7 +690,62 @@
             }
         }).addTo(Bonnington_Scrambler);
     });
+    //Example code to load a newly created layer into the web map
+    // $.getJSON("data/New_Layer.geojson", function(data) {
+    //    L.geoJSON(data, {
+    //      pane: 'routesPane', // Options: terrainPane, boundariesPane, routesPane, BikePackingPane, pointsPane
+                 
+        //  POLYGON/LINE STYLING EXAMPLE:
+        //  style: {
+        //      opacity: 1,
+        //      color: 'rgba(255,0,0,1.0)',      // Border color
+        //      dashArray: '5.0,2.0',            // Dashed line pattern (optional)
+        //      lineCap: 'round',                // Line endings: 'round', 'square', 'butt'
+        //      lineJoin: 'round',               // Line joints: 'round', 'bevel', 'miter'
+        //      weight: 2.0,                     // Border thickness
+        //      fill: true,                      // Fill polygons (set false for lines)
+        //      fillOpacity: 0.6,                // Polygon fill transparency
+        //      fillColor: 'rgba(255,0,0,0.3)'   // Polygon fill color
+        //    },
+                 
+        // // POINT STYLING EXAMPLE (comment out 'style' above and use this instead):
+        //    pointToLayer: function(feature, latlng) {
+        //      return L.marker(latlng, {
+        //          icon: L.icon({
+        //          iconUrl: 'markers/your_icon.svg',  // Path to your marker icon
+        //          iconSize: [20, 20],               // Icon dimensions [width, height]
+        //          iconAnchor: [10, 10]              // Icon anchor point [x, y]
+        //                  })
+        //          });
+        //       },
+        //         
+        //    interactive: false, // Set false if you don't want clicks/hovers or popups
+        //         
+        //    POPUP CONFIGURATION:
+        //    onEachFeature: function(feature, layer) {
+        //  
+        //    var props = feature.properties || {};
+        //    var name = props.Name || props.name || 'Unknown';
+        //    var description = props.Description || props.description || 'No description';
+        //             
+        //    *Create popup content*
+        //      layer.bindPopup(
+        //          '<div class="popup">' +
+        //              '<table>' +
+        //                  '<tr><td><b>Name:</b></td><td>' + name + '</td></tr>' +
+        //                  '<tr><td><b>Description:</b></td><td>' + description + '</td></tr>' +
+        //                 *Add more properties as needed*
+        //                 '</table>' +
+        //                 '</div>'
+        //             );
+        //         }
+        //     }).addTo(New_Layer);
+        // });
 
+
+
+    //**This section is where the legend gets built**
+   
     function createLegendIcon(iconFile, label) {
     return '<img src="legend/' + iconFile + '" style="height:16px;vertical-align:middle;margin-right:4px;">' + label;
     };
@@ -711,8 +805,10 @@
                         ]
                     },
                     {label: createLegendIcon("bike_shops.png", "Bike Shops"), layer: Bike_Shops},
-                    {label: createLegendIcon("recreation_sites.png", "Recreation Sites"), layer: Recreation_Sites},
+                    {label: createLegendIcon("picnic-2.png", "Recreation Sites"), layer: Recreation_Sites},
                     {label: createLegendIcon("bc_transit.png", "BC Transit Stops"), layer: BC_Transit_Stops}
+                    //**Adding new layer element to the legend
+                    //{label: createLegendIcon("New Layer Name"), layer: New_Layer}
                 ]
             },
             {
@@ -725,7 +821,7 @@
                 position: 'topright'
             }
         ).addTo(map);
-
+        //*Zoom restriciton for certain layers*
         var zoomRestrictedLayers = [
             { layer: Municipal_Boundaries, legendClass: "legend-municipal-boundaries", minZoom: 12, maxZoom: 15 },
             { layer: Municipal_Parks, legendClass: "legend-municipal-parks", minZoom: 11, maxZoom: 15 },
@@ -772,7 +868,7 @@
                 <p class="filter-toggle">🔍 Route Filters
                     <span class="filter-arrow">▾</span>
                 </p>
-                <div class="filter-content" style="display: none;">
+                <div class="filter-content collapsed">
                     <div class="filter-group">
                         <label>Route Type:</label>
                         <select id="type-filter">
@@ -798,12 +894,22 @@
             var content = div.querySelector('.filter-content');
             var arrow = div.querySelector('.filter-arrow');
 
+            // Set initial state (collapsed)
+            arrow.style.transform = 'rotate(180deg)';
+
             toggle.onclick = function() {
-                if(content.style.display === 'none') {
-                    content.style.display = 'block';
+                var isExpanding = content.classList.contains('collapsed');
+                
+                if(isExpanding) {
+                    // Expanding filter panel
+                    content.classList.remove('collapsed');
                     arrow.style.transform = 'rotate(0deg)';
+                    
+                    // Collapse abstract if it's expanded
+                    collapseAbstract();
                 } else {
-                    content.style.display = 'none';
+                    // Collapsing filter panel
+                    content.classList.add('collapsed');
                     arrow.style.transform = 'rotate(180deg)';
                 }
             };
@@ -847,7 +953,7 @@
             
             updateRouteFiltering();
         };
-
+        //Creating the abstract section
         var abstract = L.control({ position: 'bottomleft' });
 
         abstract.onAdd = function(map) {
@@ -879,19 +985,46 @@
 
         // Toggle function
         toggle.onclick = function() {
-            if(content.style.display === 'none') {
-                content.style.display = 'block';
+            var isExpanding = content.classList.contains('collapsed');
+            
+            if(isExpanding) {
+                // Expanding abstract
+                content.classList.remove('collapsed');
                 arrow.style.transform = 'rotate(0deg)';
+                
+                // Collapse filter if it's expanded
+                collapseFilter();
             } else {
-                content.style.display = 'none';
+                // Collapsing abstract
+                content.classList.add('collapsed');
                 arrow.style.transform = 'rotate(180deg)';
             }
         };
 
         return div;
     };
+    abstract.addTo(map); 
 
-    abstract.addTo(map);     
+    // Function that avoids overlapping of the abstract and filter panels
+    function collapseAbstract() {
+        var abstractContent = document.getElementById('abstract-content');
+        var abstractArrow = document.getElementById('abstract-arrow');
+        
+        if (!abstractContent.classList.contains('collapsed')) {
+            abstractContent.classList.add('collapsed');
+            abstractArrow.style.transform = 'rotate(180deg)';
+        }
+    }
+
+    function collapseFilter() {
+        var filterContent = document.querySelector('.filter-content');
+        var filterArrow = document.querySelector('.filter-arrow');
+        
+        if (!filterContent.classList.contains('collapsed')) {
+            filterContent.classList.add('collapsed');
+            filterArrow.style.transform = 'rotate(180deg)';
+        }
+    }
 
     </script>
 </body>
