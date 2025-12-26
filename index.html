@@ -198,6 +198,24 @@
     map.createPane('pointsPane');
     map.getPane('pointsPane').style.zIndex = 550;
 
+    //**This section deals with establishing, loading and styling layers. Follow New_Layer comments as a guide to insert a new layer into the project**
+    // Declare layer variables for future use
+    var Existing_Routes = L.layerGroup(); 
+    var Proposed_Routes = L.layerGroup(); 
+    var Municipal_Parks = L.layerGroup(); 
+    var Provincial_Parks= L.layerGroup();
+    var Municipal_Boundaries= L.layerGroup();
+    var Regional_Districts_Boundaries= L.layerGroup();
+    var Bike_Shops = L.layerGroup(); 
+    var Recreation_Sites = L.layerGroup();
+    var BC_Transit_Stops = L.layerGroup();
+    var Frog_Peak_Loop= L.layerGroup();
+    var Kootenay_Confluence= L.layerGroup(); 
+    var Santa_Rosa_Valleys_and_Vistas = L.layerGroup();
+    var Bonnington_Scrambler= L.layerGroup();
+    var Log_Jam_Loop = L.layerGroup();
+    var Areas_of_Concern = L.layerGroup();
+
 
     //Linking to tile layers used as our basemaps
     var cartoDB = L.tileLayer("https://a.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png", {
@@ -384,25 +402,6 @@
             surfaceSelect.appendChild(option);
         });
     }
-
-    //**This section deals with establishing, loading and styling layers. Follow New_Layer comments as a guide to insert a new layer into the project**
-    // Declare layer variables for future use
-    var Existing_Routes = L.layerGroup().addTo(map); 
-    var Proposed_Routes = L.layerGroup().addTo(map); 
-    var Municipal_Parks = L.layerGroup().addTo(map); 
-    var Provincial_Parks= L.layerGroup().addTo(map);
-    var Municipal_Boundaries= L.layerGroup();
-    var Regional_Districts_Boundaries= L.layerGroup().addTo(map);
-    var Bike_Shops = L.layerGroup(); 
-    var Recreation_Sites = L.layerGroup();
-    var BC_Transit_Stops = L.layerGroup();
-    var Frog_Peak_Loop= L.layerGroup();
-    var Kootenay_Confluence= L.layerGroup(); 
-    var Santa_Rosa_Valleys_and_Vistas = L.layerGroup();
-    var Bonnington_Scrambler= L.layerGroup();
-    var Log_Jam_Loop = L.layerGroup();
-    
-    
     
     // Load and style Proposed Routes
     $.getJSON("data/Proposed_Routes.geojson", function(data) {
@@ -565,6 +564,36 @@
                 );
             }
         }).addTo(Recreation_Sites);
+    });
+
+    //Load and Style Areas of Concern layer
+    $.getJSON("data/Areas_of_Concern.geojson", function(data) {
+        L.geoJSON(data, {
+            attribution: "© 2025 West Kootenay Cycling Coalition and Contributors",
+            pane: 'pointsPane',
+            pointToLayer: function(feature, latlng) {
+                var Warning = L.icon({
+                    iconUrl: 'markers/Warning.svg',
+                    iconSize: [20, 20],
+                    iconAnchor: [5, 5] 
+                });
+                return L.marker(latlng, { icon: Warning });
+            },
+            //Allowing and formating popups
+            interactive: true,
+            onEachFeature: function(feature, layer) {
+                layer.bindPopup(
+                    '<div class="popup" style="width:600px;">' +
+                    '<table style="width:100%;">' +
+                        '<tr><td style="padding-right:15px;"><b>Name:</b></td><td>' + feature.properties.Name + '</td></tr>' +
+                        '<tr><td style="padding-right:15px;"><b>Description:</b></td><td>' + feature.properties.Description + '</td></tr>' +
+                        '<tr><td style="padding-right:15px;"><b>Priority:</b></td><td><p style="margin:0; max-width 600px; white-space:normal;">' + feature.properties.Priority + '</p></td></tr>' +
+                    '</table>' +
+                    '</div>',
+                    {maxWidth: 800}
+                );
+            }
+        }).addTo(Areas_of_Concern);
     });
 
     // Load and style BC Transit Stops
@@ -791,7 +820,17 @@
         //     }).addTo(New_Layer);
         // });
 
+//Adding Layers to the map
+var defaultLayers = [
+    Existing_Routes,
+    Proposed_Routes,
+    Municipal_Parks,
+    Provincial_Parks,
+    Municipal_Boundaries,
+    Regional_Districts_Boundaries
+];
 
+defaultLayers.forEach(l => l.addTo(map));
 
     //**This section is where the legend gets built**
    
@@ -856,7 +895,8 @@
                     },
                     {label: createLegendIcon("bike_shops.png", "Bike Shops"), layer: Bike_Shops},
                     {label: createLegendIcon("picnic-2.png", "Recreation Sites"), layer: Recreation_Sites},
-                    {label: createLegendIcon("bc_transit.png", "BC Transit Stops"), layer: BC_Transit_Stops}
+                    {label: createLegendIcon("bc_transit.png", "BC Transit Stops"), layer: BC_Transit_Stops},
+                    {label: createLegendIcon("Warning.svg", "Areas of Concern"), layer: Areas_of_Concern}
                     //**Adding new layer element to the legend
                     //{label: createLegendIcon("New Layer Name"), layer: New_Layer}
                 ]
