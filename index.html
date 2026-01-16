@@ -157,11 +157,13 @@
         }
 
         .legend-container {
-            background: white;
+            background-color: rgba(255, 255, 255, 0.9);
             border-radius: 6px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+            border: 1px solid rgba(0,0,0,0.2);
+            box-shadow: 0 0 12px rgba(0,0,0,0.2);
+            font-family: 'Open Sans', Helvetica, sans-serif;
+            font-size: 12px;
             max-width: 90vw;
-            font-size: 0.85em;
         }
 
         .legend-header {
@@ -173,6 +175,7 @@
             cursor: pointer;
             user-select: none;
             border-bottom: 1px solid #ddd;
+            gap: 8px;
         }
 
         .legend-toggle {
@@ -185,8 +188,8 @@
 
         .legend-body {
             padding: 6px 10px;
-            max-height: 60vh;
-            overflow-y: auto;
+            overflow: visible;
+            max-height: none;
         }
 
         .legend-body.collapsed {
@@ -222,6 +225,13 @@
             .popup td {
                 display: block;
                 width: 100%;
+            }
+
+            .leaflet-control-attribution {
+                max-width: 60vw;
+                white-space: normal;
+                text-align: right;
+                line-height: 1.2;
             }
 
         }
@@ -550,7 +560,7 @@
                 fillColor: 'rgba(255,158,23,0.0)'
             },
             minZoom: 11,
-            maxZoom: 15,
+            maxZoom: 16,
             interactive: false
         }).addTo(Municipal_Boundaries);
     });
@@ -1010,6 +1020,7 @@ defaultLayers.forEach(l => l.addTo(map));
             }
         ).addTo(map);
 
+
         const legendBody = document.querySelector('.legend-body');
         const treeEl = treeControl.getContainer();
 
@@ -1024,11 +1035,16 @@ defaultLayers.forEach(l => l.addTo(map));
             legendToggle.classList.toggle('collapsed');
         });
 
+        if (window.innerWidth < 768) {
+            legendBodyEl.classList.add('collapsed');
+            legendToggle.classList.add('collapsed');
+        }
+
         //*Zoom restriciton for certain layers*
     var zoomRestrictedLayers = [
-        { layer: Municipal_Boundaries, legendClass: "legend-municipal-boundaries", minZoom: 12, maxZoom: 15 },
-        { layer: Municipal_Parks, legendClass: "legend-municipal-parks", minZoom: 11, maxZoom: 15 },
-        { layer: Proposed_Routes, legendClass: "legend-proposed-routes", minZoom: 10, maxZoom: 15 },
+        { layer: Municipal_Boundaries, legendClass: "legend-municipal-boundaries", minZoom: 12, maxZoom: 16 },
+        { layer: Municipal_Parks, legendClass: "legend-municipal-parks", minZoom: 11, maxZoom: 16 },
+        { layer: Proposed_Routes, legendClass: "legend-proposed-routes", minZoom: 10, maxZoom: 16 },
         // add more layers here as needed
     ];
 
