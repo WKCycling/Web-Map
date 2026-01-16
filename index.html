@@ -143,17 +143,54 @@
         }
 
         .Label_Parks.leaflet-tooltip::before {
-        content: none !important;
+            content: none !important;
         }
 
         .leaflet-interactive:focus {
-        outline: none !important;
-        box-shadow: none !important;
+            outline: none !important;
+            box-shadow: none !important;
         }
 
         .legend-disabled {
             opacity: 0.4; 
             pointer-events: none;
+        }
+
+        .legend-container {
+            background: white;
+            border-radius: 6px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+            max-width: 90vw;
+            font-size: 0.85em;
+        }
+
+        .legend-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 10px;
+            font-weight: bold;
+            cursor: pointer;
+            user-select: none;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .legend-toggle {
+            transition: transform 0.2s ease;
+        }
+
+        .legend-toggle.collapsed {
+            transform: rotate(-90deg);
+        }
+
+        .legend-body {
+            padding: 6px 10px;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .legend-body.collapsed {
+            display: none;
         }
 
         @media (max-width: 768px){
@@ -873,6 +910,32 @@ defaultLayers.forEach(l => l.addTo(map));
     return '<img src="legend/' + iconFile + '" style="height:16px;vertical-align:middle;margin-right:4px;">' + label;
     };
 
+    const LegendContainer = L.Control.extend({
+        options: {
+            position: 'topright'
+        },
+        onAdd: function () {
+            const container = L.DomUtil.create(
+                'div',
+                'leaflet-control legend-container'
+            );
+            L.DomEvent.disableClickPropagation(container);
+            L.DomEvent.disableScrollPropagation(container);
+
+            container.innerHTML = `
+                <div class="legend-header">
+                    <span>Legend</span>
+                    <span class="legend-toggle">▾</span>
+                </div>
+                <div class="legend-body"></div>
+                `;
+            return container;
+        }
+    });
+
+    const legendContainer = new LegendContainer();
+    legendContainer.addTo(map);
+
     var treeControl = L.control.layers.tree(
             {
                 label: '<b>Base Maps</b>',
@@ -946,33 +1009,48 @@ defaultLayers.forEach(l => l.addTo(map));
                 position: 'topright'
             }
         ).addTo(map);
+
+        const legendBody = document.querySelector('.legend-body');
+        const treeEl = treeControl.getContainer();
+
+        legendBody.appendChild(treeEl);
+
+        const legendHeader = document.querySelector('.legend-header');
+        const legendToggle = document.querySelector('.legend-toggle');
+        const legendBodyEl = document.querySelector('.legend-body');
+
+        legendHeader.addEventListener('click', () => {
+            legendBodyEl.classList.toggle('collapsed');
+            legendToggle.classList.toggle('collapsed');
+        });
+
         //*Zoom restriciton for certain layers*
-        var zoomRestrictedLayers = [
-            { layer: Municipal_Boundaries, legendClass: "legend-municipal-boundaries", minZoom: 12, maxZoom: 15 },
-            { layer: Municipal_Parks, legendClass: "legend-municipal-parks", minZoom: 11, maxZoom: 15 },
-            { layer: Proposed_Routes, legendClass: "legend-proposed-routes", minZoom: 10, maxZoom: 15 },
-            // add more layers here as needed
-        ];
+    var zoomRestrictedLayers = [
+        { layer: Municipal_Boundaries, legendClass: "legend-municipal-boundaries", minZoom: 12, maxZoom: 15 },
+        { layer: Municipal_Parks, legendClass: "legend-municipal-parks", minZoom: 11, maxZoom: 15 },
+        { layer: Proposed_Routes, legendClass: "legend-proposed-routes", minZoom: 10, maxZoom: 15 },
+        // add more layers here as needed
+    ];
 
-        function updateZoomRestrictedLayers() {
-            var zoom = map.getZoom();
+    function updateZoomRestrictedLayers() {
+        var zoom = map.getZoom();
 
-            zoomRestrictedLayers.forEach(function(item) {
-                var legendItem = document.querySelector("." + item.legendClass);
-                var labelEl = legendItem ? legendItem.closest("label") : null;
-                var checkbox = legendItem ? legendItem.closest("label").querySelector("input[type=checkbox]") : null;
+        zoomRestrictedLayers.forEach(function(item) {
+            var legendItem = document.querySelector("." + item.legendClass);
+            var labelEl = legendItem ? legendItem.closest("label") : null;
+            var checkbox = legendItem ? legendItem.closest("label").querySelector("input[type=checkbox]") : null;
 
-                if (zoom >= item.minZoom && zoom <= item.maxZoom) {
-                    if (!map.hasLayer(item.layer)) map.addLayer(item.layer);
-                    if (legendItem) legendItem.classList.remove("legend-disabled");
-                    if (checkbox) checkbox.disabled = false;
-                } else {
-                    if (map.hasLayer(item.layer)) map.removeLayer(item.layer);
-                    if (legendItem) legendItem.classList.add("legend-disabled");
-                    if (checkbox) checkbox.disabled = true;
-                }
-            });
-        }
+            if (zoom >= item.minZoom && zoom <= item.maxZoom) {
+                if (!map.hasLayer(item.layer)) map.addLayer(item.layer);
+                if (legendItem) legendItem.classList.remove("legend-disabled");
+                if (checkbox) checkbox.disabled = false;
+            } else {
+                if (map.hasLayer(item.layer)) map.removeLayer(item.layer);
+                if (legendItem) legendItem.classList.add("legend-disabled");
+                if (checkbox) checkbox.disabled = true;
+            }
+        });
+    }
 
         // Run once at load
         setTimeout(updateZoomRestrictedLayers, 100);
@@ -1170,6 +1248,11 @@ defaultLayers.forEach(l => l.addTo(map));
                 collapseAbstract();
             }
         }, 200);
+    }
+
+    if (window.innerWidth < 768) {
+        legendBodyEl.classList.add('collapsed');
+        legendToggle.classList.add('collapsed');
     }
 
     </script>
