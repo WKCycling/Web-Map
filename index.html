@@ -156,6 +156,39 @@
             pointer-events: none;
         }
 
+        @media (max-width: 768px){
+
+            .leaflet-control {
+                font-size: 11px;
+                max-width: 90vw;
+            }
+
+            .custom-legend {
+                max-height: 60vh;
+                overflow-y: auto;
+            }
+
+            .leaflet-control.filter-panel,
+            .leaflet-control.abstract{
+                max-width: 90vw;
+                padding: 8px 10px;
+            }
+
+            .lealet-popup-content{
+                max-width: 90vW !important;
+            }
+
+            .popup table {
+                width: 100%;
+            }
+
+            .popup td {
+                display: block;
+                width: 100%;
+            }
+
+        }
+
     </style>
     <title>West Kootenay Cycling Routes Map</title>
     <link rel="icon" type="image/x-icon" href="images/WKCC.png">
@@ -251,19 +284,21 @@
     };
 
     function Label_Parks(feature, layer) {
-            if (feature.properties['park_name']) {
-                layer.bindTooltip(feature.properties['park_name'], {
-                    className: 'Label_Parks',
-                    sticky: true,     
-                    direction: 'auto'
-                });
+    if (!feature.properties['park_name']) return;
 
-                layer.on({
-                    mouseover: function(e) { e.target.openTooltip(); },
-                    mouseout: function(e) { e.target.closeTooltip(); }
-                });
-            }
+    if (window.innerWidth < 768) {
+        // Mobile: tap to toggle tooltip
+        layer.on('click', function () {
+        layer.bindPopup(feature.properties['park_name']).openPopup();
+            });
+    } else {
+        // Desktop: hover tooltip
+        layer.bindTooltip(feature.properties['park_name'], {
+        className: 'Label_Parks',
+        sticky: true
+            });
         }
+    }
 
     // Function to get route style based on filter state
     function getRouteStyle(feature, isDimmed) {
@@ -1123,6 +1158,18 @@ defaultLayers.forEach(l => l.addTo(map));
             filterContent.classList.add('collapsed');
             filterArrow.style.transform = 'rotate(180deg)';
         }
+    }
+
+    if (window.innerWidth < 768) {
+        if (treeControl && treeControl.collapse) {
+            treeControl.collapse();
+        }
+
+        setTimeout(() => {
+            if (typeof collapseAbstract === 'function') {
+                collapseAbstract();
+            }
+        }, 200);
     }
 
     </script>
