@@ -298,6 +298,10 @@
     var Log_Jam_Loop = L.layerGroup();
     var Priority_Improvements = L.layerGroup();
 
+    //Highlight globals
+    var existingRoutesFeatures=[];
+    var highlightedRoute=null;
+
 
     //Linking to tile layers used as our basemaps
     var cartoDB = L.tileLayer("https://a.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png", {
@@ -325,7 +329,7 @@
 
     //**This next secion establishes the functions that are used within the web map, such as filters and the legend**
     // Global variables for filtering
-    var existingRoutesFeatures = [];
+
     var routeFilters = {
         type: 'all',
         surface: 'all',
@@ -366,7 +370,53 @@
         }
     }
 
-    // Function to check if a feature matches current filters
+    function highlightRoute(layer) {
+        resetHighlightedRoute();
+
+        highlightedRoute = layer;
+        highlightedRouteOriginalStyle = layer.options.style || null;
+
+        layer.setStyle({
+            color: "#f0fc03",
+            weight: 5,
+            opacity: 1,
+        });
+
+        layer.bringToFront();
+    }
+
+    function getExistingRouteBaseStyle(feature, dimmed) {
+        return getRouteStyle(feature, dimmed);
+    }
+
+    function getProjectedRouteBaseStyle() {
+        return {
+            color: 'rgba(252,0,0,1.0)',
+            dashArray: '4,2',
+            weight: 1,
+            opacity: 1
+        };
+    }
+
+    function resetHighlightedRoute() {
+        if (!highlightedRoute) return;
+
+        if (highlightedRoute.routeCategory === "existing") {
+            var matches = featureMatchesFilters(highlightedRoute.feature);
+            highlightedRoute.setStyle(
+                getExistingRouteBaseStyle(highlightedRoute.feature, !matches)
+            );
+        }
+
+        if (highlightedRoute.routeCategory === "proposed") {
+            highlightedRoute.setStyle(
+                getProjectedRouteBaseStyle()
+            );
+        }
+
+        highlightedRoute = null;
+    }
+        // Function to check if a feature matches current filters
     function featureMatchesFilters(feature) {
         var props = feature.properties;
         
@@ -392,8 +442,12 @@
     function updateRouteFiltering() {
         existingRoutesFeatures.forEach(function(layer) {
             var matches = featureMatchesFilters(layer.feature);
-            var style = getRouteStyle(layer.feature, !matches);
-            layer.setStyle(style);
+            if (highlightedRoute === layer && !matches){
+                resetHighlightedRoute();
+            }
+            if (layer !== highlightedRoute){
+                layer.setStyle(getRouteStyle(layer.feature, !matches));
+            }
         });
     }
 
@@ -420,8 +474,15 @@
             },
             interactive: true,
             onEachFeature: function(feature, layer) {
+
                 // Store reference to layer for filtering
+                layer.routeCategory="existing";
                 existingRoutesFeatures.push(layer);
+
+                layer.on("click", function (e) {
+                    highlightRoute(layer);
+                    L.DomEvent.stopPropagation(e);
+                });
                 
                 // Safely get properties with fallbacks
                 var props = feature.properties || {};
@@ -501,7 +562,15 @@
                 weight: 1.0,
                 fillOpacity: 0 
             },
-            interactive: false
+            interactive: true,
+            onEachFeature: function(feature, layer) {
+                layer.routeCategory="proposed";
+
+                layer.on("click", function (e){
+                    highlightRoute(layer);
+                    L.DomEvent.stopPropagation(e);
+                });
+            }
         }).addTo(Proposed_Routes);
     });
 
@@ -1080,6 +1149,8 @@ defaultLayers.forEach(l => l.addTo(map));
         var treeContainer = treeControl.getContainer();
         treeContainer.classList.add('custom-legend');
 
+    
+
         // Create filter panel
         var filterPanel = L.control({ position: 'topleft' });
 
@@ -1273,7 +1344,9 @@ defaultLayers.forEach(l => l.addTo(map));
         legendBodyEl.classList.add('collapsed');
         legendToggle.classList.add('collapsed');
     }
-
+        map.on("click", function () {
+        resetHighlightedRoute();
+    });
     </script>
 </body>
 </html>
