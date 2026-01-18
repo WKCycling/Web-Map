@@ -164,6 +164,7 @@
             font-family: 'Open Sans', Helvetica, sans-serif;
             font-size: 12px;
             max-width: 90vw;
+            padding-bottom: 10px;
         }
 
         .legend-header {
@@ -187,7 +188,8 @@
         }
 
         .legend-body {
-            padding: 6px 10px;
+            background-color: rgba(255, 255, 255, 0.5);
+            padding: 5px 10px 5px 10px;
             overflow: visible;
             max-height: none;
         }
@@ -294,7 +296,7 @@
     var Santa_Rosa_Valleys_and_Vistas = L.layerGroup();
     var Bonnington_Scrambler= L.layerGroup();
     var Log_Jam_Loop = L.layerGroup();
-    var Areas_of_Concern = L.layerGroup();
+    var Priority_Improvements = L.layerGroup();
 
 
     //Linking to tile layers used as our basemaps
@@ -648,8 +650,8 @@
         }).addTo(Recreation_Sites);
     });
 
-    //Load and Style Areas of Concern layer
-    $.getJSON("data/Areas_of_Concern.geojson", function(data) {
+    //Load and Style Priority Improvement layer
+    $.getJSON("data/Priority_Improvements.geojson", function(data) {
         L.geoJSON(data, {
             attribution: "© 2025 West Kootenay Cycling Coalition and Contributors",
             pane: 'pointsPane',
@@ -675,7 +677,7 @@
                     {maxWidth: 800}
                 );
             }
-        }).addTo(Areas_of_Concern);
+        }).addTo(Priority_Improvements);
     });
 
     // Load and style BC Transit Stops
@@ -909,7 +911,8 @@ var defaultLayers = [
     Municipal_Parks,
     Provincial_Parks,
     Municipal_Boundaries,
-    Regional_Districts_Boundaries
+    Regional_Districts_Boundaries,
+    Priority_Improvements
 ];
 
 defaultLayers.forEach(l => l.addTo(map));
@@ -972,6 +975,7 @@ defaultLayers.forEach(l => l.addTo(map));
                         children: [
                             {label: createLegendIcon("existing_routes.png", "Existing Routes"), layer: Existing_Routes},
                             {label: '<span class="legend-proposed-routes">'+createLegendIcon("proposed_routes.png", "Proposed Routes")+'</span>', layer: Proposed_Routes},
+                            {label: createLegendIcon("Warning.svg", "Priority Improvements"), layer: Priority_Improvements},
                             {
                                 label: '<b>Bike Packing Routes</b>',
                                 selectAllCheckbox: false,
@@ -1003,8 +1007,7 @@ defaultLayers.forEach(l => l.addTo(map));
                     },
                     {label: createLegendIcon("bike_shops.png", "Bike Shops"), layer: Bike_Shops},
                     {label: createLegendIcon("picnic-2.png", "Recreation Sites"), layer: Recreation_Sites},
-                    {label: createLegendIcon("bc_transit.png", "BC Transit Stops"), layer: BC_Transit_Stops},
-                    {label: createLegendIcon("Warning.svg", "Areas of Concern"), layer: Areas_of_Concern}
+                    {label: createLegendIcon("bc_transit.png", "BC Transit Stops"), layer: BC_Transit_Stops}
                     //**Adding new layer element to the legend
                     //{label: createLegendIcon("New Layer Name"), layer: New_Layer}
                 ]
@@ -1044,7 +1047,7 @@ defaultLayers.forEach(l => l.addTo(map));
     var zoomRestrictedLayers = [
         { layer: Municipal_Boundaries, legendClass: "legend-municipal-boundaries", minZoom: 12, maxZoom: 16 },
         { layer: Municipal_Parks, legendClass: "legend-municipal-parks", minZoom: 11, maxZoom: 16 },
-        { layer: Proposed_Routes, legendClass: "legend-proposed-routes", minZoom: 10, maxZoom: 16 },
+        { layer: Proposed_Routes, legendClass: "legend-proposed-routes", minZoom: 8, maxZoom: 16 },
         // add more layers here as needed
     ];
 
