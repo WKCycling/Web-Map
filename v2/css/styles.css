@@ -1,1 +1,168 @@
+/* ================================
+   GLOBAL LAYOUT
+=================================== */
 
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+#map {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+/* ================================
+   PANELS (Filter + Abstract)
+=================================== */
+
+.panel {
+    position: absolute;
+    top: 70px;
+    right: 20px;
+    width: 300px;
+    max-height: 70%;
+    overflow-y: auto;
+    background: white;
+    border-radius: 6px;
+    padding: 15px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    z-index: 1000;
+    transition: opacity 0.2s ease-in-out;
+}
+
+.panel.hidden {
+    display: none;
+}
+
+/* Panel titles */
+.panel h2 {
+    margin-top: 0;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* ================================
+   LEGEND
+=================================== */
+
+.legend {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    width: 260px;
+    background: white;
+    border-radius: 6px;
+    padding: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    z-index: 1000;
+    transition: max-height 0.3s ease;
+    overflow: hidden;
+}
+
+.legend.collapsed {
+    max-height: 30px;
+    cursor: pointer;
+}
+
+.legend.expanded {
+    max-height: 400px;
+}
+
+/* Legend header */
+.legend-header {
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+/* Legend items */
+.legend-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.legend-symbol {
+    width: 22px;
+    height: 22px;
+    margin-right: 8px;
+    border-radius: 4px;
+    border: 1px solid #444;
+}
+
+/* ================================
+   FILTER UI
+=================================== */
+
+.filter-group {
+    margin-bottom: 15px;
+}
+
+.filter-group label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.filter-group select {
+    width: 100%;
+    padding: 6px;
+    border-radius: 4px;
+    border: 1px solid #aaa;
+}
+
+/* ================================
+   ABSTRACT PANEL
+=================================== */
+
+#abstract-panel {
+    width: 350px;
+}
+
+#abstract-panel p {
+    line-height: 1.4;
+}
+
+/* ================================
+   CUSTOM BUTTONS
+=================================== */
+
+.leaflet-control-custom {
+    background: white;
+    border-radius: 4px;
+    padding: 6px;
+    cursor: pointer;
+    box-shadow: 0 0 6px rgba(0,0,0,0.3);
+}
+
+.leaflet-control-custom:hover {
+    background: #f0f0f0;
+}
+
+/* ================================
+   MOBILE RESPONSIVE
+=================================== */
+
+@media (max-width: 768px) {
+
+    .panel {
+        width: 90%;
+        right: 5%;
+        top: 80px;
+    }
+
+    #abstract-panel {
+        width: 90%;
+    }
+
+    .legend {
+        width: 90%;
+        left: 5%;
+    }
+}
