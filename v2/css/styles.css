@@ -132,7 +132,22 @@ html, body {
 /* ================================
    CUSTOM BUTTONS
 =================================== */
+.locate-btn {
+    background: white;
+    border: none;
+    width: 34px;
+    height: 34px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 20px;
+    line-height: 34px;
+    text-align: center;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
 
+.locate-btn:hover {
+    background: #f0f0f0;
+}
 .leaflet-control-custom {
     background: white;
     border-radius: 4px;
