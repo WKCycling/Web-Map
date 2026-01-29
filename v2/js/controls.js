@@ -101,7 +101,53 @@ map.addControl(new AbstractControl());
 =============================================================== */
 
 buildAbstractPanel();
+// --- User Location Button Control ---
+L.Control.Locate = L.Control.extend({
+    onAdd: function () {
+        const btn = L.DomUtil.create('button', 'locate-btn');
+        btn.title = "Show my location";
+        btn.innerHTML = "📍";
 
+        L.DomEvent.on(btn, 'click', (e) => {
+            L.DomEvent.stopPropagation(e);
+            L.DomEvent.preventDefault(e);
+
+            map.locate({ setView: true, maxZoom: 15 });
+        });
+
+        return btn;
+    },
+
+    onRemove: function () {}
+});
+
+L.control.locate = function (opts) {
+    return new L.Control.Locate(opts);
+};
+
+// Add the control to the map
+L.control.locate({ position: 'topleft' }).addTo(map);
+
+// When location is found, show marker + circle
+map.on('locationfound', function (e) {
+    if (window._userMarker) {
+        map.removeLayer(window._userMarker);
+        map.removeLayer(window._userCircle);
+    }
+
+    window._userMarker = L.marker(e.latlng).addTo(map);
+    window._userCircle = L.circle(e.latlng, {
+        radius: e.accuracy,
+        color: '#136AEC',
+        fillColor: '#136AEC',
+        fillOpacity: 0.2
+    }).addTo(map);
+});
+
+// When location fails
+map.on('locationerror', function () {
+    alert("Unable to access your location.");
+});
 /* ============================================================
    EXPORT (global)
 =============================================================== */
