@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jjimenezshaw/Leaflet.Control.Layers.Tree@master/L.Control.Layers.Tree.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.locatecontrol/dist/L.Control.Locate.min.css"/>
     <style>
         body, html, #map { height: 100%; margin: 0; padding: 0; }
         .popup { text-align: left; }
@@ -248,10 +249,11 @@
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/gh/jjimenezshaw/Leaflet.Control.Layers.Tree@master/L.Control.Layers.Tree.js"></script>
     <script src="https://unpkg.com/leaflet.vectorgrid@latest/dist/Leaflet.VectorGrid.bundled.js"></script>
+    <script src="https://unpkg.com/leaflet.locatecontrol/dist/L.Control.Locate.min.js"></script>
     <script>
     //**This first section of the script puts in place the basic elements to build our map from**
     var map = L.map('map', {
-        zoomControl:true, 
+        zoomControl:false, 
         maxZoom:16, 
         minZoom:8,
         doubleClickZoom: false
@@ -262,6 +264,15 @@
         metric: true,           
         imperial: false,        
         maxWidth: 200           
+    }).addTo(map);
+
+    L.control.locate({
+        position: 'bottomright',
+        flyTo: true,
+        showCompass: true,
+        strings: {
+            title: "Show my location"
+        }
     }).addTo(map);
 
     // Creating custom panes for better layer organization
@@ -740,6 +751,8 @@
                     '<table style="width:100%;">' +
                         '<tr><td style="padding-right:15px;"><b>Name:</b></td><td>' + feature.properties.Name + '</td></tr>' +
                         '<tr><td style="padding-right:15px;"><b>Description:</b></td><td>' + feature.properties.Description + '</td></tr>' +
+                        '<tr><td style="padding-right:15px;"><b>Comments:</b></td><td>' + feature.properties.Comments + '</td></tr>' +
+                        '<tr><td style="padding-right:15px;"><b>URL:</b></td><td>' + feature.properties.URL + '</td></tr>' +
                         '<tr><td style="padding-right:15px;"><b>Priority:</b></td><td><p style="margin:0; max-width 600px; white-space:normal;">' + feature.properties.Priority + '</p></td></tr>' +
                     '</table>' +
                     '</div>',
