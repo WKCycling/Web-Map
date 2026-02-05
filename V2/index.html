@@ -580,6 +580,24 @@
                 layer.on("click", function (e){
                     highlightRoute(layer);
                     L.DomEvent.stopPropagation(e);
+                    
+                      //Allowing and formatting popups
+            interactive: true,
+            onEachFeature: function(feature, layer) {
+                var url = feature.properties.URL || "";
+                var displayUrl = url.length > 40 ? url.substring(0, 40) + "[...]" : url;
+                layer.bindPopup(
+                    '<div class="popup">' +
+                    '<table>' +
+                        '<tr><td><b>Type:</b></td><td>' + feature.properties.Type + '</td></tr>' +
+                        '<tr><td><b>Surface:</b></td><td>' + feature.properties.Surface + '</td></tr>' +
+                        '<tr><td><b>Name:</b></td><td>' + feature.properties.Name + '</td></tr>' +
+                        '<tr><td><b>Source:</b></td><td>' + feature.properties.Source + '</td></tr>' +
+                        '<tr><td><b>Network:</b></td><td>' + feature.properties.Network + '</td></tr>' +
+                        '<tr><td><b>Municipality:</b></td><td>' + feature.properties.Municipality + '</td></tr>' +
+                    
+                    '</table>' +
+                    '</div>'
                 });
             }
         }).addTo(Proposed_Routes);
