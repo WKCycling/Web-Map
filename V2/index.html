@@ -479,7 +479,7 @@
     $.getJSON("data/Existing_Routes.geojson", function(data) {
         L.geoJSON(data, {
             pane: 'routesPane',
-            attribution: "© 2025 West Kootenay Cycling Coalition and Contributors",
+            attribution: "¬© 2025 West Kootenay Cycling Coalition and Contributors",
             style: function(feature) {
                 return getRouteStyle(feature, false);
             },
@@ -563,7 +563,7 @@
     $.getJSON("data/Proposed_Routes.geojson", function(data) {
         L.geoJSON(data, {
             pane: 'routesPane',
-            attribution: "© 2025 West Kootenay Cycling Coalition and Contributors",
+            attribution: "¬© 2025 West Kootenay Cycling Coalition and Contributors",
             style: {
                 opacity: 1,
                 color: 'rgba(252,0,0,1.0)',
@@ -580,24 +580,6 @@
                 layer.on("click", function (e){
                     highlightRoute(layer);
                     L.DomEvent.stopPropagation(e);
-                    
-                      //Allowing and formatting popups
-            interactive: true,
-            onEachFeature: function(feature, layer) {
-                var url = feature.properties.URL || "";
-                var displayUrl = url.length > 40 ? url.substring(0, 40) + "[...]" : url;
-                layer.bindPopup(
-                    '<div class="popup">' +
-                    '<table>' +
-                        '<tr><td><b>Type:</b></td><td>' + feature.properties.Type + '</td></tr>' +
-                        '<tr><td><b>Surface:</b></td><td>' + feature.properties.Surface + '</td></tr>' +
-                        '<tr><td><b>Name:</b></td><td>' + feature.properties.Name + '</td></tr>' +
-                        '<tr><td><b>Source:</b></td><td>' + feature.properties.Source + '</td></tr>' +
-                        '<tr><td><b>Network:</b></td><td>' + feature.properties.Network + '</td></tr>' +
-                        '<tr><td><b>Municipality:</b></td><td>' + feature.properties.Municipality + '</td></tr>' +
-                    
-                    '</table>' +
-                    '</div>'
                 });
             }
         }).addTo(Proposed_Routes);
@@ -606,7 +588,7 @@
     // Load and style Municipal Parks
     $.getJSON("data/Municipal_Parks.geojson", function(data) {
         L.geoJSON(data, {
-            attribution: '©<a href="https://www2.gov.bc.ca/gov/content/data/policy-standards/data-policies/open-data/open-government-licence-bc">Open Government Licence - British Columbia</a>',
+            attribution: '¬©<a href="https://www2.gov.bc.ca/gov/content/data/policy-standards/data-policies/open-data/open-government-licence-bc">Open Government Licence - British Columbia</a>',
             style: {
                 opacity: 1,
                 color: 'rgba(37,96,18,1.0)',
@@ -626,7 +608,7 @@
     // Load and style Provincial Parks
     $.getJSON("data/Provincial_Parks.geojson", function(data) {
         L.geoJSON(data, {
-            attribution: '©<a href="https://www2.gov.bc.ca/gov/content/data/policy-standards/data-policies/open-data/open-government-licence-bc">Open Government Licence - British Columbia</a>',
+            attribution: '¬©<a href="https://www2.gov.bc.ca/gov/content/data/policy-standards/data-policies/open-data/open-government-licence-bc">Open Government Licence - British Columbia</a>',
             style: {   
                 opacity: 1,
                 color: 'rgba(37,96,18,1.0)',
@@ -647,7 +629,7 @@
     $.getJSON("data/Municipal_Boundaries.geojson", function(data) {
         L.geoJSON(data, {
             pane: 'boundariesPane',
-            attribution: '©<a href="https://www2.gov.bc.ca/gov/content/data/policy-standards/data-policies/open-data/open-government-licence-bc">Open Government Licence - British Columbia</a>',
+            attribution: '¬©<a href="https://www2.gov.bc.ca/gov/content/data/policy-standards/data-policies/open-data/open-government-licence-bc">Open Government Licence - British Columbia</a>',
             style: {   
                 opacity: 0.15,
                 color: 'rgba(255,142,37)',
@@ -668,7 +650,7 @@
     // Load and style Regional Districts Boundaries
     $.getJSON("data/Regional_Districts_Boundaries.geojson", function(data) {
         L.geoJSON(data, {
-            attribution: '©<a href="https://www2.gov.bc.ca/gov/content/data/policy-standards/data-policies/open-data/open-government-licence-bc">Open Government Licence - British Columbia</a>',
+            attribution: '¬©<a href="https://www2.gov.bc.ca/gov/content/data/policy-standards/data-policies/open-data/open-government-licence-bc">Open Government Licence - British Columbia</a>',
             pane: 'boundariesPane',
             style: { 
                 opacity: 0.3,
@@ -721,7 +703,7 @@
     // Load and style Recreation Sites
     $.getJSON("data/Recreation_Sites.geojson", function(data) {
         L.geoJSON(data, {
-            attribution: '©<a href="https://www2.gov.bc.ca/gov/content/data/policy-standards/data-policies/open-data/open-government-licence-bc">Open Government Licence - British Columbia</a>',
+            attribution: '¬©<a href="https://www2.gov.bc.ca/gov/content/data/policy-standards/data-policies/open-data/open-government-licence-bc">Open Government Licence - British Columbia</a>',
             pane: 'pointsPane',
             pointToLayer: function(feature, latlng) {
                 var RecSite = L.icon({
@@ -751,7 +733,7 @@
     //Load and Style Priority Improvement layer
     $.getJSON("data/Priority_Improvements.geojson", function(data) {
         L.geoJSON(data, {
-            attribution: "© 2025 West Kootenay Cycling Coalition and Contributors",
+            attribution: "¬© 2025 West Kootenay Cycling Coalition and Contributors",
             pane: 'pointsPane',
             pointToLayer: function(feature, latlng) {
                 var Warning = L.icon({
@@ -783,7 +765,7 @@
     // Load and style BC Transit Stops
     $.getJSON("data/BC_Transit_Stops.geojson", function(data) {
         L.geoJSON(data, {
-            attribution: '©<a href="https://www.bctransit.com/open-data/terms-of-use/">BC Transit Terms of Use</a>',
+            attribution: '¬©<a href="https://www.bctransit.com/open-data/terms-of-use/">BC Transit Terms of Use</a>',
             pane: 'pointsPane',
             pointToLayer: function(feature, latlng) {
                 return L.marker(latlng, {
@@ -801,7 +783,7 @@
     $.getJSON("data/Frog_Peak_Loop.geojson", function(data) {
         L.geoJSON(data, {
             pane: 'BikePackingPane',
-            attribution: '©<a href="https://bikepacking.com/west-kootenay/">Moe Nadeau - BikePacking.com</a>',
+            attribution: '¬©<a href="https://bikepacking.com/west-kootenay/">Moe Nadeau - BikePacking.com</a>',
             style: {
                 opacity: 1,
                 color: 'rgba(247,72,33,1.0)',
@@ -832,7 +814,7 @@
     $.getJSON("data/Kootenay_Confluence.geojson", function(data) {
         L.geoJSON(data, {
             pane: 'BikePackingPane',
-            attribution: '©<a href="https://bikepacking.com/west-kootenay/">Moe Nadeau - BikePacking.com</a>',
+            attribution: '¬©<a href="https://bikepacking.com/west-kootenay/">Moe Nadeau - BikePacking.com</a>',
             style: {
                 opacity: 1,
                 color: 'rgba(247,222,33,1.0)',
@@ -863,7 +845,7 @@
     $.getJSON("data/Santa_Rosa_Valleys_and_Vistas.geojson", function(data) {
         L.geoJSON(data, {
             pane: 'BikePackingPane',
-            attribution: '©<a href="https://bikepacking.com/west-kootenay/">Moe Nadeau - BikePacking.com</a>',
+            attribution: '¬©<a href="https://bikepacking.com/west-kootenay/">Moe Nadeau - BikePacking.com</a>',
             style: {
                 opacity: 1,
                 color: 'rgba(132,55,38,1.0)',
@@ -893,7 +875,7 @@
     //Load and style Bonnington Scrambler
     $.getJSON("data/Bonnington_Scrambler.geojson", function(data) {
         L.geoJSON(data, {
-            attribution: '©<a href="https://bikepacking.com/west-kootenay/">Moe Nadeau - BikePacking.com</a>',
+            attribution: '¬©<a href="https://bikepacking.com/west-kootenay/">Moe Nadeau - BikePacking.com</a>',
             pane: 'BikePackingPane',
             style: {
                 opacity: 1,
@@ -924,7 +906,7 @@
     //Load and style Log Jam Loop
     $.getJSON("data/Log_Jam_Loop.geojson", function(data) {
     L.geoJSON(data, {
-        attribution: '©<a href="https://bikepacking.com/west-kootenay/">Moe Nadeau - BikePacking.com</a>',
+        attribution: '¬©<a href="https://bikepacking.com/west-kootenay/">Moe Nadeau - BikePacking.com</a>',
         pane: 'BikePackingPane',
         style: {
             opacity: 1,
@@ -1038,7 +1020,7 @@ defaultLayers.forEach(l => l.addTo(map));
             container.innerHTML = `
                 <div class="legend-header">
                     <span>Legend</span>
-                    <span class="legend-toggle">?</span>
+                    <span class="legend-toggle">‚ñæ</span>
                 </div>
                 <div class="legend-body"></div>
                 `;
@@ -1189,8 +1171,8 @@ defaultLayers.forEach(l => l.addTo(map));
             var div = L.DomUtil.create('div', 'leaflet-control filter-panel');
 
             div.innerHTML = `
-                <p class="filter-toggle">?? Route Filters
-                    <span class="filter-arrow">?</span>
+                <p class="filter-toggle">üîç Route Filters
+                    <span class="filter-arrow">‚ñæ</span>
                 </p>
                 <div class="filter-content collapsed">
                     <div class="filter-group">
@@ -1285,7 +1267,7 @@ defaultLayers.forEach(l => l.addTo(map));
 
         div.innerHTML = `
             <p id="abstract-toggle"><b>West Kootenay Cycling Map</b>
-                <span id="abstract-arrow">?</span>
+                <span id="abstract-arrow">‚ñæ</span>
             </p>
             <div id="abstract-content">
                 <p>
@@ -1381,4 +1363,3 @@ defaultLayers.forEach(l => l.addTo(map));
     </script>
 </body>
 </html>
-
