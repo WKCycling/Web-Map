@@ -564,6 +564,18 @@
   .then(data => {
     L.geoJSON(data, {
       onEachFeature: function (feature, layer) {
+     
+          // ⭐ This controls line colour, width, opacity, etc.
+      style: function(feature) {
+        return {
+          color: 'rgba(252,0,0,1.0)',        // line colour
+                dashArray: '4.0,2.0',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0, // line transparency
+        };
+      },
 
         let popupContent = `
           <strong>${feature.properties.name}</strong><br>
@@ -1356,6 +1368,7 @@ defaultLayers.forEach(l => l.addTo(map));
 </body>
 
 </html>
+
 
 
 
