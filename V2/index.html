@@ -559,7 +559,7 @@
         });
     }
 
-       fetch('data/yourfile.geojson')
+       fetch('data/Proposed_Routes.geojson')
   .then(response => response.json())
   .then(data => {
     L.geoJSON(data, {
@@ -567,8 +567,8 @@
 
         let popupContent = `
           <strong>${feature.properties.name}</strong><br>
-          Type: ${feature.properties.type}<br>
-          Elevation: ${feature.properties.elev} m
+          Name: ${feature.properties.Name}<br>
+          Source: ${feature.properties.Source} m
         `;
 
         layer.bindPopup(popupContent);
@@ -1356,6 +1356,7 @@ defaultLayers.forEach(l => l.addTo(map));
 </body>
 
 </html>
+
 
 
 
