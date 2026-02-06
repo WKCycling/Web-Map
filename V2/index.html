@@ -558,33 +558,24 @@
             surfaceSelect.appendChild(option);
         });
     }
-    
-    // Load and style Proposed Routes
-    $.getJSON("data/Proposed_Routes.geojson", function(data) {
-        L.geoJSON(data, {
-            pane: 'routesPane',
-            attribution: "© 2025 West Kootenay Cycling Coalition and Contributors",
-            style: {
-                opacity: 1,
-                color: 'rgba(252,0,0,1.0)',
-                dashArray: '4.0,2.0',
-                lineCap: 'square',
-                lineJoin: 'bevel',
-                weight: 1.0,
-                fillOpacity: 0 
-            },
-            interactive: true,
-            onEachFeature: function(feature, layer) {
-                layer.routeCategory="proposed";
 
-                                layer.on("click", function (e){
-                    highlightRoute(layer);
-                    L.DomEvent.stopPropagation(e);
+       fetch('data/yourfile.geojson')
+  .then(response => response.json())
+  .then(data => {
+    L.geoJSON(data, {
+      onEachFeature: function (feature, layer) {
 
-                });
-            }
-        }).addTo(Proposed_Routes);
-    });
+        let popupContent = `
+          <strong>${feature.properties.name}</strong><br>
+          Type: ${feature.properties.type}<br>
+          Elevation: ${feature.properties.elev} m
+        `;
+
+        layer.bindPopup(popupContent);
+      }
+    }).addTo(map);
+  });
+
 
     // Load and style Municipal Parks
     $.getJSON("data/Municipal_Parks.geojson", function(data) {
@@ -1365,6 +1356,7 @@ defaultLayers.forEach(l => l.addTo(map));
 </body>
 
 </html>
+
 
 
 
