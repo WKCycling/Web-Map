@@ -562,13 +562,11 @@
        fetch('data/Proposed_Routes.geojson')
   .then(response => response.json())
   .then(data => {
-    L.geoJSON(data, {
-      onEachFeature: function (feature, layer) {
      
-          // ⭐ This controls line colour, width, opacity, etc.
-      style: function(feature) {
+    // ⭐ This controls line colour, width, opacity, etc.
+              style: function(feature) {
         return {
-          color: 'rgba(252,0,0,1.0)',        // line colour
+                color: 'rgba(252,0,0,1.0)',        // line colour
                 dashArray: '4.0,2.0',
                 lineCap: 'square',
                 lineJoin: 'bevel',
@@ -576,13 +574,13 @@
                 fillOpacity: 0, // line transparency
         };
       },
-
+          //  *This Feature controls Popups
+          onEachFeature: function (feature, layer) {
         let popupContent = `
           <strong>${feature.properties.name}</strong><br>
           Name: ${feature.properties.Name}<br>
           Source: ${feature.properties.Source} m
         `;
-
         layer.bindPopup(popupContent);
       }
     }).addTo(map);
@@ -1368,6 +1366,7 @@ defaultLayers.forEach(l => l.addTo(map));
 </body>
 
 </html>
+
 
 
 
