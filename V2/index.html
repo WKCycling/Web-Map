@@ -577,10 +577,6 @@
             onEachFeature: function(feature, layer) {
                 layer.routeCategory="proposed";
 
-                layer.on("click", function (e){
-                    highlightRoute(layer);
-                    L.DomEvent.stopPropagation(e);
-
                      //Allowing and formatting popups
             interactive: true,
             onEachFeature: function(feature, layer) {
@@ -1382,3 +1378,4 @@ defaultLayers.forEach(l => l.addTo(map));
 </body>
 
 </html>
+
