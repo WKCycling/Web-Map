@@ -560,9 +560,10 @@
     }
 
        fetch('data/Proposed_Routes.geojson')
-  .then(response => response.json())
-  .then(data => {
-     
+          .then(response => response.json())
+          .then(data => {
+            L.geoJSON(data, {
+              
     // ⭐ This controls line colour, width, opacity, etc.
               style: function(feature) {
         return {
@@ -1366,6 +1367,7 @@ defaultLayers.forEach(l => l.addTo(map));
 </body>
 
 </html>
+
 
 
 
