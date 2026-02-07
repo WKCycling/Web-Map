@@ -578,9 +578,11 @@
           //  *This Feature controls Popups
           onEachFeature: function (feature, layer) {
         let popupContent = `
-          <strong>${feature.properties.name}</strong><br>
-          Name: ${feature.properties.Name}<br>
-          Source: ${feature.properties.Source} m
+          <strong>  Name:${feature.properties.name}</strong><br>
+                    Type:${feature.properties.type}
+                    Network: ${feature.properties.network}
+                    Jurisdiction:${feature.properties.municipality}<br>
+                     Source: ${feature.properties.Source} m
         `;
         layer.bindPopup(popupContent);
       }
@@ -1367,6 +1369,7 @@ defaultLayers.forEach(l => l.addTo(map));
 </body>
 
 </html>
+
 
 
 
