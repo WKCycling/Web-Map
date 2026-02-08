@@ -569,63 +569,48 @@ map.on('click', function(e) {
             surfaceSelect.appendChild(option);
         });
     }
+fetch('data/Proposed_Routes.geojson')
+  .then(response => response.json())
+  .then(data => {
 
-       fetch('data/Proposed_Routes.geojson')
-          .then(response => response.json())
-          .then(data => {
-            L.geoJSON(data, {
-              
-    // ⭐ This controls line colour, width, opacity, etc.
-              style: function(feature) {
+    L.geoJSON(data, {
+
+      style: function(feature) {
         return {
-                color: 'rgba(252,0,0,1.0)',        // line colour
-                dashArray: '4.0,2.0',
-                lineCap: 'square',
-                lineJoin: 'bevel',
-                weight: 1.5,
-                fillOpacity: 0, // line transparency
+          color: 'rgba(252,0,0,1.0)',
+          dashArray: '4.0,2.0',
+          lineCap: 'square',
+          lineJoin: 'bevel',
+          weight: 1.5,
+          fillOpacity: 0
         };
       },
-          //  *This Feature controls Popups
 
-            onEachFeature: function (feature, layer) {
+      onEachFeature: function (feature, layer) {
 
-  let popupContent = `
-    <strong>Name: ${feature.properties.name}</strong><br>
-    Type: ${feature.properties.type}<br>
-    Network: ${feature.properties.network}<br>
-    Jurisdiction: ${feature.properties.municipality}<br>
-    Source: ${feature.properties.Source}
-  `;
-
-  layer.bindPopup(popupContent);
-
-  layer.on('click', function (e) {
-    L.DomEvent.stop(e);   // stops propagation + prevents ghost click
-    layer.openPopup();
-  });
-}    
-                onEachFeature: function (feature, layer) {
         let popupContent = `
-          <strong>  Name:${feature.properties.name}</strong><br>
-                    Type:${feature.properties.type}<br>
-                    Network: ${feature.properties.network}<br>
-                    Jurisdiction:${feature.properties.municipality}<br>
-                     Source: ${feature.properties.Source}
+          <strong>Name: ${feature.properties.name}</strong><br>
+          Type: ${feature.properties.type}<br>
+          Network: ${feature.properties.network}<br>
+          Jurisdiction: ${feature.properties.municipality}<br>
+          Source: ${feature.properties.Source}
         `;
+
         layer.bindPopup(popupContent);
-        
+
         layer.on('click', function (e) {
-    L.DomEvent.stop(e);   // stops propagation + prevents ghost click
-    layer.openPopup();
-  });
-}      
+          L.DomEvent.stop(e);
+          layer.openPopup();
+        });
       }
+
     }).addTo(map);
+
   });
 
+  
 
-    // Load and style Municipal Parks
+        // Load and style Municipal Parks
     $.getJSON("data/Municipal_Parks.geojson", function(data) {
         L.geoJSON(data, {
             attribution: '©<a href="https://www2.gov.bc.ca/gov/content/data/policy-standards/data-policies/open-data/open-government-licence-bc">Open Government Licence - British Columbia</a>',
@@ -1404,6 +1389,7 @@ defaultLayers.forEach(l => l.addTo(map));
 </body>
 
 </html>
+
 
 
 
