@@ -473,9 +473,18 @@ function showCoords(e) {
     .setContent(`Lat: ${lat}<br>Lng: ${lng}`)
     .openOn(map);
 }
+map.on('click', function(e) {
+  if (e.originalEvent._stopped) return;   // a feature was tapped
 
-map.on('dblclick', showCoords);  // desktop
-map.on('click', showCoords);     // mobile
+  let lat = e.latlng.lat.toFixed(6);
+  let lng = e.latlng.lng.toFixed(6);
+
+  L.popup()
+    .setLatLng(e.latlng)
+    .setContent(`Lat: ${lat}<br>Lng: ${lng}`)
+    .openOn(map);
+});
+
 
     // Load Existing Routes with filtering capability
     $.getJSON("data/Existing_Routes.geojson", function(data) {
@@ -1371,6 +1380,7 @@ defaultLayers.forEach(l => l.addTo(map));
 </body>
 
 </html>
+
 
 
 
