@@ -462,18 +462,20 @@
         });
     }
 
-    var popup = L.popup();
-    function onMapClick(e) {
-        popup
-            .setLatLng(e.latlng)
-            .setContent(
-                "<b>You selected the following location</b><br>"+
-                "<b>Lat: </b>" + e.latlng.lat.toFixed(6) + "<br>" +
-                "<b>Long: </b>" + e.latlng.lng.toFixed(6)
-            )
-            .openOn(map)
-    }
-    map.on("dblclick", onMapClick);
+function showCoords(e) {
+  if (e.originalEvent._stopped) return;
+
+  let lat = e.latlng.lat.toFixed(6);
+  let lng = e.latlng.lng.toFixed(6);
+
+  L.popup()
+    .setLatLng(e.latlng)
+    .setContent(`Lat: ${lat}<br>Lng: ${lng}`)
+    .openOn(map);
+}
+
+map.on('dblclick', showCoords);  // desktop
+map.on('click', showCoords);     // mobile
 
     // Load Existing Routes with filtering capability
     $.getJSON("data/Existing_Routes.geojson", function(data) {
@@ -1369,6 +1371,7 @@ defaultLayers.forEach(l => l.addTo(map));
 </body>
 
 </html>
+
 
 
 
