@@ -595,10 +595,10 @@ let sourceLink = source
   : 'No source';
 
 let popupContent = `
-  <strong>Name: ${feature.properties.name}</strong><br>
-  Type: ${feature.properties.type}<br>
-  Network: ${feature.properties.network}<br>
-  Jurisdiction: ${feature.properties.municipality}<br>
+  <strong>Name: ${feature.properties.Name}</strong><br>
+  Type: ${feature.properties.Type}<br>
+  Network: ${feature.properties.Network}<br>
+  Jurisdiction: ${feature.properties.Municipality}<br>
   Source: ${sourceLink}
 `;
         layer.bindPopup(popupContent);
@@ -1394,6 +1394,7 @@ defaultLayers.forEach(l => l.addTo(map));
 </body>
 
 </html>
+
 
 
 
