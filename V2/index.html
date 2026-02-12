@@ -586,8 +586,9 @@ fetch('data/Proposed_Routes.geojson')
         };
       },
 
+ onEachFeature: function (feature, layer) {
 let source = feature.properties.Source;
-
+ 
 // Only wrap it if it looks like a URL
 let sourceLink = source
   ? `<a href="${source}" target="_blank">${source}</a>`
@@ -1393,6 +1394,7 @@ defaultLayers.forEach(l => l.addTo(map));
 </body>
 
 </html>
+
 
 
 
