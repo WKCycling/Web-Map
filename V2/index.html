@@ -603,22 +603,26 @@ let popupContent = `
   Source: ${sourceLink}
 `;
         layer.bindPopup(popupContent);
+        L.popup()
+            .setLatLng(e.latlng)   // ← exact click location
+            .setContent(popupContent)
+            .openOn(map);
+    });
+}
 
 
-            interactive: true,
-            onEachFeature: function(feature, layer) {
-                layer.routeCategory="proposed";
+        layer.on('click', function (e) {
+          L.DomEvent.stop(e);
+          layer.openPopup();
+        });
+      }
 
-                layer.on("click", function (e){
-                    highlightRoute(layer);
-                    L.DomEvent.stopPropagation(e);
-                });
-            }
     }).addTo(map);
 
   });
 
   
+
         // Load and style Municipal Parks
     $.getJSON("data/Municipal_Parks.geojson", function(data) {
         L.geoJSON(data, {
@@ -1398,6 +1402,14 @@ defaultLayers.forEach(l => l.addTo(map));
 </body>
 
 </html>
+
+
+
+
+
+
+
+
 
 
 
