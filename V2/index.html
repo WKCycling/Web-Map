@@ -587,35 +587,36 @@ fetch('data/Proposed_Routes.geojson')
         };
       },
 
-onEachFeature: function (feature, layer) {
+      onEachFeature: function (feature, layer) {
 
-  let source = feature.properties.Source;
+        let source = feature.properties.Source;
 
-  // Only wrap it if it looks like a URL
-  let sourceLink = source
-    ? `<a href="${source}" target="_blank">${source}</a>`
-    : 'No source';
+        // Only wrap it if it looks like a URL
+        let sourceLink = source
+          ? `<a href="${source}" target="_blank">${source}</a>`
+          : 'No source';
 
-  let popupContent = `
-    <strong>Name: ${feature.properties.Name}</strong><br>
-    Type: ${feature.properties.Type}<br>
-    Network: ${feature.properties.Network}<br>
-    Jurisdiction: ${feature.properties.Municipality}<br>
-    Source: ${sourceLink}
-  `;
+        let popupContent = `
+          <strong>Name: ${feature.properties.Name}</strong><br>
+          Type: ${feature.properties.Type}<br>
+          Network: ${feature.properties.Network}<br>
+          Jurisdiction: ${feature.properties.Municipality}<br>
+          Source: ${sourceLink}
+        `;
 
-  layer.bindPopup(popupContent);
+        layer.bindPopup(popupContent);
 
-    layer.on('click', function (e) {
-  map.panTo(e.latlng, { animate: true });
-  layer.openPopup();
-});
+        layer.on('click', function (e) {
+          map.panTo(e.latlng, { animate: true });
+          layer.openPopup();
+        });
 
+      }
 
-    // Force popup to open exactly where the user clicked
-    layer.openPopup(e.latlng);
+    }).addTo(map);
+
   });
-}
+       
  
 
         // Load and style Municipal Parks
@@ -1397,6 +1398,7 @@ defaultLayers.forEach(l => l.addTo(map));
 </body>
 
 </html>
+
 
 
 
