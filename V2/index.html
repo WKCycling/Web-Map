@@ -589,36 +589,51 @@ fetch('data/Proposed_Routes.geojson')
 
       onEachFeature: function (feature, layer) {
 
-        let source = feature.properties.Source;
+  let source = feature.properties.Source;
 
-        // Only wrap it if it looks like a URL
-        let sourceLink = source
-          ? `<a href="${source}" target="_blank">${source}</a>`
-          : 'No source';
+  let sourceLink = source
+    ? `<a href="${source}" target="_blank">${source}</a>`
+    : 'No source';
 
-        let popupContent = `
-          <strong>Name: ${feature.properties.Name}</strong><br>
-          Type: ${feature.properties.Type}<br>
-          Network: ${feature.properties.Network}<br>
-          Jurisdiction: ${feature.properties.Municipality}<br>
-          Source: ${sourceLink}
-        `;
+  let popupContent = `
+    <strong>Name: ${feature.properties.Name}</strong><br>
+    Type: ${feature.properties.Type}<br>
+    Network: ${feature.properties.Network}<br>
+    Jurisdiction: ${feature.properties.Municipality}<br>
+    Source: ${sourceLink}
+  `;
 
-        layer.bindPopup(popupContent);
+  layer.bindPopup(popupContent);
 
-          layer.on('click', function (e) {
-          map.panTo(e.latlng, { animate: true });
-          layer.openPopup(e.latlng);
-        });
+  layer.on('click', function (e) {
 
-      }
+    // Reset previous highlight
+    if (lastClickedRoute) {
+      lastClickedRoute.setStyle({
+        color: 'rgba(252,0,0,1.0)',
+        weight: 1.5,
+        dashArray: '4.0,2.0'
+      });
+    }
 
-    }).addTo(map);
+    // Highlight this route
+    layer.setStyle({
+      color: 'yellow',
+      weight: 4,
+      dashArray: null
+    });
 
+    // Store this layer as the last clicked one
+    lastClickedRoute = layer;
+
+    // Pan and open popup
+    map.panTo(e.latlng, { animate: true });
+    layer.openPopup(e.latlng);
   });
+}
+    }).addTo(map); });
        
  
-
         // Load and style Municipal Parks
     $.getJSON("data/Municipal_Parks.geojson", function(data) {
         L.geoJSON(data, {
@@ -1398,6 +1413,7 @@ defaultLayers.forEach(l => l.addTo(map));
 </body>
 
 </html>
+
 
 
 
