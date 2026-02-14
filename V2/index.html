@@ -606,9 +606,9 @@ fetch('data/Proposed_Routes.geojson')
 
         layer.bindPopup(popupContent);
 
-        layer.on('click', function (e) {
+          layer.on('click', function (e) {
           map.panTo(e.latlng, { animate: true });
-          layer.openPopup();
+          layer.openPopup(e.latlng);
         });
 
       }
@@ -1398,6 +1398,7 @@ defaultLayers.forEach(l => l.addTo(map));
 </body>
 
 </html>
+
 
 
 
