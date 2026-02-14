@@ -603,13 +603,6 @@ let popupContent = `
   Source: ${sourceLink}
 `;
         layer.bindPopup(popupContent);
-        L.popup()
-            .setLatLng(e.latlng)   // ← exact click location
-            .setContent(popupContent)
-            .openOn(map);
-    });
-}
-
 
         layer.on('click', function (e) {
           L.DomEvent.stop(e);
@@ -1402,6 +1395,30 @@ defaultLayers.forEach(l => l.addTo(map));
 </body>
 
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
