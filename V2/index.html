@@ -606,9 +606,11 @@ onEachFeature: function (feature, layer) {
 
   layer.bindPopup(popupContent);
 
-  layer.on('click', function (e) {
-    // Smoothly pan the map to the clicked point
-    map.panTo(e.latlng, { animate: true });
+    layer.on('click', function (e) {
+  map.panTo(e.latlng, { animate: true });
+  layer.openPopup();
+});
+
 
     // Force popup to open exactly where the user clicked
     layer.openPopup(e.latlng);
@@ -1395,6 +1397,7 @@ defaultLayers.forEach(l => l.addTo(map));
 </body>
 
 </html>
+
 
 
 
