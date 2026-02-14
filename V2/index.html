@@ -608,32 +608,34 @@ map.on('click', function(e) {
 
         layer.bindPopup(popupContent);
 
-        layer.on('click', function (e) {
+          layer.on('click', function (e) {
 
-          // Reset previous highlight
-          if (lastClickedRoute) {
-            lastClickedRoute.setStyle({
-              color: 'rgba(252,0,0,1.0)',
-              weight: 1.5,
-              dashArray: '4.0,2.0'
-            });
-          }
+  L.DomEvent.stopPropagation(e);   // ← ADD THIS LINE HERE
 
-          // Highlight this route
-          layer.setStyle({
-            color: 'yellow',
-            weight: 4,
-            dashArray: null
-          });
+  // Reset previous highlight
+  if (lastClickedRoute) {
+    lastClickedRoute.setStyle({
+      color: 'rgba(252,0,0,1.0)',
+      weight: 1.5,
+      dashArray: '4.0,2.0'
+    });
+  }
 
-          lastClickedRoute = layer;
+  // Highlight this route
+  layer.setStyle({
+    color: 'yellow',
+    weight: 4,
+    dashArray: null
+  });
 
-          // Pan and open popup
-          map.panTo(e.latlng, { animate: true });
-          layer.openPopup(e.latlng);
-        });
+  lastClickedRoute = layer;
 
-      }
+  // Pan and open popup
+  map.panTo(e.latlng, { animate: true });
+  layer.openPopup(e.latlng);
+});
+
+         }
 
     }).addTo(map);   // ✔ YES — keep this line
 
@@ -1419,6 +1421,7 @@ defaultLayers.forEach(l => l.addTo(map));
 </body>
 
 </html>
+
 
 
 
