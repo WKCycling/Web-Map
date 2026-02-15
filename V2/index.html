@@ -474,6 +474,12 @@ function showCoords(e) {
     .openOn(map);
 }
 map.on('click', function(e) {
+  L.popup()
+    .setLatLng(e.latlng)
+    .setContent(`Lat: ${e.latlng.lat}<br>Lng: ${e.latlng.lng}`)
+    .openOn(map);
+});
+       ??* map.on('click', function(e) {
   if (e.originalEvent._stopped) return;   // a feature was tapped
 
   let lat = e.latlng.lat.toFixed(6);
@@ -483,7 +489,7 @@ map.on('click', function(e) {
     .setLatLng(e.latlng)
     .setContent(`Lat: ${lat}<br>Lng: ${lng}`)
     .openOn(map);
-});
+});*//
 
 
     // Load Existing Routes with filtering capability
@@ -1421,6 +1427,7 @@ defaultLayers.forEach(l => l.addTo(map));
 </body>
 
 </html>
+
 
 
 
