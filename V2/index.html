@@ -479,7 +479,7 @@ map.on('click', function(e) {
     .setContent(`Lat: ${e.latlng.lat}<br>Lng: ${e.latlng.lng}`)
     .openOn(map);
 });
-       //* map.on('click', function(e) {
+       /* map.on('click', function(e) {
   if (e.originalEvent._stopped) return;   // a feature was tapped
 
   let lat = e.latlng.lat.toFixed(6);
@@ -489,7 +489,7 @@ map.on('click', function(e) {
     .setLatLng(e.latlng)
     .setContent(`Lat: ${lat}<br>Lng: ${lng}`)
     .openOn(map);
-});*//
+});*/
 
 
     // Load Existing Routes with filtering capability
@@ -646,7 +646,7 @@ map.on('click', function(e) {
     }).addTo(map);   // ✔ YES — keep this line
 
   });
-  //* L.geoJSON(data, {
+  /* L.geoJSON(data, {
 
   bubblingMouseEvents: false,
 
@@ -690,7 +690,7 @@ map.on('click', function(e) {
     });
   }
 
-}).addTo(map);*//       
+}).addTo(map);*/      
  
         // Load and style Municipal Parks
     $.getJSON("data/Municipal_Parks.geojson", function(data) {
@@ -1471,6 +1471,7 @@ defaultLayers.forEach(l => l.addTo(map));
 </body>
 
 </html>
+
 
 
 
