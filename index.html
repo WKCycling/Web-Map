@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -253,7 +253,7 @@
     <script>
     //**This first section of the script puts in place the basic elements to build our map from**
     var map = L.map('map', {
-        zoomControl:false, 
+        zoomControl:true, 
         maxZoom:16, 
         minZoom:8,
         doubleClickZoom: false
@@ -462,18 +462,35 @@
         });
     }
 
-    var popup = L.popup();
-    function onMapClick(e) {
-        popup
-            .setLatLng(e.latlng)
-            .setContent(
-                "<b>You selected the following location</b><br>"+
-                "<b>Lat: </b>" + e.latlng.lat.toFixed(6) + "<br>" +
-                "<b>Long: </b>" + e.latlng.lng.toFixed(6)
-            )
-            .openOn(map)
-    }
-    map.on("dblclick", onMapClick);
+function showCoords(e) {
+  if (e.originalEvent._stopped) return;
+
+  let lat = e.latlng.lat.toFixed(6);
+  let lng = e.latlng.lng.toFixed(6);
+
+  L.popup()
+    .setLatLng(e.latlng)
+    .setContent(`Lat: ${lat}<br>Lng: ${lng}`)
+    .openOn(map);
+}
+map.on('click', function(e) {
+  L.popup()
+    .setLatLng(e.latlng)
+    .setContent(`Lat: ${e.latlng.lat}<br>Lng: ${e.latlng.lng}`)
+    .openOn(map);
+});
+       /* map.on('click', function(e) {
+  if (e.originalEvent._stopped) return;   // a feature was tapped
+
+  let lat = e.latlng.lat.toFixed(6);
+  let lng = e.latlng.lng.toFixed(6);
+
+  L.popup()
+    .setLatLng(e.latlng)
+    .setContent(`Lat: ${lat}<br>Lng: ${lng}`)
+    .openOn(map);
+});*/
+
 
     // Load Existing Routes with filtering capability
     $.getJSON("data/Existing_Routes.geojson", function(data) {
@@ -558,34 +575,124 @@
             surfaceSelect.appendChild(option);
         });
     }
-    
-    // Load and style Proposed Routes
-    $.getJSON("data/Proposed_Routes.geojson", function(data) {
-        L.geoJSON(data, {
-            pane: 'routesPane',
-            attribution: "© 2025 West Kootenay Cycling Coalition and Contributors",
-            style: {
-                opacity: 1,
-                color: 'rgba(252,0,0,1.0)',
-                dashArray: '4.0,2.0',
-                lineCap: 'square',
-                lineJoin: 'bevel',
-                weight: 1.0,
-                fillOpacity: 0 
-            },
-            interactive: true,
-            onEachFeature: function(feature, layer) {
-                layer.routeCategory="proposed";
 
-                layer.on("click", function (e){
-                    highlightRoute(layer);
-                    L.DomEvent.stopPropagation(e);
-                });
-            }
-        }).addTo(Proposed_Routes);
+        let lastClickedRoute = null;   // Add this once above your fetch()
+
+    fetch('data/Proposed_Routes.geojson')
+  .then(response => response.json())
+  .then(data => {
+
+    L.geoJSON(data, {
+
+      style: function(feature) {
+        return {
+          opacity: 1,
+          color: 'rgba(252,0,0,1.0)',
+          dashArray: '4.0,2.0',
+          lineCap: 'square',
+          lineJoin: 'bevel',
+          weight: 1.0,
+          fillOpacity: 0
+        };
+      },
+            
+            onEachFeature: function (feature, layer) {
+
+        let source = feature.properties.Source;
+
+        let sourceLink = source
+          ? `<a href="${source}" target="_blank">${source}</a>`
+          : 'No source';
+
+        let popupContent = `
+          <strong>Name: ${feature.properties.Name}</strong><br>
+          Type: ${feature.properties.Type}<br>
+          Network: ${feature.properties.Network}<br>
+          Jurisdiction: ${feature.properties.Municipality}<br>
+          Source: ${sourceLink}
+        `;
+
+        layer.bindPopup(popupContent);
+
+          layer.on('click', function (e) {
+
+  L.DomEvent.stopPropagation(e);   // ← ADD THIS LINE HERE
+
+  // Reset previous highlight
+  if (lastClickedRoute) {
+    lastClickedRoute.setStyle({
+      color: 'rgba(252,0,0,1.0)',
+      weight: 1.5,
+      dashArray: '4.0,2.0'
     });
+  }
 
-    // Load and style Municipal Parks
+  // Highlight this route
+  layer.setStyle({
+    color: 'yellow',
+    weight: 4,
+    dashArray: null
+  });
+
+  lastClickedRoute = layer;
+
+  // Pan and open popup
+  map.panTo(e.latlng, { animate: true });
+  layer.openPopup(e.latlng);
+});
+
+         }
+
+    }).addTo(map);   // ✔ YES — keep this line
+
+  });
+  /* L.geoJSON(data, {
+
+  bubblingMouseEvents: false,
+
+  style: function(feature) {
+    return {
+      color: 'rgba(252,0,0,1.0)',
+      dashArray: '4.0,2.0',
+      weight: 10,
+      opacity: 0.001
+    };
+  },
+
+  onEachFeature: function(feature, layer) {
+
+    layer.bindPopup(`
+      <strong>Name: ${feature.properties.Name}</strong><br>
+      Type: ${feature.properties.Type}<br>
+      Network: ${feature.properties.Network}
+    `);
+
+    layer.on('click', function(e) {
+
+      if (lastClickedRoute) {
+        lastClickedRoute.setStyle({
+          color: 'rgba(252,0,0,1.0)',
+          weight: 2,
+          dashArray: '4.0,2.0'
+        });
+      }
+
+      layer.setStyle({
+        color: 'yellow',
+        weight: 5,
+        dashArray: null
+      });
+
+      lastClickedRoute = layer;
+
+      map.panTo(e.latlng);
+      layer.openPopup(e.latlng);
+    });
+  }
+
+}).addTo(map);*/      
+ 
+        // Load and style Municipal Parks
     $.getJSON("data/Municipal_Parks.geojson", function(data) {
         L.geoJSON(data, {
             attribution: '©<a href="https://www2.gov.bc.ca/gov/content/data/policy-standards/data-policies/open-data/open-government-licence-bc">Open Government Licence - British Columbia</a>',
@@ -615,7 +722,7 @@
                 dashArray: '5.0,1.0',
                 lineCap: 'butt',
                 lineJoin: 'miter',
-                weight: 1.0, 
+                weight: 1.5, 
                 fill: true,
                 fillOpacity: 0.6,
                 fillColor: 'rgba(114,155,111,0.6039215686274509)'
@@ -1362,4 +1469,5 @@ defaultLayers.forEach(l => l.addTo(map));
     });
     </script>
 </body>
+
 </html>
