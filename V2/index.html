@@ -678,18 +678,29 @@ fetch('data/Proposed_Routes.geojson')
           Source: ${sourceLink}
         `);
 
-        layer.on('click', function(e) {
+          layer.on('click', function(e) {
 
-         L.DomEvent.stop(e);
+  L.DomEvent.stop(e);   // ← allows map click reset to work
 
-          // Reset previous highlight
-          if (lastClickedProposedRoute) {
-            lastClickedProposedRoute.setStyle({
-              color: 'rgba(252,0,0,1.0)',
-              weight: 1.5,
-              dashArray: '4.0,2.0'
-            });
-          }
+  if (lastClickedProposedRoute) {
+    lastClickedProposedRoute.setStyle({
+      color: 'rgba(252,0,0,1.0)',
+      weight: 2,
+      dashArray: '4.0,2.0'
+    });
+  }
+
+  layer.setStyle({
+    color: '#00e676',
+    weight: 4,
+    dashArray: null
+  });
+
+  lastClickedProposedRoute = layer;
+
+  map.panTo(e.latlng, { animate: true });
+  layer.openPopup(e.latlng);
+});
 
           // Cycling‑theme highlight
           layer.setStyle({
@@ -1603,6 +1614,7 @@ defaultLayers.forEach(l => l.addTo(map));
 </body>
 
 </html>
+
 
 
 
