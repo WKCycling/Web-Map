@@ -576,7 +576,7 @@ map.on('click', function(e) {
         });
     }
 
-        let lastClickedRoute = null;   // Add this once above your fetch()
+   /*     let lastClickedRoute = null;   // Add this once above your fetch()
 
 // Track the last clicked Proposed Route
 let lastClickedProposedRoute = null;
@@ -632,7 +632,72 @@ const proposedRoutesLayer = L.geoJSON(data, {
     });
   }
 
-}).addTo(map);
+}).addTo(map);*/
+
+fetch('data/Proposed_Routes.geojson')
+  .then(response => response.json())
+  .then(data => {
+
+    let lastClickedProposedRoute = null;
+
+    const proposedRoutesLayer = L.geoJSON(data, {
+
+      bubblingMouseEvents: false,
+
+      style: function(feature) {
+        return {
+          color: 'rgba(252,0,0,1.0)',
+          dashArray: '4.0,2.0',
+          weight: 10,
+          opacity: 0.001
+        };
+      },
+
+      onEachFeature: function(feature, layer) {
+
+        let source = feature.properties.Source;
+        let sourceLink = source
+          ? `<a href="${source}" target="_blank">${source}</a>`
+          : 'No source';
+
+        layer.bindPopup(`
+          <strong>Name: ${feature.properties.Name}</strong><br>
+          Type: ${feature.properties.Type}<br>
+          Network: ${feature.properties.Network}<br>
+          Jurisdiction: ${feature.properties.Municipality}<br>
+          Source: ${sourceLink}
+        `);
+
+        layer.on('click', function(e) {
+
+          L.DomEvent.stopPropagation(e);
+
+          // Reset previous highlight
+          if (lastClickedProposedRoute) {
+            lastClickedProposedRoute.setStyle({
+              color: 'rgba(252,0,0,1.0)',
+              weight: 1.5,
+              dashArray: '4.0,2.0'
+            });
+          }
+
+          // Cycling‑theme highlight
+          layer.setStyle({
+            color: '#00e676',
+            weight: 4,
+            dashArray: null
+          });
+
+          lastClickedProposedRoute = layer;
+
+          map.panTo(e.latlng, { animate: true });
+          layer.openPopup(e.latlng);
+        });
+      }
+
+    }).addTo(map);
+
+  });
         
    /* fetch('data/Proposed_Routes.geojson')
   .then(response => response.json())
@@ -1528,6 +1593,7 @@ defaultLayers.forEach(l => l.addTo(map));
 </body>
 
 </html>
+
 
 
 
