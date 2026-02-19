@@ -491,6 +491,8 @@ map.on('click', function(e) {
     .openOn(map);
 });*/
 
+var lastClickedProposedRoute = null;
+        
 map.on('click', function () {
   if (lastClickedProposedRoute) {
     lastClickedProposedRoute.setStyle({
@@ -1602,6 +1604,7 @@ defaultLayers.forEach(l => l.addTo(map));
 </body>
 
 </html>
+
 
 
 
