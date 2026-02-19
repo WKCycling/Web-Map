@@ -582,7 +582,7 @@ map.on('click', function(e) {
 let lastClickedProposedRoute = null;
 
 // Add Proposed Routes to the map
-const proposedRoutesLayer = L.geoJSON(Proposed_Routes, {
+const proposedRoutesLayer = L.geoJSON(data, {
 
   bubblingMouseEvents: false,
 
@@ -1528,6 +1528,7 @@ defaultLayers.forEach(l => l.addTo(map));
 </body>
 
 </html>
+
 
 
 
