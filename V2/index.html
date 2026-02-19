@@ -599,62 +599,7 @@ map.on('click', function () {
     }
 
        let lastClickedRoute = null;
-/*
-// Track the last clicked Proposed Route
-let lastClickedProposedRoute = null;
 
-// Add Proposed Routes to the map
-const proposedRoutesLayer = L.geoJSON(data, {
-
-  bubblingMouseEvents: false,
-
-  // Keep your existing Proposed Routes color + style
-  style: function(feature) {
-    return {
-      color: 'rgba(252,0,0,1.0)',   // your existing red
-      dashArray: '4.0,2.0',
-      weight: 10,
-      opacity: 0.001               // nearly invisible until clicked
-    };
-  },
-
-  onEachFeature: function(feature, layer) {
-
-    // Popup content
-    layer.bindPopup(`
-      <strong>Name: ${feature.properties.Name}</strong><br>
-      Type: ${feature.properties.Type}<br>
-      Network: ${feature.properties.Network}
-    `);
-
-    // Click interaction
-    layer.on('click', function(e) {
-
-      // Reset previously clicked Proposed Route
-      if (lastClickedProposedRoute) {
-        lastClickedProposedRoute.setStyle({
-          color: 'rgba(252,0,0,1.0)',
-          weight: 2,
-          dashArray: '4.0,2.0'
-        });
-      }
-
-      // Cycling‑theme highlight color
-      layer.setStyle({
-        color: '#00e676',   // bright cycling green
-        weight: 5,
-        dashArray: null
-      });
-
-      lastClickedProposedRoute = layer;
-
-      // Pan + open popup
-      map.panTo(e.latlng);
-      layer.openPopup(e.latlng);
-    });
-  }
-
-}).addTo(map);*/
 
 fetch('data/Proposed_Routes.geojson')
   .then(response => response.json())
@@ -1503,6 +1448,7 @@ defaultLayers.forEach(l => l.addTo(map));
 </body>
 
 </html>
+
 
 
 
