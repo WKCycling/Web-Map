@@ -598,8 +598,78 @@ map.on('click', function () {
         });
     }
 
+let lastClickedProposedRoute = null;
+
+fetch('data/Proposed_Routes.geojson')
+  .then(response => response.json())
+  .then(data => {
+
+    const proposedRoutesLayer = L.geoJSON(data, {
+
+      bubblingMouseEvents: false,
+
+      style: function(feature) {
+        // Base style for all routes
+        return {
+          color: 'rgba(252,0,0,1.0)',
+          dashArray: '4.0,2.0',
+          weight: 2.0,
+          opacity: 0.8
+        };
+      },
+
+      onEachFeature: function(feature, layer) {
+
+        let source = feature.properties.Source;
+        let sourceLink = source
+          ? `<a href="${source}" target="_blank">${source}</a>`
+          : 'No source';
+
+        layer.bindPopup(`
+          <strong>Name: ${feature.properties.Name}</strong><br>
+          Type: ${feature.properties.Type}<br>
+          Network: ${feature.properties.Network}<br>
+          Jurisdiction: ${feature.properties.Municipality}<br>
+          Source: ${sourceLink}
+        `);
+
+        layer.on('click', function(e) {
+          L.DomEvent.stop(e); // prevents map click propagation
+
+          // Reset previous highlight if different
+          if (lastClickedProposedRoute && lastClickedProposedRoute !== layer) {
+            proposedRoutesLayer.resetStyle(lastClickedProposedRoute);
+          }
+
+          // Highlight the clicked route
+          layer.setStyle({
+            color: '#00e676',
+            weight: 4,
+            dashArray: '4.0,2.0',
+            opacity: 0.8
+          });
+
+          lastClickedProposedRoute = layer;
+
+          // Pan to the clicked feature and open popup
+          map.panTo(e.latlng, { animate: true });
+          layer.openPopup(e.latlng);
+        });
+      }
+
+    }).addTo(map);
+
+    // Optional: clicking the map resets highlight
+    map.on('click', function() {
+      if (lastClickedProposedRoute) {
+        proposedRoutesLayer.resetStyle(lastClickedProposedRoute);
+        lastClickedProposedRoute = null;
+      }
+    });
+
+  });
         
-let activeRoute = null;
+/*let activeRoute = null;
 
 fetch('data/Proposed_Routes.geojson')
   .then(response => response.json())
@@ -666,7 +736,7 @@ if (lastClickedProposedRoute) {
 
     }).addTo(map);
 
-  });
+  });*/
    
  
         // Load and style Municipal Parks
@@ -1448,6 +1518,7 @@ defaultLayers.forEach(l => l.addTo(map));
 </body>
 
 </html>
+
 
 
 
