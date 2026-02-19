@@ -680,7 +680,7 @@ fetch('data/Proposed_Routes.geojson')
 
         layer.on('click', function(e) {
 
-          L.DomEvent.stopPropagation(e);
+         L.DomEvent.stop(e);
 
           // Reset previous highlight
           if (lastClickedProposedRoute) {
@@ -1603,6 +1603,7 @@ defaultLayers.forEach(l => l.addTo(map));
 </body>
 
 </html>
+
 
 
 
