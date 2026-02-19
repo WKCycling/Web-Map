@@ -689,7 +689,17 @@ fetch('data/Proposed_Routes.geojson')
       dashArray: '4.0,2.0'
     });
   }
-
+map.on('click', function () {
+  if (lastClickedProposedRoute) {
+    lastClickedProposedRoute.setStyle({
+      color: 'rgba(252,0,0,1.0)',
+      weight: 2,
+      dashArray: '4.0,2.0'
+    });
+    lastClickedProposedRoute = null;
+  }
+});
+              
   layer.setStyle({
     color: '#00e676',
     weight: 4,
@@ -1614,6 +1624,7 @@ defaultLayers.forEach(l => l.addTo(map));
 </body>
 
 </html>
+
 
 
 
