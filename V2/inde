@@ -598,8 +598,8 @@ map.on('click', function () {
         });
     }
 
-       let lastClickedProposedRoute = null;
-
+        
+let activeRoute = null;
 
 fetch('data/Proposed_Routes.geojson')
   .then(response => response.json())
@@ -1448,6 +1448,7 @@ defaultLayers.forEach(l => l.addTo(map));
 </body>
 
 </html>
+
 
 
 
