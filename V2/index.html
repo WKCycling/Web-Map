@@ -461,17 +461,6 @@
             }
         });
     }
-
-map.on('click', function () {
-  if (lastClickedProposedRoute) {
-    lastClickedProposedRoute.setStyle({
-      color: 'rgba(252,0,0,1.0)',
-      weight: 2,
-      dashArray: '4.0,2.0'
-    });
-    lastClickedProposedRoute = null;
-  }
-});
         
 function showCoords(e) {
   if (e.originalEvent._stopped) return;
@@ -502,7 +491,17 @@ map.on('click', function(e) {
     .openOn(map);
 });*/
 
-
+map.on('click', function () {
+  if (lastClickedProposedRoute) {
+    lastClickedProposedRoute.setStyle({
+      color: 'rgba(252,0,0,1.0)',
+      weight: 2,
+      dashArray: '4.0,2.0'
+    });
+    lastClickedProposedRoute = null;
+  }
+});
+        
     // Load Existing Routes with filtering capability
     $.getJSON("data/Existing_Routes.geojson", function(data) {
         L.geoJSON(data, {
@@ -1604,6 +1603,7 @@ defaultLayers.forEach(l => l.addTo(map));
 </body>
 
 </html>
+
 
 
 
