@@ -492,8 +492,18 @@ map.on('click', function(e) {
 });*/
 
 var lastClickedProposedRoute = null;
-        
+
 map.on('click', function () {
+  if (lastClickedProposedRoute) {
+    lastClickedProposedRoute.setStyle(
+      getRouteStyle(lastClickedProposedRoute.feature, false)
+    );
+    lastClickedProposedRoute = null;
+  }
+});
+
+
+/*map.on('click', function () {
   if (lastClickedProposedRoute) {
     lastClickedProposedRoute.setStyle({
       color: 'rgba(252,0,0,1.0)',
@@ -502,7 +512,7 @@ map.on('click', function () {
     });
     lastClickedProposedRoute = null;
   }
-});
+});*/
         
     // Load Existing Routes with filtering capability
     $.getJSON("data/Existing_Routes.geojson", function(data) {
@@ -1489,6 +1499,7 @@ defaultLayers.forEach(l => l.addTo(map));
 </body>
 
 </html>
+
 
 
 
