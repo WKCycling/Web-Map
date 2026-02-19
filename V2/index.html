@@ -692,14 +692,15 @@ fetch('data/Proposed_Routes.geojson')
 
           L.DomEvent.stop(e);   // prevents lat/long popup but allows map click later
 
-          // Reset previous highlight
-          if (lastClickedProposedRoute) {
-            lastClickedProposedRoute.setStyle({
-              color: 'rgba(252,0,0,1.0)',
-              weight: 1.0,
-              dashArray: '4.0,2.0'
-            });
-          }
+// Reset previous highlight
+if (lastClickedProposedRoute) {
+  lastClickedProposedRoute.setStyle({
+    color: 'rgba(252,0,0,1.0)',
+    weight: 2.0,          // ← match your base style
+    dashArray: '4.0,2.0',
+    opacity: .8           // ← optional but consistent
+  });
+}
 
           // Highlight this route
           layer.setStyle({
@@ -1499,6 +1500,7 @@ defaultLayers.forEach(l => l.addTo(map));
 </body>
 
 </html>
+
 
 
 
