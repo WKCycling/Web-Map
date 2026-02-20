@@ -577,7 +577,7 @@ map.on('click', function(e) {
 
         let lastClickedRoute = null;   // Add this once above your fetch()
 
-    fetch('data/Proposed_Routes.geojson')
+  /*  fetch('data/Proposed_Routes.geojson')
   .then(response => response.json())
   .then(data => {
 
@@ -644,8 +644,9 @@ map.on('click', function(e) {
 
     }).addTo(map);   // ✔ YES — keep this line
 
-  });
-  /* L.geoJSON(data, {
+  });*/
+        
+  L.geoJSON(data, {
 
   bubblingMouseEvents: false,
 
@@ -689,7 +690,18 @@ map.on('click', function(e) {
     });
   }
 
-}).addTo(map);*/      
+}).addTo(map);
+
+map.on('click', function () {
+  if (lastClickedRoute) {
+    lastClickedRoute.setStyle({
+      color: 'rgba(252,0,0,1.0)',
+      weight: 1.5,
+      dashArray: '4.0,2.0'
+    });
+    lastClickedRoute = null;
+  }
+});      
  
         // Load and style Municipal Parks
     $.getJSON("data/Municipal_Parks.geojson", function(data) {
@@ -1470,6 +1482,7 @@ defaultLayers.forEach(l => l.addTo(map));
 </body>
 
 </html>
+
 
 
 
