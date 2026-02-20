@@ -614,9 +614,7 @@ map.on('click', function(e) {
         layer.bindPopup(popupContent);
 
           layer.on('click', function (e) {
-
-  L.DomEvent.stopPropagation(e);
-
+ 
   // Reset previous highlight
   if (lastClickedRoute && lastClickedRoute !== layer) {
     lastClickedRoute.setStyle({
@@ -639,12 +637,26 @@ map.on('click', function(e) {
   map.panTo(e.latlng, { animate: true });
   layer.openPopup(e.latlng);
 });
+   }
 
-         }
+    }).addTo(map); 
 
-    }).addTo(map);   //
+      map.on('click', function (e) {
+  if (lastClickedRoute) {
 
-  });
+    // If click was NOT on a vector layer, reset
+    if (!e.originalEvent.target.closest('.leaflet-interactive')) {
+
+      lastClickedRoute.setStyle({
+        color: 'rgba(252,0,0,1.0)',
+        weight: 1,
+        dashArray: '4.0,2.0'
+      });
+
+      lastClickedRoute = null;
+    }
+  }
+});
         
  /* L.geoJSON(data, {
 
@@ -701,7 +713,7 @@ map.on('click', function () {
     });
     lastClickedRoute = null;
   }
-});   
+});   */
  
         // Load and style Municipal Parks
     $.getJSON("data/Municipal_Parks.geojson", function(data) {
@@ -1482,6 +1494,7 @@ defaultLayers.forEach(l => l.addTo(map));
 </body>
 
 </html>
+
 
 
 
