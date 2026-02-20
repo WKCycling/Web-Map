@@ -642,7 +642,7 @@ map.on('click', function(e) {
 
       layer.on('click', function (e) {
 
-  L.DomEvent.stopPropagation(e);   // ← THIS IS REQUIRED
+  L.DomEvent.stopPropagation(e);
 
   if (lastClickedRoute && lastClickedRoute !== layer) {
     proposedRoutes.resetStyle(lastClickedRoute);
@@ -659,101 +659,7 @@ map.on('click', function(e) {
   map.panTo(e.latlng, { animate: true });
   layer.openPopup(e.latlng);
 });
-    /* map.on('click', function () {
-  if (lastClickedRoute) {
-    proposedRoutes.resetStyle(lastClickedRoute);
-    lastClickedRoute = null;
-  }
-});*/
-
-     /* map.on('click', function (e) {
-  if (!lastClickedRoute) return;
-
-  // If click target is NOT a vector layer
-  if (!e.originalEvent.target.classList.contains('leaflet-interactive')) {
-    
-    lastClickedRoute.setStyle({
-      color: 'rgba(252,0,0,1.0)',
-      weight: 1,
-      dashArray: '4.0,2.0'
-    });
-
-    lastClickedRoute = null;
-  }
-});*/
-     /* map.on('click', function (e) {
-  if (lastClickedRoute) {
-
-    // If click was NOT on a vector layer, reset
-    if (!e.originalEvent.target.closest('.leaflet-interactive')) {
-
-      lastClickedRoute.setStyle({
-        color: 'rgba(252,0,0,1.0)',
-        weight: 1,
-        dashArray: '4.0,2.0'
-      });
-
-      lastClickedRoute = null;
-    }
-  }
-});*/
-        
- /* L.geoJSON(data, {
-
-  bubblingMouseEvents: false,
-
-  style: function(feature) {
-    return {
-      color: 'rgba(252,0,0,1.0)',
-      dashArray: '4.0,2.0',
-      weight: 10,
-      opacity: 0.001
-    };
-  },
-
-  onEachFeature: function(feature, layer) {
-
-    layer.bindPopup(`
-      <strong>Name: ${feature.properties.Name}</strong><br>
-      Type: ${feature.properties.Type}<br>
-      Network: ${feature.properties.Network}
-    `);
-
-    layer.on('click', function(e) {
-
-      if (lastClickedRoute) {
-        lastClickedRoute.setStyle({
-          color: 'rgba(252,0,0,1.0)',
-          weight: 2,
-          dashArray: '4.0,2.0'
-        });
-      }
-
-      layer.setStyle({
-        color: 'yellow',
-        weight: 5,
-        dashArray: null
-      });
-
-      lastClickedRoute = layer;
-
-      map.panTo(e.latlng);
-      layer.openPopup(e.latlng);
-    });
-  }
-
-}).addTo(map);
-
-map.on('click', function () {
-  if (lastClickedRoute) {
-    lastClickedRoute.setStyle({
-      color: 'rgba(252,0,0,1.0)',
-      weight: 1,
-      dashArray: '4.0,2.0'
-    });
-    lastClickedRoute = null;
-  }
-});   */
+   
  
         // Load and style Municipal Parks
     $.getJSON("data/Municipal_Parks.geojson", function(data) {
@@ -1531,6 +1437,7 @@ defaultLayers.forEach(l => l.addTo(map));
 </body>
 
 </html>
+
 
 
 
