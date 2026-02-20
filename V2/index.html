@@ -642,6 +642,23 @@ map.on('click', function(e) {
     }).addTo(map); 
 
       map.on('click', function (e) {
+
+  if (!lastClickedRoute) return;
+
+  // If click did NOT originate from a vector layer
+  if (!e.propagatedFrom) {
+
+    lastClickedRoute.setStyle({
+      color: 'rgba(252,0,0,1.0)',
+      weight: 1,
+      dashArray: '4.0,2.0'
+    });
+
+    lastClickedRoute = null;
+  }
+
+});
+     /* map.on('click', function (e) {
   if (!lastClickedRoute) return;
 
   // If click target is NOT a vector layer
@@ -655,7 +672,7 @@ map.on('click', function(e) {
 
     lastClickedRoute = null;
   }
-});
+});*/
      /* map.on('click', function (e) {
   if (lastClickedRoute) {
 
@@ -1509,6 +1526,7 @@ defaultLayers.forEach(l => l.addTo(map));
 </body>
 
 </html>
+
 
 
 
