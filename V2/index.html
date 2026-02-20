@@ -615,13 +615,13 @@ map.on('click', function(e) {
 
           layer.on('click', function (e) {
 
-  L.DomEvent.stopPropagation(e);   // ← ADD THIS LINE HERE
+  L.DomEvent.stopPropagation(e);
 
   // Reset previous highlight
-  if (lastClickedRoute) {
+  if (lastClickedRoute && lastClickedRoute !== layer) {
     lastClickedRoute.setStyle({
       color: 'rgba(252,0,0,1.0)',
-      weight: 1.5,
+      weight: 1,
       dashArray: '4.0,2.0'
     });
   }
@@ -1482,6 +1482,7 @@ defaultLayers.forEach(l => l.addTo(map));
 </body>
 
 </html>
+
 
 
 
