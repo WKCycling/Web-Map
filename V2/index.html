@@ -692,16 +692,16 @@ map.on('click', function(e) {
 
 }).addTo(map);
 
-/* map.on('click', function () {
+map.on('click', function () {
   if (lastClickedRoute) {
     lastClickedRoute.setStyle({
       color: 'rgba(252,0,0,1.0)',
-      weight: 1.5,
+      weight: 1,
       dashArray: '4.0,2.0'
     });
     lastClickedRoute = null;
   }
-});  */    
+});   
  
         // Load and style Municipal Parks
     $.getJSON("data/Municipal_Parks.geojson", function(data) {
@@ -1482,6 +1482,7 @@ defaultLayers.forEach(l => l.addTo(map));
 </body>
 
 </html>
+
 
 
 
