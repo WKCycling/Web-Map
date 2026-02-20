@@ -640,12 +640,31 @@ map.on('click', function(e) {
 
     }).addTo(map); 
 
-     map.on('click', function () {
+      layer.on('click', function (e) {
+
+  L.DomEvent.stopPropagation(e);   // ← THIS IS REQUIRED
+
+  if (lastClickedRoute && lastClickedRoute !== layer) {
+    proposedRoutes.resetStyle(lastClickedRoute);
+  }
+
+  layer.setStyle({
+    color: 'yellow',
+    weight: 4,
+    dashArray: null
+  });
+
+  lastClickedRoute = layer;
+
+  map.panTo(e.latlng, { animate: true });
+  layer.openPopup(e.latlng);
+});
+    /* map.on('click', function () {
   if (lastClickedRoute) {
     proposedRoutes.resetStyle(lastClickedRoute);
     lastClickedRoute = null;
   }
-});
+});*/
 
      /* map.on('click', function (e) {
   if (!lastClickedRoute) return;
@@ -1515,6 +1534,7 @@ defaultLayers.forEach(l => l.addTo(map));
 </body>
 
 </html>
+
 
 
 
