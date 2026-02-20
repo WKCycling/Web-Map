@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -461,7 +461,7 @@
             }
         });
     }
-        
+
 function showCoords(e) {
   if (e.originalEvent._stopped) return;
 
@@ -491,29 +491,7 @@ map.on('click', function(e) {
     .openOn(map);
 });*/
 
-var lastClickedProposedRoute = null;
 
-map.on('click', function () {
-  if (lastClickedProposedRoute) {
-    lastClickedProposedRoute.setStyle(
-      getRouteStyle(lastClickedProposedRoute.feature, false)
-    );
-    lastClickedProposedRoute = null;
-  }
-});
-
-
-/*map.on('click', function () {
-  if (lastClickedProposedRoute) {
-    lastClickedProposedRoute.setStyle({
-      color: 'rgba(252,0,0,1.0)',
-      weight: 2,
-      dashArray: '4.0,2.0'
-    });
-    lastClickedProposedRoute = null;
-  }
-});*/
-        
     // Load Existing Routes with filtering capability
     $.getJSON("data/Existing_Routes.geojson", function(data) {
         L.geoJSON(data, {
@@ -598,146 +576,121 @@ map.on('click', function () {
         });
     }
 
-let lastClickedProposedRoute = null;
+        let lastClickedRoute = null;   // Add this once above your fetch()
 
-fetch('data/Proposed_Routes.geojson')
+    fetch('data/Proposed_Routes.geojson')
   .then(response => response.json())
   .then(data => {
 
-    const proposedRoutesLayer = L.geoJSON(data, {
-
-      bubblingMouseEvents: false,
+    L.geoJSON(data, {
 
       style: function(feature) {
-        // Base style for all routes
         return {
+          opacity: 1,
           color: 'rgba(252,0,0,1.0)',
           dashArray: '4.0,2.0',
-          weight: 2.0,
-          opacity: 0.8
+          lineCap: 'square',
+          lineJoin: 'bevel',
+          weight: 1.0,
+          fillOpacity: 0
         };
       },
-
-      onEachFeature: function(feature, layer) {
+            
+            onEachFeature: function (feature, layer) {
 
         let source = feature.properties.Source;
+
         let sourceLink = source
           ? `<a href="${source}" target="_blank">${source}</a>`
           : 'No source';
 
-        layer.bindPopup(`
+        let popupContent = `
           <strong>Name: ${feature.properties.Name}</strong><br>
           Type: ${feature.properties.Type}<br>
           Network: ${feature.properties.Network}<br>
           Jurisdiction: ${feature.properties.Municipality}<br>
           Source: ${sourceLink}
-        `);
+        `;
 
-        layer.on('click', function(e) {
-          L.DomEvent.stop(e); // prevents map click propagation
+        layer.bindPopup(popupContent);
 
-          // Reset previous highlight if different
-          if (lastClickedProposedRoute && lastClickedProposedRoute !== layer) {
-            proposedRoutesLayer.resetStyle(lastClickedProposedRoute);
-          }
+          layer.on('click', function (e) {
 
-          // Highlight the clicked route
-          layer.setStyle({
-            color: '#00e676',
-            weight: 4,
-            dashArray: '4.0,2.0',
-            opacity: 0.8
-          });
+  L.DomEvent.stopPropagation(e);   // ← ADD THIS LINE HERE
 
-          lastClickedProposedRoute = layer;
-
-          // Pan to the clicked feature and open popup
-          map.panTo(e.latlng, { animate: true });
-          layer.openPopup(e.latlng);
-        });
-      }
-
-    }).addTo(map);
-
-    // Optional: clicking the map resets highlight
-    map.on('click', function() {
-      if (lastClickedProposedRoute) {
-        proposedRoutesLayer.resetStyle(lastClickedProposedRoute);
-        lastClickedProposedRoute = null;
-      }
+  // Reset previous highlight
+  if (lastClickedRoute) {
+    lastClickedRoute.setStyle({
+      color: 'rgba(252,0,0,1.0)',
+      weight: 1.5,
+      dashArray: '4.0,2.0'
     });
+  }
+
+  // Highlight this route
+  layer.setStyle({
+    color: 'yellow',
+    weight: 4,
+    dashArray: null
+  });
+
+  lastClickedRoute = layer;
+
+  // Pan and open popup
+  map.panTo(e.latlng, { animate: true });
+  layer.openPopup(e.latlng);
+});
+
+         }
+
+    }).addTo(map);   // ✔ YES — keep this line
 
   });
-        
-/*let activeRoute = null;
+  /* L.geoJSON(data, {
 
-fetch('data/Proposed_Routes.geojson')
-  .then(response => response.json())
-  .then(data => {
+  bubblingMouseEvents: false,
 
-    const proposedRoutesLayer = L.geoJSON(data, {
+  style: function(feature) {
+    return {
+      color: 'rgba(252,0,0,1.0)',
+      dashArray: '4.0,2.0',
+      weight: 10,
+      opacity: 0.001
+    };
+  },
 
-      bubblingMouseEvents: false,
+  onEachFeature: function(feature, layer) {
 
-      style: function(feature) {
-        return {
+    layer.bindPopup(`
+      <strong>Name: ${feature.properties.Name}</strong><br>
+      Type: ${feature.properties.Type}<br>
+      Network: ${feature.properties.Network}
+    `);
+
+    layer.on('click', function(e) {
+
+      if (lastClickedRoute) {
+        lastClickedRoute.setStyle({
           color: 'rgba(252,0,0,1.0)',
-          dashArray: '4.0,2.0',
-          weight: 2.0,
-          opacity: .8
-        };
-      },
-
-      onEachFeature: function(feature, layer) {
-
-        let source = feature.properties.Source;
-        let sourceLink = source
-          ? `<a href="${source}" target="_blank">${source}</a>`
-          : 'No source';
-
-        layer.bindPopup(`
-          <strong>Name: ${feature.properties.Name}</strong><br>
-          Type: ${feature.properties.Type}<br>
-          Network: ${feature.properties.Network}<br>
-          Jurisdiction: ${feature.properties.Municipality}<br>
-          Source: ${sourceLink}
-        `);
-
-        layer.on('click', function(e) {
-
-          L.DomEvent.stop(e);   // prevents lat/long popup but allows map click later
-
-// Reset previous highlight
-if (lastClickedProposedRoute) {
-  lastClickedProposedRoute.setStyle({
-    color: 'rgba(252,0,0,1.0)',
-    weight: 2.0,          // ← match your base style
-    dashArray: '4.0,2.0',
-    opacity: .8           // ← optional but consistent
-  });
-}
-
-          // Highlight this route
-          layer.setStyle({
-            color: '#00e676',
-            weight: 4,
-            dashArray: '4.0,2.0',
-            opacity:.8
-
-
-          });
-
-          lastClickedProposedRoute = layer;
-
-          map.panTo(e.latlng, { animate: true });
-          layer.openPopup(e.latlng);
+          weight: 2,
+          dashArray: '4.0,2.0'
         });
       }
 
-    }).addTo(map);
+      layer.setStyle({
+        color: 'yellow',
+        weight: 5,
+        dashArray: null
+      });
 
-  });*/
-   
+      lastClickedRoute = layer;
+
+      map.panTo(e.latlng);
+      layer.openPopup(e.latlng);
+    });
+  }
+
+}).addTo(map);*/      
  
         // Load and style Municipal Parks
     $.getJSON("data/Municipal_Parks.geojson", function(data) {
@@ -1518,6 +1471,7 @@ defaultLayers.forEach(l => l.addTo(map));
 </body>
 
 </html>
+
 
 
 
