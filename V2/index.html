@@ -593,8 +593,50 @@ map.on('click', function(e) {
           fillOpacity: 0
         };
       },
-            
-            onEachFeature: function (feature, layer) {
+
+onEachFeature: function (feature, layer) {
+
+  let source = feature.properties.Source;
+
+  let sourceLink = source
+    ? `<a href="${source}" target="_blank">${source}</a>`
+    : 'No source';
+
+  let popupContent = `
+    <strong>Name: ${feature.properties.Name}</strong><br>
+    Type: ${feature.properties.Type}<br>
+    Network: ${feature.properties.Network}<br>
+    Jurisdiction: ${feature.properties.Municipality}<br>
+    Source: ${sourceLink}
+  `;
+
+  layer.bindPopup(popupContent);
+
+  layer.on('click', function (e) {
+
+    // 🔥 THIS STOPS THE MAP CLICK RESET
+    L.DomEvent.stopPropagation(e);
+
+    // Reset previous highlight
+    if (lastClickedRoute && lastClickedRoute !== layer) {
+      proposedRoutes.resetStyle(lastClickedRoute);
+    }
+
+    // Highlight this route
+    layer.setStyle({
+      color: 'yellow',
+      weight: 4,
+      dashArray: null
+    });
+
+    lastClickedRoute = layer;
+
+    map.panTo(e.latlng, { animate: true });
+    layer.openPopup(e.latlng);
+  });
+}
+       
+           /* onEachFeature: function (feature, layer) {
 
         let source = feature.properties.Source;
 
@@ -620,22 +662,10 @@ map.on('click', function(e) {
       color: 'rgba(252,0,0,1.0)',
       weight: 1,
       dashArray: '4.0,2.0'
-    });
+    });*/
   }
 
-  // Highlight this route
-  layer.setStyle({
-    color: 'yellow',
-    weight: 4,
-    dashArray: null
-  });
-
-  lastClickedRoute = layer;
-
-  // Pan and open popup
-  map.panTo(e.latlng, { animate: true });
-  layer.openPopup(e.latlng);
-});
+ 
    }
 
     }).addTo(map); 
@@ -1437,6 +1467,7 @@ defaultLayers.forEach(l => l.addTo(map));
 </body>
 
 </html>
+
 
 
 
