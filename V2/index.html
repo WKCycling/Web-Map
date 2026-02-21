@@ -399,7 +399,7 @@
         return getRouteStyle(feature, dimmed);
     }
 
-    function getProjectedRouteBaseStyle() {
+    function getProposedRouteBaseStyle() {
         return {
             color: 'rgba(252,0,0,1.0)',
             dashArray: '4,2',
@@ -420,7 +420,7 @@
 
         if (highlightedRoute.routeCategory === "proposed") {
             highlightedRoute.setStyle(
-                getProjectedRouteBaseStyle()
+                getProposedRouteBaseStyle()
             );
         }
 
@@ -1555,6 +1555,7 @@ defaultLayers.forEach(l => l.addTo(map));
 </body>
 
 </html>
+
 
 
 
