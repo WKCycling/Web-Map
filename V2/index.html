@@ -472,12 +472,26 @@ function showCoords(e) {
     .setContent(`Lat: ${lat}<br>Lng: ${lng}`)
     .openOn(map);
 }
+
 map.on('click', function(e) {
+
+  // Only run if the click was NOT on a layer
+  if (e.originalEvent.target.closest('.leaflet-interactive')) {
+    return;
+  }
+
   L.popup()
     .setLatLng(e.latlng)
     .setContent(`Lat: ${e.latlng.lat}<br>Lng: ${e.latlng.lng}`)
     .openOn(map);
 });
+        
+/*map.on('click', function(e) {
+  L.popup()
+    .setLatLng(e.latlng)
+    .setContent(`Lat: ${e.latlng.lat}<br>Lng: ${e.latlng.lng}`)
+    .openOn(map);
+});*/
 
     // Load Existing Routes with filtering capability
     $.getJSON("data/Existing_Routes.geojson", function(data) {
@@ -1455,6 +1469,7 @@ defaultLayers.forEach(l => l.addTo(map));
 </body>
 
 </html>
+
 
 
 
