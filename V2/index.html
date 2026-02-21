@@ -577,7 +577,91 @@ map.on('click', function(e) {
 
         let lastClickedRoute = null;   // Add this once above your fetch()
 
-    fetch('data/Proposed_Routes.geojson')
+/* // Load Proposed Routes with filtering capability
+    $.getJSON("data/Proposed_Routes.geojson", function(data) {
+        L.geoJSON(data, {
+            pane: 'routesPane',
+            attribution: "© 2025 West Kootenay Cycling Coalition and Contributors",
+            style: function(feature) {
+                return getRouteStyle(feature, false);
+            },
+            interactive: true,
+            onEachFeature: function(feature, layer) {
+
+                // Store reference to layer for filtering
+                layer.routeCategory="existing";
+                existingRoutesFeatures.push(layer);
+
+                layer.on("click", function (e) {
+                    highlightRoute(layer);
+                    L.DomEvent.stopPropagation(e);
+                });
+                
+                // Safely get properties with fallbacks
+                var props = feature.properties || {};
+                var name = props.Name || props.name || 'Unnamed Route';
+                var type = props.Type || props.type || 'Unknown';
+                var tenure = props.Tenure || props.tenure || 'Unknown';
+                var source = props.Source || props.source || '';
+                var length = props.Shape_length || props.length || props.Length || 'Unknown';
+                var description = props.description || props.Description || 'No description available';
+                var surface = props.Surface || props.surface || 'Unknown';
+                var tct = props.Trans_Canada_Trail || props.trans_canada_trail || 'No';
+                
+                var displayUrl = source.length > 40 ? source.substring(0, 40) + "[...]" : source;
+                var sourceLink = source ? '<a href="' + source + '" target="_blank">' + displayUrl + '</a>' : 'No source';
+                
+                layer.bindPopup(
+                    '<div class="popup">' +
+                    '<table>' +
+                        '<tr><td><b>Name:</b></td><td>' + name + '</td></tr>' +
+                        '<tr><td><b>Type:</b></td><td>' + type + '</td></tr>' +
+                        '<tr><td><b>Network:</b></td><td>' + tenure + '</td></tr>' +
+                        '<tr><td><b>Source:</b></td><td>' + sourceLink + '</td></tr>' +
+                        '<tr><td><b>Length (km):</b></td><td>' + length + '</td></tr>' +
+                        '<tr><td><b>Description:</b></td><td><p style="margin:0; max-width:200px; white-space:normal;">' + description + '</p></td></tr>' +
+                        '<tr><td><b>Surface:</b></td><td>' + surface + '</td></tr>' +
+                        '<tr><td><b>Trans Canada Trail:</b></td><td>' + tct + '</td></tr>' +
+                    '</table>' +
+                    '</div>'
+                );
+            }
+        }).addTo(Existing_Routes);
+        
+        // Populate filter dropdowns after data is loaded
+        populateFilterDropdowns(data);
+    });
+
+    // Function to populate filter dropdowns with unique values
+    function populateFilterDropdowns(geojsonData) {
+        var types = new Set();
+        var surfaces = new Set();
+        
+        geojsonData.features.forEach(function(feature) {
+            if (feature.properties.Type) types.add(feature.properties.Type);
+            if (feature.properties.Surface) surfaces.add(feature.properties.Surface);
+        });
+        
+        // Populate type dropdown
+        var typeSelect = document.getElementById('type-filter');
+        Array.from(types).sort().forEach(function(type) {
+            var option = document.createElement('option');
+            option.value = type;
+            option.textContent = type;
+            typeSelect.appendChild(option);
+        });
+        
+        // Populate surface dropdown  
+        var surfaceSelect = document.getElementById('surface-filter');
+        Array.from(surfaces).sort().forEach(function(surface) {
+            var option = document.createElement('option');
+            option.value = surface;
+            option.textContent = surface;
+            surfaceSelect.appendChild(option);
+        });
+    }*?
+        
+   /* fetch('data/Proposed_Routes.geojson')
   .then(response => response.json())
   .then(data => {
 
@@ -644,7 +728,8 @@ map.on('click', function(e) {
 
     }).addTo(map);   // ✔ YES — keep this line
 
-  });
+  });*/
+  
   /* L.geoJSON(data, {
 
   bubblingMouseEvents: false,
@@ -1470,6 +1555,7 @@ defaultLayers.forEach(l => l.addTo(map));
 </body>
 
 </html>
+
 
 
 
