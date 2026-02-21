@@ -577,7 +577,7 @@ map.on('click', function(e) {
 
         let lastClickedRoute = null;   // Add this once above your fetch()
 
-/* // Load Proposed Routes with filtering capability
+// Load Proposed Routes with filtering capability
     $.getJSON("data/Proposed_Routes.geojson", function(data) {
         L.geoJSON(data, {
             pane: 'routesPane',
@@ -589,8 +589,8 @@ map.on('click', function(e) {
             onEachFeature: function(feature, layer) {
 
                 // Store reference to layer for filtering
-                layer.routeCategory="existing";
-                existingRoutesFeatures.push(layer);
+                layer.routeCategory="proposed";
+                proposedRoutesFeatures.push(layer);
 
                 layer.on("click", function (e) {
                     highlightRoute(layer);
@@ -626,7 +626,7 @@ map.on('click', function(e) {
                     '</div>'
                 );
             }
-        }).addTo(Existing_Routes);
+        }).addTo(Proposed_Routes);
         
         // Populate filter dropdowns after data is loaded
         populateFilterDropdowns(data);
@@ -659,7 +659,7 @@ map.on('click', function(e) {
             option.textContent = surface;
             surfaceSelect.appendChild(option);
         });
-    }*?
+    }
         
    /* fetch('data/Proposed_Routes.geojson')
   .then(response => response.json())
@@ -1555,6 +1555,7 @@ defaultLayers.forEach(l => l.addTo(map));
 </body>
 
 </html>
+
 
 
 
