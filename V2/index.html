@@ -472,26 +472,24 @@ function showCoords(e) {
     .setContent(`Lat: ${lat}<br>Lng: ${lng}`)
     .openOn(map);
 }
-
 map.on('click', function(e) {
-
-  // Only run if the click was NOT on a layer
-  if (e.originalEvent.target.closest('.leaflet-interactive')) {
-    return;
-  }
-
   L.popup()
     .setLatLng(e.latlng)
     .setContent(`Lat: ${e.latlng.lat}<br>Lng: ${e.latlng.lng}`)
     .openOn(map);
 });
-        
-/*map.on('click', function(e) {
+       /* map.on('click', function(e) {
+  if (e.originalEvent._stopped) return;   // a feature was tapped
+
+  let lat = e.latlng.lat.toFixed(6);
+  let lng = e.latlng.lng.toFixed(6);
+
   L.popup()
     .setLatLng(e.latlng)
-    .setContent(`Lat: ${e.latlng.lat}<br>Lng: ${e.latlng.lng}`)
+    .setContent(`Lat: ${lat}<br>Lng: ${lng}`)
     .openOn(map);
 });*/
+
 
     // Load Existing Routes with filtering capability
     $.getJSON("data/Existing_Routes.geojson", function(data) {
@@ -577,13 +575,14 @@ map.on('click', function(e) {
         });
     }
 
- let lastClickedRoute = null;
-        
-  fetch('data/Proposed_Routes.geojson')
+        let lastClickedRoute = null;   // Add this once above your fetch()
+
+    fetch('data/Proposed_Routes.geojson')
   .then(response => response.json())
   .then(data => {
 
-   let proposedRoutes = L.geoJSON(data, {
+    L.geoJSON(data, {
+
       style: function(feature) {
         return {
           opacity: 1,
@@ -595,50 +594,8 @@ map.on('click', function(e) {
           fillOpacity: 0
         };
       },
-
-onEachFeature: function (feature, layer) {
-
-  let source = feature.properties.Source;
-
-  let sourceLink = source
-    ? `<a href="${source}" target="_blank">${source}</a>`
-    : 'No source';
-
-  let popupContent = `
-    <strong>Name: ${feature.properties.Name}</strong><br>
-    Type: ${feature.properties.Type}<br>
-    Network: ${feature.properties.Network}<br>
-    Jurisdiction: ${feature.properties.Municipality}<br>
-    Source: ${sourceLink}
-  `;
-
-  layer.bindPopup(popupContent);
-
-  layer.on('click', function (e) {
-
-    // 🔥 THIS STOPS THE MAP CLICK RESET
-    L.DomEvent.stopPropagation(e);
-
-    // Reset previous highlight
-    if (lastClickedRoute && lastClickedRoute !== layer) {
-      proposedRoutes.resetStyle(lastClickedRoute);
-    }
-
-    // Highlight this route
-    layer.setStyle({
-      color: 'yellow',
-      weight: 4,
-      dashArray: null
-    });
-
-    lastClickedRoute = layer;
-
-    map.panTo(e.latlng, { animate: true });
-    layer.openPopup(e.latlng);
-  });
-}
-       
-           /* onEachFeature: function (feature, layer) {
+            
+            onEachFeature: function (feature, layer) {
 
         let source = feature.properties.Source;
 
@@ -657,29 +614,19 @@ onEachFeature: function (feature, layer) {
         layer.bindPopup(popupContent);
 
           layer.on('click', function (e) {
- 
+
+  L.DomEvent.stopPropagation(e);   // ← ADD THIS LINE HERE
+
   // Reset previous highlight
-  if (lastClickedRoute && lastClickedRoute !== layer) {
+  if (lastClickedRoute) {
     lastClickedRoute.setStyle({
       color: 'rgba(252,0,0,1.0)',
-      weight: 1,
+      weight: 1.5,
       dashArray: '4.0,2.0'
-    });*/
+    });
   }
 
- 
-   }
-
-    }).addTo(map); 
-
-      layer.on('click', function (e) {
-
-  L.DomEvent.stopPropagation(e);
-
-  if (lastClickedRoute && lastClickedRoute !== layer) {
-    proposedRoutes.resetStyle(lastClickedRoute);
-  }
-
+  // Highlight this route
   layer.setStyle({
     color: 'yellow',
     weight: 4,
@@ -688,10 +635,61 @@ onEachFeature: function (feature, layer) {
 
   lastClickedRoute = layer;
 
+  // Pan and open popup
   map.panTo(e.latlng, { animate: true });
   layer.openPopup(e.latlng);
 });
-   
+
+         }
+
+    }).addTo(map);   // ✔ YES — keep this line
+
+  });
+  /* L.geoJSON(data, {
+
+  bubblingMouseEvents: false,
+
+  style: function(feature) {
+    return {
+      color: 'rgba(252,0,0,1.0)',
+      dashArray: '4.0,2.0',
+      weight: 10,
+      opacity: 0.001
+    };
+  },
+
+  onEachFeature: function(feature, layer) {
+
+    layer.bindPopup(`
+      <strong>Name: ${feature.properties.Name}</strong><br>
+      Type: ${feature.properties.Type}<br>
+      Network: ${feature.properties.Network}
+    `);
+
+    layer.on('click', function(e) {
+
+      if (lastClickedRoute) {
+        lastClickedRoute.setStyle({
+          color: 'rgba(252,0,0,1.0)',
+          weight: 2,
+          dashArray: '4.0,2.0'
+        });
+      }
+
+      layer.setStyle({
+        color: 'yellow',
+        weight: 5,
+        dashArray: null
+      });
+
+      lastClickedRoute = layer;
+
+      map.panTo(e.latlng);
+      layer.openPopup(e.latlng);
+    });
+  }
+
+}).addTo(map);*/      
  
         // Load and style Municipal Parks
     $.getJSON("data/Municipal_Parks.geojson", function(data) {
@@ -1464,11 +1462,16 @@ defaultLayers.forEach(l => l.addTo(map));
     if (window.innerWidth < 768) {
         legendBodyEl.classList.add('collapsed');
         legendToggle.classList.add('collapsed');
-    
+    }
+        map.on("click", function () {
+        resetHighlightedRoute();
+    });
     </script>
 </body>
 
 </html>
+
+
 
 
 
