@@ -409,7 +409,18 @@
         };
     }
 
-    function resetHighlightedRoute() {
+function resetHighlightedRoute() {
+    if (!highlightedRoute) return;
+
+    // recompute original style the same way as initial draw
+    highlightedRoute.setStyle(
+        getRouteStyle(highlightedRoute.feature, false)
+    );
+
+    highlightedRoute = null;
+}
+        
+   /* function resetHighlightedRoute() {
         if (!highlightedRoute) return;
 
         if (highlightedRoute.routeCategory === "existing") {
@@ -426,7 +437,7 @@
         }
 
         highlightedRoute = null;
-    }
+    }*/
         // Function to check if a feature matches current filters
     function featureMatchesFilters(feature) {
         var props = feature.properties;
@@ -1557,6 +1568,7 @@ defaultLayers.forEach(l => l.addTo(map));
 </body>
 
 </html>
+
 
 
 
