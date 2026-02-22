@@ -584,7 +584,7 @@ map.on('click', function(e) {
             pane: 'routesPane',
             attribution: "© 2025 West Kootenay Cycling Coalition and Contributors",
             style: function(feature) {
-                return getRouteStyle(feature, false);
+                return getRouteStyle(feature, true);
             },
             interactive: true,
             onEachFeature: function(feature, layer) {
@@ -1556,6 +1556,7 @@ defaultLayers.forEach(l => l.addTo(map));
 </body>
 
 </html>
+
 
 
 
