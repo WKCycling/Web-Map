@@ -598,7 +598,7 @@ map.on('click', function(e) {
                 });
                 
                 // Safely get properties with fallbacks
-                var props = feature.properties || {};
+               /* var props = feature.properties || {};
                 var name = props.Name || props.name || 'Unnamed Route';
                 var type = props.Type || props.type || 'Unknown';
                 var tenure = props.Tenure || props.tenure || 'Unknown';
@@ -658,7 +658,7 @@ map.on('click', function(e) {
             option.value = surface;
             option.textContent = surface;
             surfaceSelect.appendChild(option);
-        });
+        });*/
     }
         
    /* fetch('data/Proposed_Routes.geojson')
@@ -1555,6 +1555,7 @@ defaultLayers.forEach(l => l.addTo(map));
 </body>
 
 </html>
+
 
 
 
