@@ -365,7 +365,24 @@
     }
 
     // Function to get route style based on filter state
-    function getRouteStyle(feature, isDimmed) {
+   function getRouteStyle(feature, isDimmed) {
+
+    // Decide category (use GeoJSON property or fallback)
+    var category = feature.properties.Category || feature.properties.Type;
+
+    // Proposed routes
+    if (category === "proposed") {
+        return isDimmed
+            ? { color: "rgba(255,165,0,0.3)", weight: 3, opacity: 0.4 }
+            : { color: "rgba(255,165,0,1.0)", weight: 3, opacity: 0.9 };
+    }
+
+    // Existing routes (default)
+    return isDimmed
+        ? { color: "rgba(17,116,6,0.3)", weight: 3, opacity: 0.4 }
+        : { color: "rgba(17,116,6,1.0)", weight: 3, opacity: 0.9 };
+}
+        /* function getRouteStyle(feature, isDimmed) {
         if (isDimmed) {
             return {
                 color: "rgba(17,116,6,0.3)", 
@@ -379,9 +396,25 @@
                 opacity: 0.9
             };
         }
+    }*/
+
+    function featureMatchesFilters(feature) {
+    var props = feature.properties;
+
+    // Check Type filter
+    if (routeFilters.type !== "all" && props.Type !== routeFilters.type) {
+        return false;
     }
 
-    function highlightRoute(layer) {
+    // Check Surface filter
+    if (routeFilters.surface !== "all" && props.Surface !== routeFilters.surface) {
+        return false;
+    }
+
+    return true; // matches all active filters
+    }
+   
+        function highlightRoute(layer) {
         resetHighlightedRoute();
 
         highlightedRoute = layer;
@@ -1568,6 +1601,7 @@ defaultLayers.forEach(l => l.addTo(map));
 </body>
 
 </html>
+
 
 
 
