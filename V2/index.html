@@ -293,7 +293,7 @@
     //**This section deals with establishing, loading and styling layers. Follow New_Layer comments as a guide to insert a new layer into the project**
     // Declare layer variables for future use
     var Existing_Routes = L.layerGroup(); 
-    var Proposed_Routes = L.layerGroup(); 
+    var Proposed_Routes = L.layerGroup().addTo(map); 
     var Municipal_Parks = L.layerGroup(); 
     var Provincial_Parks= L.layerGroup();
     var Municipal_Boundaries= L.layerGroup();
@@ -310,6 +310,7 @@
 
     //Highlight globals
     var existingRoutesFeatures=[];
+    var proposedRoutesFeatures=[];
     var highlightedRoute=null;
 
 
@@ -1555,6 +1556,7 @@ defaultLayers.forEach(l => l.addTo(map));
 </body>
 
 </html>
+
 
 
 
