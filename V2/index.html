@@ -399,7 +399,7 @@
         return getRouteStyle(feature, dimmed);
     }
 
-    function getProjectedRouteBaseStyle() {
+    function getProposedRouteBaseStyle() {
         return {
             color: 'rgba(252,0,0,1.0)',
             dashArray: '4,2',
@@ -420,7 +420,7 @@
 
         if (highlightedRoute.routeCategory === "proposed") {
             highlightedRoute.setStyle(
-                getProjectedRouteBaseStyle()
+                getProproposedRouteBaseStyle()
             );
         }
 
@@ -594,7 +594,12 @@ map.on('click', function(e) {
           fillOpacity: 0
         };
       },
-            
+
+                layer.on("click", function (e) {
+                    highlightRoute(layer);
+                    L.DomEvent.stopPropagation(e);
+                });
+        
             onEachFeature: function (feature, layer) {
 
         let source = feature.properties.Source;
