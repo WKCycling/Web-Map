@@ -419,6 +419,7 @@
         }
 
         if (highlightedRoute.routeCategory === "proposed") {
+            var matches = featureMatchesFilters(highlightedRoute.feature);
             highlightedRoute.setStyle(
                 getProposedRouteBaseStyle()
             );
