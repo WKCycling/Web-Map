@@ -584,7 +584,7 @@ map.on('click', function(e) {
   .then(data => {
 
     L.geoJSON(data, {
-
+pane: 'routesPane',
       style: function(feature) {
         return {
           opacity: 1,
