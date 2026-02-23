@@ -577,7 +577,68 @@ map.on('click', function(e) {
 
         let lastClickedRoute = null;   // Add this once above your fetch()
 
-// Load Proposed Routes with filtering capability
+$.getJSON("data/Proposed_Routes.geojson", function(data) {
+    L.geoJSON(data, {
+        pane: 'routesPane',
+        attribution: "© 2025 West Kootenay Cycling Coalition and Contributors",
+        style: function(feature) {
+            // Proposed routes style
+            return {
+                color: "#ff6600",
+                weight: 3,
+                dashArray: "6,4",
+                opacity: 0.9
+            };
+        },
+        interactive: true,
+        onEachFeature: function(feature, layer) {
+
+            // Store reference to layer for filtering
+            layer.routeCategory = "proposed";
+            proposedRoutesFeatures.push(layer);
+
+            layer.on("click", function (e) {
+                highlightRoute(layer);
+                L.DomEvent.stopPropagation(e);
+            });
+
+            // Safely get properties with fallbacks
+            var props = feature.properties || {};
+            var name = props.Name || props.name || 'Unnamed Route';
+            var type = props.Type || props.type || 'Unknown';
+            var tenure = props.Tenure || props.tenure || 'Unknown';
+            var source = props.Source || props.source || '';
+            var length = props.Shape_length || props.length || props.Length || 'Unknown';
+            var description = props.description || props.Description || 'No description available';
+            var surface = props.Surface || props.surface || 'Unknown';
+            var tct = props.Trans_Canada_Trail || props.trans_canada_trail || 'No';
+
+            var displayUrl = source.length > 40 ? source.substring(0, 40) + "[...]" : source;
+            var sourceLink = source ? '<a href="' + source + '" target="_blank">' + displayUrl + '</a>' : 'No source';
+
+            layer.bindPopup(
+                '<div class="popup">' +
+                '<table>' +
+                    '<tr><td><b>Name:</b></td><td>' + name + '</td></tr>' +
+                    '<tr><td><b>Type:</b></td><td>' + type + '</td></tr>' +
+                    '<tr><td><b>Network:</b></td><td>' + tenure + '</td></tr>' +
+                    '<tr><td><b>Source:</b></td><td>' + sourceLink + '</td></tr>' +
+                    '<tr><td><b>Length (km):</b></td><td>' + length + '</td></tr>' +
+                    '<tr><td><b>Description:</b></td><td><p style="margin:0; max-width:200px; white-space:normal;">' + description + '</p></td></tr>' +
+                    '<tr><td><b>Surface:</b></td><td>' + surface + '</td></tr>' +
+                    '<tr><td><b>Trans Canada Trail:</b></td><td>' + tct + '</td></tr>' +
+                '</table>' +
+                '</div>'
+            );
+        }
+    }).addTo(Proposed_Routes);
+
+    // Populate filter dropdowns after data is loaded
+    populateFilterDropdowns(data);
+});
+        
+        
+       /* // Load Proposed Routes with filtering capability
     $.getJSON("data/Proposed_Routes.geojson", function(data) {
         L.geoJSON(data, {
             pane: 'routesPane',
@@ -3159,6 +3220,7 @@ defaultLayers.forEach(l => l.addTo(map));
 </body>
 
 </html>*/
+
 
 
 
