@@ -235,7 +235,27 @@
       word-break: break-word !important;
       white-space: normal !important;
     }
+/* Reasonable popup width on desktop */
+.leaflet-popup-content {
+  min-width: 200px;
+  max-width: 320px;
+}
 
+/* Force wrapping of long text and URLs */
+.leaflet-popup-content,
+.leaflet-popup-content * {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  white-space: normal;
+}
+
+/* Mobile: make popup use most of the screen width */
+@media (max-width: 768px) {
+  .leaflet-popup-content {
+    min-width: 90vw;
+    max-width: 90vw;
+  }
+}
   </style>
 
   <title>West Kootenay Cycling Routes Map</title>
