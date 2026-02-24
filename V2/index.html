@@ -844,8 +844,73 @@ map.on('click', function(e) {
             surfaceSelect.appendChild(option);
         });
     }
+let lastClickedRoute = null;
 
-        let lastClickedRoute = null;   // Add this once above your fetch()
+fetch('data/Proposed_Routes.geojson')
+  .then(response => response.json())
+  .then(data => {
+
+    L.geoJSON(data, {
+      pane: 'routesPane',
+      bubblingMouseEvents: false,   // ✅ prevents map click from firing
+
+      style: function(feature) {
+        return {
+          opacity: 1,
+          color: 'rgba(252,0,0,1.0)',
+          dashArray: '4.0,4.0',
+          lineCap: 'square',
+          lineJoin: 'bevel',
+          weight: 2.0,
+          fillOpacity: 0
+        };
+      },
+
+      onEachFeature: function (feature, layer) {
+
+        let source = feature.properties.Source;
+
+        let sourceLink = source
+          ? `<a href="${source}" target="_blank">${source}</a>`
+          : 'No source';
+
+        let popupContent = `
+          <strong>Name: ${feature.properties.Name}</strong><br>
+          Type: ${feature.properties.Type}<br>
+          Network: ${feature.properties.Network}<br>
+          Jurisdiction: ${feature.properties.Municipality}<br>
+          Source: ${sourceLink}
+        `;
+
+        layer.bindPopup(popupContent);
+
+        layer.on('click', function (e) {
+
+          // ✅ stop click from reaching the map
+          L.DomEvent.stopPropagation(e);
+
+          // Reset previous highlight
+          if (lastClickedRoute) {
+            lastClickedRoute.setStyle({
+              color: 'rgba(252,0,0,1.0)',
+              weight: 2,
+              dashArray: '4.0,4.0'
+            });
+          }
+
+          lastClickedRoute = layer;
+
+          // Pan and open popup
+          map.panTo(e.latlng, { animate: true });
+          layer.openPopup(e.latlng);
+
+        });
+      }
+
+    }).addTo(map);
+
+  });
+       /* let lastClickedRoute = null;   // Add this once above your fetch()
 
     fetch('data/Proposed_Routes.geojson')
   .then(response => response.json())
@@ -865,10 +930,10 @@ pane: 'routesPane',
         };
       },
 
-                /*    layer.on("click", function (e) {
+                    layer.on("click", function (e) {
                     highlightRoute(layer);
                     L.DomEvent.stopPropagation(e);
-                });*/
+                });
         
             onEachFeature: function (feature, layer) {
 
@@ -901,12 +966,12 @@ pane: 'routesPane',
     });
   }
 
- /* // Highlight this route
+ // Highlight this route
   layer.setStyle({
     color: 'yellow',
     weight: 4,
     dashArray: null
-  });*/
+  });
 
   lastClickedRoute = layer;
 
@@ -920,7 +985,7 @@ pane: 'routesPane',
     }).addTo(map);   // ✔ YES — keep this line
 
   });
-  /* L.geoJSON(data, {
+   L.geoJSON(data, {
 
   bubblingMouseEvents: false,
 
