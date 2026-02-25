@@ -831,29 +831,23 @@ map.on('click', function(e) {
             surfaceSelect.appendChild(option);
         });
     }
-let lastClickedRoute = null;
 
-fetch('data/Proposed_Routes.geojson')
+  fetch('data/Proposed_Routes.geojson')
   .then(response => response.json())
   .then(data => {
 
     L.geoJSON(data, {
       pane: 'routesPane',
-      bubblingMouseEvents: false,   // ✅ prevents map click from firing
+      bubblingMouseEvents: false,
 
       style: function(feature) {
-        return {
-          opacity: 1,
-          color: 'rgba(252,0,0,1.0)',
-          dashArray: '4.0,4.0',
-          lineCap: 'square',
-          lineJoin: 'bevel',
-          weight: 2.0,
-          fillOpacity: 0
-        };
+        return getProposedRouteBaseStyle();
       },
 
       onEachFeature: function (feature, layer) {
+
+        // Register with highlight system
+        layer.routeCategory = "proposed";
 
         let source = feature.properties.Source;
 
@@ -873,69 +867,23 @@ fetch('data/Proposed_Routes.geojson')
 
         layer.on('click', function (e) {
 
-          // ✅ stop click from reaching the map
-          L.DomEvent.stopPropagation(e);
+          // highlight using shared logic
+          highlightRoute(layer);
 
-          // Reset previous highlight
-          if (lastClickedRoute) {
-            lastClickedRoute.setStyle({
-              color: 'rgba(252,0,0,1.0)',
-              weight: 2,
-              dashArray: '4.0,4.0'
-            });
-          }
-
-          lastClickedRoute = layer;
-
-          // Pan and open popup
+          // pan and open popup
           map.panTo(e.latlng, { animate: true });
-          layer.openPopup(e.latlng);
+          layer.openPopup();
+
+          // prevent map click popup
+          L.DomEvent.stopPropagation(e);
 
         });
       }
-}).addTo(Proposed_Routes);
 
-  });   
- 
-        // Load and style Municipal Parks
-    $.getJSON("data/Municipal_Parks.geojson", function(data) {
-        L.geoJSON(data, {
-            attribution: '©<a href="https://www2.gov.bc.ca/gov/content/data/policy-standards/data-policies/open-data/open-government-licence-bc">Open Government Licence - British Columbia</a>',
-            style: {
-                opacity: 1,
-                color: 'rgba(37,96,18,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 1.0, 
-                fill: true,
-                fillOpacity: 1,
-                fillColor: 'rgba(114,155,111,0.6039215686274509)'
-            },
-            interactive: true,
-            onEachFeature: Label_Parks
-        }).addTo(Municipal_Parks);
-    });
+    }).addTo(Proposed_Routes);
 
-    // Load and style Provincial Parks
-    $.getJSON("data/Provincial_Parks.geojson", function(data) {
-        L.geoJSON(data, {
-            attribution: '©<a href="https://www2.gov.bc.ca/gov/content/data/policy-standards/data-policies/open-data/open-government-licence-bc">Open Government Licence - British Columbia</a>',
-            style: {   
-                opacity: 1,
-                color: 'rgba(37,96,18,1.0)',
-                dashArray: '5.0,1.0',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 1.5, 
-                fill: true,
-                fillOpacity: 0.6,
-                fillColor: 'rgba(114,155,111,0.6039215686274509)'
-            },
-            interactive: true,
-            onEachFeature: Label_Parks
-        }).addTo(Provincial_Parks);
-    });
+  });
+
 
     // Load and style Municipal Boundaries
     $.getJSON("data/Municipal_Boundaries.geojson", function(data) {
