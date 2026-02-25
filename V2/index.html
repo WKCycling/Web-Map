@@ -990,7 +990,60 @@ map.on('click', function(e) {
         }).addTo(Recreation_Sites);
     });
 
-    //Load and Style Priority Improvement layer
+      //Load and Style Priority Improvement layer
+$.getJSON("data/Priority_Improvements.geojson", function(data) {
+  L.geoJSON(data, {
+    attribution: "© 2025 West Kootenay Cycling Coalition and Contributors",
+    pane: 'pointsPane',
+
+    pointToLayer: function(feature, latlng) {
+      var Warning = L.icon({
+        iconUrl: 'markers/Warning.svg',
+        iconSize: [20, 20],
+        iconAnchor: [5, 5]
+      });
+      return L.marker(latlng, { icon: Warning });
+    },
+
+    interactive: true,
+
+    onEachFeature: function(feature, layer) {
+
+      // Safely get properties
+      var props = feature.properties || {};
+      var name = props.Name || 'Unnamed Improvement';
+      var description = props.Description || 'No description available';
+      var comments = props.Comments || 'None';
+      var url = props.URL || '';
+      var priority = props.Priority || 'Unknown';
+
+      var urlLink = url
+        ? '<a href="' + url + '" target="_blank">' + url + '</a>'
+        : 'No link';
+
+      var popupHtml =
+        '<div class="popup">' +
+          '<table>' +
+            '<tr><td><b>Name:</b></td><td>' + name + '</td></tr>' +
+            '<tr><td><b>Description:</b></td>' +
+              '<td><p style="margin:0; max-width:200px; white-space:normal; word-wrap:break-word;">' +
+                description +
+              '</p></td></tr>' +
+            '<tr><td><b>Comments:</b></td>' +
+              '<td><p style="margin:0; max-width:200px; white-space:normal; word-wrap:break-word;">' +
+                comments +
+              '</p></td></tr>' +
+            '<tr><td><b>URL:</b></td><td>' + urlLink + '</td></tr>' +
+            '<tr><td><b>Priority:</b></td><td>' + priority + '</td></tr>' +
+          '</table>' +
+        '</div>';
+
+      layer.bindPopup(popupHtml);
+    }
+
+  }).addTo(Priority_Improvements);
+});
+ /*   //Load and Style Priority Improvement layer
     $.getJSON("data/Priority_Improvements.geojson", function(data) {
         L.geoJSON(data, {
             attribution: "© 2025 West Kootenay Cycling Coalition and Contributors",
@@ -1020,7 +1073,7 @@ map.on('click', function(e) {
                 );
             }
         }).addTo(Priority_Improvements);
-    });
+    });*/
 
     // Load and style BC Transit Stops
     $.getJSON("data/BC_Transit_Stops.geojson", function(data) {
