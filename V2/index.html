@@ -838,7 +838,71 @@ function openFeaturePopup(layer, e) {
         });
     }
 
- // ======================
+     // ======================
+// PROPOSED ROUTES
+// ======================
+$.getJSON("data/Proposed_Routes.geojson", function(data) {
+
+  L.geoJSON(data, {
+    pane: 'routesPane',
+    attribution: "© 2025 West Kootenay Cycling Coalition and Contributors",
+    bubblingMouseEvents: false,
+
+    style: function(feature) {
+      return getProposedRouteBaseStyle();
+    },
+
+    onEachFeature: function(feature, layer) {
+
+      // tag as proposed for highlight reset logic
+      layer.routeCategory = "proposed";
+
+      // Safely get properties
+      var props = feature.properties || {};
+      var name = props.Name || 'Unnamed Route';
+      var type = props.Type || 'Unknown';
+      var network = props.Network || 'Unknown';
+      var municipality = props.Municipality || 'Unknown';
+      var source = props.Source || '';
+
+      var displayUrl = source.length > 40 ? source.substring(0, 40) + "[...]" : source;
+      var sourceLink = source
+        ? '<a href="' + source + '" target="_blank">' + displayUrl + '</a>'
+        : 'No source';
+
+      var popupHtml =
+        '<div class="popup">' +
+          '<table>' +
+            '<tr><td><b>Name:</b></td><td>' + name + '</td></tr>' +
+            '<tr><td><b>Type:</b></td><td>' + type + '</td></tr>' +
+            '<tr><td><b>Network:</b></td><td>' + network + '</td></tr>' +
+            '<tr><td><b>Jurisdiction:</b></td><td>' + municipality + '</td></tr>' +
+            '<tr><td><b>Source:</b></td><td>' + sourceLink + '</td></tr>' +
+          '</table>' +
+        '</div>';
+
+      layer.bindPopup(popupHtml);
+
+      layer.on("click", function(e) {
+
+        // reset previous highlight
+        if (highlightedRoute) {
+          resetHighlightedRoute();
+        }
+
+        // highlight this route
+        highlightRoute(layer);
+
+        // open popup where user clicked
+        openFeaturePopup(layer, e);
+
+      });
+    }
+
+  }).addTo(Proposed_Routes);
+
+}); 
+/* // ======================
 // EXISTING ROUTES
 // ======================
 $.getJSON("data/Existing_Routes.geojson", function(data) {
@@ -906,7 +970,7 @@ $.getJSON("data/Existing_Routes.geojson", function(data) {
 
   populateFilterDropdowns(data);
 
-});
+});*/
      /* fetch('data/Proposed_Routes.geojson')
   .then(response => response.json())
   .then(data => {
