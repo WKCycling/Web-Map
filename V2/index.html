@@ -578,10 +578,28 @@
     var Priority_Improvements = L.layerGroup();
 
     //Highlight globals
-    var existingRoutesFeatures=[];
-     var activeRoute = null;
+   // Unified highlight state
+var activeRoute = null;
 
+// Store existing route layers for filtering
+var existingRoutesFeatures = [];
 
+// Highlight helpers
+function resetRouteStyle(layer) {
+  layer.setStyle({
+    color: 'rgba(252,0,0,1.0)',
+    weight: 2,
+    dashArray: '4.0,4.0'
+  });
+}
+
+function highlightRouteUnified(layer) {
+  layer.setStyle({
+    color: 'yellow',
+    weight: 4,
+    dashArray: null
+  });
+ 
     //Linking to tile layers used as our basemaps
     var cartoDB = L.tileLayer("https://a.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png", {
         attribution: '<a href="https://cartodb.com/basemaps/">Map tiles by CartoDB, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</a>',
@@ -762,64 +780,83 @@ map.on('click', function(e) {
 
 
     // Load Existing Routes with filtering capability
-    $.getJSON("data/Existing_Routes.geojson", function(data) {
-        L.geoJSON(data, {
-            pane: 'routesPane',
-            attribution: "© 2025 West Kootenay Cycling Coalition and Contributors",
-            style: function(feature) {
-                return getRouteStyle(feature, false);
-            },
-            interactive: true,
-           onEachFeature: function(feature, layer) {
+   fetch('data/Existing_Routes.geojson')
+  .then(response => response.json())
+  .then(data => {
 
-  layer.routeCategory = "existing";
-  existingRoutesFeatures.push(layer);
+    L.geoJSON(data, {
+      pane: 'routesPane',
 
-  // Safely get properties
-  var props = feature.properties || {};
-  var name = props.Name || props.name || 'Unnamed Route';
-  var type = props.Type || props.type || 'Unknown';
-  var tenure = props.Tenure || props.tenure || 'Unknown';
-  var source = props.Source || props.source || '';
-  var length = props.Shape_length || props.length || props.Length || 'Unknown';
-  var description = props.description || props.Description || 'No description available';
-  var surface = props.Surface || props.surface || 'Unknown';
-  var tct = props.Trans_Canada_Trail || props.trans_canada_trail || 'No';
+      style: function(feature) {
+        return {
+          opacity: 1,
+          color: 'rgba(252,0,0,1.0)',
+          dashArray: '4.0,4.0',
+          weight: 2,
+          fillOpacity: 0
+        };
+      },
 
-  var displayUrl = source.length > 40 ? source.substring(0, 40) + "[...]" : source;
-  var sourceLink = source ? '<a href="' + source + '" target="_blank">' + displayUrl + '</a>' : 'No source';
+      onEachFeature: function(feature, layer) {
 
-  layer.bindPopup(
-    '<div class="popup">' +
-    '<table>' +
-      '<tr><td><b>Name:</b></td><td>' + name + '</td></tr>' +
-      '<tr><td><b>Type:</b></td><td>' + type + '</td></tr>' +
-      '<tr><td><b>Network:</b></td><td>' + tenure + '</td></tr>' +
-      '<tr><td><b>Source:</b></td><td>' + sourceLink + '</td></tr>' +
-      '<tr><td><b>Length (km):</b></td><td>' + length + '</td></tr>' +
-      '<tr><td><b>Description:</b></td><td><p style="margin:0; max-width:200px; white-space:normal;">' + description + '</p></td></tr>' +
-      '<tr><td><b>Surface:</b></td><td>' + surface + '</td></tr>' +
-      '<tr><td><b>Trans Canada Trail:</b></td><td>' + tct + '</td></tr>' +
-    '</table>' +
-    '</div>'
-  );
+        layer.routeCategory = "existing";
+        existingRoutesFeatures.push(layer);
 
-  layer.on("click", function (e) {
+        // Safely get properties
+        var props = feature.properties || {};
+        var name = props.Name || props.name || 'Unnamed Route';
+        var type = props.Type || props.type || 'Unknown';
+        var tenure = props.Tenure || props.tenure || 'Unknown';
+        var source = props.Source || props.source || '';
+        var length = props.Shape_length || props.length || props.Length || 'Unknown';
+        var description = props.description || props.Description || 'No description available';
+        var surface = props.Surface || props.surface || 'Unknown';
+        var tct = props.Trans_Canada_Trail || props.trans_canada_trail || 'No';
 
-    L.DomEvent.stopPropagation(e);
+        var displayUrl = source.length > 40 ? source.substring(0, 40) + "[...]" : source;
+        var sourceLink = source
+          ? '<a href="' + source + '" target="_blank">' + displayUrl + '</a>'
+          : 'No source';
 
-    // reset previous route
-    if (activeRoute) {
-      resetRouteStyle(activeRoute);
-    }
+        var popupHtml =
+          '<div class="popup">' +
+            '<table>' +
+              '<tr><td><b>Name:</b></td><td>' + name + '</td></tr>' +
+              '<tr><td><b>Type:</b></td><td>' + type + '</td></tr>' +
+              '<tr><td><b>Network:</b></td><td>' + tenure + '</td></tr>' +
+              '<tr><td><b>Source:</b></td><td>' + sourceLink + '</td></tr>' +
+              '<tr><td><b>Length (km):</b></td><td>' + length + '</td></tr>' +
+              '<tr><td><b>Description:</b></td><td><p style="margin:0; max-width:200px; white-space:normal;">' + description + '</p></td></tr>' +
+              '<tr><td><b>Surface:</b></td><td>' + surface + '</td></tr>' +
+              '<tr><td><b>Trans Canada Trail:</b></td><td>' + tct + '</td></tr>' +
+            '</table>' +
+          '</div>';
 
-    // highlight this route
-    highlightRouteUnified(layer);
-    activeRoute = layer;
+        layer.bindPopup(popupHtml);
 
-    layer.openPopup(e.latlng);
+        layer.on("click", function (e) {
+
+          L.DomEvent.stopPropagation(e);
+
+          // reset previous route
+          if (activeRoute) {
+            resetRouteStyle(activeRoute);
+          }
+
+          // highlight this route
+          highlightRouteUnified(layer);
+          activeRoute = layer;
+
+          layer.openPopup(e.latlng);
+        });
+      }
+
+    }).addTo(Existing_Routes);
+
+    populateFilterDropdowns(data);
+
   });
-}
+
          /* onEachFeature: function(feature, layer) {
 
                 // Store reference to layer for filtering
@@ -902,7 +939,7 @@ fetch('data/Proposed_Routes.geojson')
 
     L.geoJSON(data, {
       pane: 'routesPane',
-      bubblingMouseEvents: false,   // ✅ prevents map click from firing
+      bubblingMouseEvents: false,
 
       style: function(feature) {
         return {
@@ -916,42 +953,7 @@ fetch('data/Proposed_Routes.geojson')
         };
       },
 
-     onEachFeature: function (feature, layer) {
-
-  let source = feature.properties.Source;
-
-  let sourceLink = source
-    ? `<a href="${source}" target="_blank">${source}</a>`
-    : 'No source';
-
-  let popupContent = `
-    <strong>Name: ${feature.properties.Name}</strong><br>
-    Type: ${feature.properties.Type}<br>
-    Network: ${feature.properties.Network}<br>
-    Jurisdiction: ${feature.properties.Municipality}<br>
-    Source: ${sourceLink}
-  `;
-
-  layer.bindPopup(popupContent);
-
-  layer.on('click', function (e) {
-
-    L.DomEvent.stopPropagation(e);
-
-    // reset previous route
-    if (activeRoute) {
-      resetRouteStyle(activeRoute);
-    }
-
-    // highlight this route
-    highlightRouteUnified(layer);
-    activeRoute = layer;
-
-    map.panTo(e.latlng, { animate: true });
-    layer.openPopup(e.latlng);
-  });
-}
-      /*onEachFeature: function (feature, layer) {
+      onEachFeature: function (feature, layer) {
 
         let source = feature.properties.Source;
 
@@ -971,29 +973,26 @@ fetch('data/Proposed_Routes.geojson')
 
         layer.on('click', function (e) {
 
-          // ✅ stop click from reaching the map
           L.DomEvent.stopPropagation(e);
 
-          // Reset previous highlight
-          if (lastClickedRoute) {
-            lastClickedRoute.setStyle({
-              color: 'rgba(252,0,0,1.0)',
-              weight: 2,
-              dashArray: '4.0,4.0'
-            });
+          // reset previous route
+          if (activeRoute) {
+            resetRouteStyle(activeRoute);
           }
 
-          lastClickedRoute = layer;
+          // highlight this route
+          highlightRouteUnified(layer);
+          activeRoute = layer;
 
-          // Pan and open popup
           map.panTo(e.latlng, { animate: true });
           layer.openPopup(e.latlng);
-
         });
       }
-}).addTo(Proposed_Routes);
 
-  });*/
+    }).addTo(Proposed_Routes);
+
+  });
+     
        /* let lastClickedRoute = null;   // Add this once above your fetch()
 
     fetch('data/Proposed_Routes.geojson')
