@@ -208,8 +208,40 @@
         max-width: 90vw;
         padding: 8px 10px;
       }
+/* Universal popup sizing */
+.leaflet-popup-content {
+  min-width: 200px;
+  max-width: 400px;   /* 👈 CHANGE THIS to control desktop width */
+  white-space: normal;
+}
 
-      .leaflet-popup-content {
+/* Force wrapping of long text and URLs */
+.leaflet-popup-content,
+.leaflet-popup-content * {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  white-space: normal;
+}
+
+/* Popup tables full width */
+.popup table {
+  width: 100%;
+}
+
+.popup td {
+  display: block;
+  width: 100%;
+}
+
+/* Mobile: popup uses most of screen width */
+@media (max-width: 768px) {
+  .leaflet-popup-content {
+    min-width: 90vw;
+    max-width: 90vw;
+  }
+}
+      
+      /*.leaflet-popup-content {
         max-width: 90vw !important;
       }
 
@@ -255,7 +287,7 @@
     min-width: 90vw;
     max-width: 90vw;
   }
-}
+}*/
   </style>
 
   <title>West Kootenay Cycling Routes Map</title>
