@@ -559,29 +559,29 @@
     map.createPane('pointsPane');
     map.getPane('pointsPane').style.zIndex = 550;
 
-    //**This section deals with establishing, loading and styling layers. Follow New_Layer comments as a guide to insert a new layer into the project**
-    // Declare layer variables for future use
-    var Existing_Routes = L.layerGroup(); 
-    var Proposed_Routes = L.layerGroup(); 
-    var Municipal_Parks = L.layerGroup(); 
-    var Provincial_Parks= L.layerGroup();
-    var Municipal_Boundaries= L.layerGroup();
-    var Regional_Districts_Boundaries= L.layerGroup();
-    var Bike_Shops = L.layerGroup(); 
-    var Recreation_Sites = L.layerGroup();
-    var BC_Transit_Stops = L.layerGroup();
-    var Frog_Peak_Loop= L.layerGroup();
-    var Kootenay_Confluence= L.layerGroup(); 
-    var Santa_Rosa_Valleys_and_Vistas = L.layerGroup();
-    var Bonnington_Scrambler= L.layerGroup();
-    var Log_Jam_Loop = L.layerGroup();
-    var Priority_Improvements = L.layerGroup();
+   //**This section deals with establishing, loading and styling layers. Follow New_Layer comments as a guide to insert a new layer into the project**
+// Declare layer variables for future use
+var Existing_Routes = L.layerGroup(); 
+var Proposed_Routes = L.layerGroup(); 
+var Municipal_Parks = L.layerGroup(); 
+var Provincial_Parks = L.layerGroup();
+var Municipal_Boundaries = L.layerGroup();
+var Regional_Districts_Boundaries = L.layerGroup();
+var Bike_Shops = L.layerGroup(); 
+var Recreation_Sites = L.layerGroup();
+var BC_Transit_Stops = L.layerGroup();
+var Frog_Peak_Loop = L.layerGroup();
+var Kootenay_Confluence = L.layerGroup(); 
+var Santa_Rosa_Valleys_and_Vistas = L.layerGroup();
+var Bonnington_Scrambler = L.layerGroup();
+var Log_Jam_Loop = L.layerGroup();
+var Priority_Improvements = L.layerGroup();
 
-    //Highlight globals
-   // Unified highlight state
+
+// ======================
+// Highlight globals
+// ======================
 var activeRoute = null;
-
-// Store existing route layers for filtering
 var existingRoutesFeatures = [];
 
 // Highlight helpers
@@ -599,6 +599,163 @@ function highlightRouteUnified(layer) {
     weight: 4,
     dashArray: null
   });
+}
+
+
+// ======================
+// EXISTING ROUTES
+// ======================
+fetch('data/Existing_Routes.geojson')
+  .then(response => response.json())
+  .then(data => {
+
+    L.geoJSON(data, {
+      pane: 'routesPane',
+
+      style: function(feature) {
+        return {
+          opacity: 1,
+          color: 'rgba(252,0,0,1.0)',
+          dashArray: '4.0,4.0',
+          weight: 2,
+          fillOpacity: 0
+        };
+      },
+
+      onEachFeature: function(feature, layer) {
+
+        layer.routeCategory = "existing";
+        existingRoutesFeatures.push(layer);
+
+        // Safely get properties
+        var props = feature.properties || {};
+        var name = props.Name || props.name || 'Unnamed Route';
+        var type = props.Type || props.type || 'Unknown';
+        var tenure = props.Tenure || props.tenure || 'Unknown';
+        var source = props.Source || props.source || '';
+        var length = props.Shape_length || props.length || props.Length || 'Unknown';
+        var description = props.description || props.Description || 'No description available';
+        var surface = props.Surface || props.surface || 'Unknown';
+        var tct = props.Trans_Canada_Trail || props.trans_canada_trail || 'No';
+
+        var displayUrl = source.length > 40 ? source.substring(0, 40) + "[...]" : source;
+        var sourceLink = source
+          ? '<a href="' + source + '" target="_blank">' + displayUrl + '</a>'
+          : 'No source';
+
+        var popupHtml =
+          '<div class="popup">' +
+            '<table>' +
+              '<tr><td><b>Name:</b></td><td>' + name + '</td></tr>' +
+              '<tr><td><b>Type:</b></td><td>' + type + '</td></tr>' +
+              '<tr><td><b>Network:</b></td><td>' + tenure + '</td></tr>' +
+              '<tr><td><b>Source:</b></td><td>' + sourceLink + '</td></tr>' +
+              '<tr><td><b>Length (km):</b></td><td>' + length + '</td></tr>' +
+              '<tr><td><b>Description:</b></td><td><p style="margin:0; max-width:200px; white-space:normal;">' + description + '</p></td></tr>' +
+              '<tr><td><b>Surface:</b></td><td>' + surface + '</td></tr>' +
+              '<tr><td><b>Trans Canada Trail:</b></td><td>' + tct + '</td></tr>' +
+            '</table>' +
+          '</div>';
+
+        layer.bindPopup(popupHtml);
+
+        layer.on("click", function (e) {
+
+          L.DomEvent.stopPropagation(e);
+
+          // reset previous route
+          if (activeRoute) {
+            resetRouteStyle(activeRoute);
+          }
+
+          // highlight this route
+          highlightRouteUnified(layer);
+          activeRoute = layer;
+
+          layer.openPopup(e.latlng);
+        });
+      }
+
+    }).addTo(Existing_Routes);
+
+    populateFilterDropdowns(data);
+
+  });
+
+
+// ======================
+// PROPOSED ROUTES
+// ======================
+fetch('data/Proposed_Routes.geojson')
+  .then(response => response.json())
+  .then(data => {
+
+    L.geoJSON(data, {
+      pane: 'routesPane',
+      bubblingMouseEvents: false,
+
+      style: function(feature) {
+        return {
+          opacity: 1,
+          color: 'rgba(252,0,0,1.0)',
+          dashArray: '4.0,4.0',
+          lineCap: 'square',
+          lineJoin: 'bevel',
+          weight: 2.0,
+          fillOpacity: 0
+        };
+      },
+
+      onEachFeature: function (feature, layer) {
+
+        let source = feature.properties.Source;
+
+        let sourceLink = source
+          ? `<a href="${source}" target="_blank">${source}</a>`
+          : 'No source';
+
+        let popupContent = `
+          <strong>Name: ${feature.properties.Name}</strong><br>
+          Type: ${feature.properties.Type}<br>
+          Network: ${feature.properties.Network}<br>
+          Jurisdiction: ${feature.properties.Municipality}<br>
+          Source: ${sourceLink}
+        `;
+
+        layer.bindPopup(popupContent);
+
+        layer.on('click', function (e) {
+
+          L.DomEvent.stopPropagation(e);
+
+          // reset previous route
+          if (activeRoute) {
+            resetRouteStyle(activeRoute);
+          }
+
+          // highlight this route
+          highlightRouteUnified(layer);
+          activeRoute = layer;
+
+          map.panTo(e.latlng, { animate: true });
+          layer.openPopup(e.latlng);
+        });
+      }
+
+    }).addTo(Proposed_Routes);
+
+  });
+
+
+// ======================
+// Optional: clear highlight when clicking map
+// ======================
+map.on('click', function () {
+  if (activeRoute) {
+    resetRouteStyle(activeRoute);
+    activeRoute = null;
+  }
+});
  
     //Linking to tile layers used as our basemaps
     var cartoDB = L.tileLayer("https://a.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png", {
@@ -779,8 +936,10 @@ map.on('click', function(e) {
 });*/
 
 
-    // Load Existing Routes with filtering capability
-   fetch('data/Existing_Routes.geojson')
+   // ======================
+// EXISTING ROUTES
+// ======================
+fetch('data/Existing_Routes.geojson')
   .then(response => response.json())
   .then(data => {
 
@@ -995,12 +1154,17 @@ fetch('data/Proposed_Routes.geojson')
      
        /* let lastClickedRoute = null;   // Add this once above your fetch()
 
-    fetch('data/Proposed_Routes.geojson')
+    // ======================
+// PROPOSED ROUTES
+// ======================
+fetch('data/Proposed_Routes.geojson')
   .then(response => response.json())
   .then(data => {
 
     L.geoJSON(data, {
-pane: 'routesPane',
+      pane: 'routesPane',
+      bubblingMouseEvents: false,
+
       style: function(feature) {
         return {
           opacity: 1,
@@ -1013,12 +1177,7 @@ pane: 'routesPane',
         };
       },
 
-                    layer.on("click", function (e) {
-                    highlightRoute(layer);
-                    L.DomEvent.stopPropagation(e);
-                });
-        
-            onEachFeature: function (feature, layer) {
+      onEachFeature: function (feature, layer) {
 
         let source = feature.properties.Source;
 
@@ -1036,83 +1195,39 @@ pane: 'routesPane',
 
         layer.bindPopup(popupContent);
 
-          layer.on('click', function (e) {
+        layer.on('click', function (e) {
 
-  L.DomEvent.stopPropagation(e);   // ← ADD THIS LINE HERE
+          L.DomEvent.stopPropagation(e);
 
-  // Reset previous highlight
-  if (lastClickedRoute) {
-    lastClickedRoute.setStyle({
-      color: 'rgba(252,0,0,1.0)',
-      weight: 2,
-      dashArray: '4.0,4.0'
-    });
-  }
+          // reset previous route
+          if (activeRoute) {
+            resetRouteStyle(activeRoute);
+          }
 
- // Highlight this route
-  layer.setStyle({
-    color: 'yellow',
-    weight: 4,
-    dashArray: null
-  });
+          // highlight this route
+          highlightRouteUnified(layer);
+          activeRoute = layer;
 
-  lastClickedRoute = layer;
-
-  // Pan and open popup
-  map.panTo(e.latlng, { animate: true });
-  layer.openPopup(e.latlng);
-});
-
-         }
-
-    }).addTo(map);   // ✔ YES — keep this line
-
-  });
-   L.geoJSON(data, {
-
-  bubblingMouseEvents: false,
-
-  style: function(feature) {
-    return {
-      color: 'rgba(252,0,0,1.0)',
-      dashArray: '4.0,2.0',
-      weight: 10,
-      opacity: 0.001
-    };
-  },
-
-  onEachFeature: function(feature, layer) {
-
-    layer.bindPopup(`
-      <strong>Name: ${feature.properties.Name}</strong><br>
-      Type: ${feature.properties.Type}<br>
-      Network: ${feature.properties.Network}
-    `);
-
-    layer.on('click', function(e) {
-
-      if (lastClickedRoute) {
-        lastClickedRoute.setStyle({
-          color: 'rgba(252,0,0,1.0)',
-          weight: 2,
-          dashArray: '4.0,2.0'
+          map.panTo(e.latlng, { animate: true });
+          layer.openPopup(e.latlng);
         });
       }
 
-      layer.setStyle({
-        color: 'yellow',
-        weight: 5,
-        dashArray: null
-      });
+    }).addTo(Proposed_Routes);
 
-      lastClickedRoute = layer;
+  });
 
-      map.panTo(e.latlng);
-      layer.openPopup(e.latlng);
-    });
+
+// ======================
+// Optional: clear highlight when clicking map
+// ======================
+map.on('click', function () {
+  if (activeRoute) {
+    resetRouteStyle(activeRoute);
+    activeRoute = null;
   }
-
-}).addTo(map);*/      
+});
+     
  
         // Load and style Municipal Parks
     $.getJSON("data/Municipal_Parks.geojson", function(data) {
