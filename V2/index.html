@@ -579,7 +579,7 @@
 
     //Highlight globals
     var existingRoutesFeatures=[];
-    var highlightedRoute=null;
+     var activeRoute = null;
 
 
     //Linking to tile layers used as our basemaps
@@ -770,7 +770,57 @@ map.on('click', function(e) {
                 return getRouteStyle(feature, false);
             },
             interactive: true,
-            onEachFeature: function(feature, layer) {
+           onEachFeature: function(feature, layer) {
+
+  layer.routeCategory = "existing";
+  existingRoutesFeatures.push(layer);
+
+  // Safely get properties
+  var props = feature.properties || {};
+  var name = props.Name || props.name || 'Unnamed Route';
+  var type = props.Type || props.type || 'Unknown';
+  var tenure = props.Tenure || props.tenure || 'Unknown';
+  var source = props.Source || props.source || '';
+  var length = props.Shape_length || props.length || props.Length || 'Unknown';
+  var description = props.description || props.Description || 'No description available';
+  var surface = props.Surface || props.surface || 'Unknown';
+  var tct = props.Trans_Canada_Trail || props.trans_canada_trail || 'No';
+
+  var displayUrl = source.length > 40 ? source.substring(0, 40) + "[...]" : source;
+  var sourceLink = source ? '<a href="' + source + '" target="_blank">' + displayUrl + '</a>' : 'No source';
+
+  layer.bindPopup(
+    '<div class="popup">' +
+    '<table>' +
+      '<tr><td><b>Name:</b></td><td>' + name + '</td></tr>' +
+      '<tr><td><b>Type:</b></td><td>' + type + '</td></tr>' +
+      '<tr><td><b>Network:</b></td><td>' + tenure + '</td></tr>' +
+      '<tr><td><b>Source:</b></td><td>' + sourceLink + '</td></tr>' +
+      '<tr><td><b>Length (km):</b></td><td>' + length + '</td></tr>' +
+      '<tr><td><b>Description:</b></td><td><p style="margin:0; max-width:200px; white-space:normal;">' + description + '</p></td></tr>' +
+      '<tr><td><b>Surface:</b></td><td>' + surface + '</td></tr>' +
+      '<tr><td><b>Trans Canada Trail:</b></td><td>' + tct + '</td></tr>' +
+    '</table>' +
+    '</div>'
+  );
+
+  layer.on("click", function (e) {
+
+    L.DomEvent.stopPropagation(e);
+
+    // reset previous route
+    if (activeRoute) {
+      resetRouteStyle(activeRoute);
+    }
+
+    // highlight this route
+    highlightRouteUnified(layer);
+    activeRoute = layer;
+
+    layer.openPopup(e.latlng);
+  });
+}
+         /* onEachFeature: function(feature, layer) {
 
                 // Store reference to layer for filtering
                 layer.routeCategory="existing";
@@ -810,7 +860,7 @@ map.on('click', function(e) {
                     '</div>'
                 );
             }
-        }).addTo(Existing_Routes);
+        }).addTo(Existing_Routes);*/
         
         // Populate filter dropdowns after data is loaded
         populateFilterDropdowns(data);
@@ -866,7 +916,42 @@ fetch('data/Proposed_Routes.geojson')
         };
       },
 
-      onEachFeature: function (feature, layer) {
+     onEachFeature: function (feature, layer) {
+
+  let source = feature.properties.Source;
+
+  let sourceLink = source
+    ? `<a href="${source}" target="_blank">${source}</a>`
+    : 'No source';
+
+  let popupContent = `
+    <strong>Name: ${feature.properties.Name}</strong><br>
+    Type: ${feature.properties.Type}<br>
+    Network: ${feature.properties.Network}<br>
+    Jurisdiction: ${feature.properties.Municipality}<br>
+    Source: ${sourceLink}
+  `;
+
+  layer.bindPopup(popupContent);
+
+  layer.on('click', function (e) {
+
+    L.DomEvent.stopPropagation(e);
+
+    // reset previous route
+    if (activeRoute) {
+      resetRouteStyle(activeRoute);
+    }
+
+    // highlight this route
+    highlightRouteUnified(layer);
+    activeRoute = layer;
+
+    map.panTo(e.latlng, { animate: true });
+    layer.openPopup(e.latlng);
+  });
+}
+      /*onEachFeature: function (feature, layer) {
 
         let source = feature.properties.Source;
 
@@ -908,7 +993,7 @@ fetch('data/Proposed_Routes.geojson')
       }
 }).addTo(Proposed_Routes);
 
-  });
+  });*/
        /* let lastClickedRoute = null;   // Add this once above your fetch()
 
     fetch('data/Proposed_Routes.geojson')
