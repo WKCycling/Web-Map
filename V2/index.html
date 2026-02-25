@@ -931,109 +931,13 @@ $.getJSON("data/Proposed_Routes.geojson", function(data) {
         // Open popup where user clicked
         layer.openPopup(e.latlng);
     });
-}
-    /*onEachFeature: function(feature, layer) {
-
-  layer.routeCategory = "proposed";
-
-  var props = feature.properties || {};
-  var name = props.Name || 'Unnamed Route';
-  var type = props.Type || 'Unknown';
-  var network = props.Network || 'Unknown';
-  var municipality = props.Municipality || 'Unknown';
-  var source = props.Source || '';
-
-  var displayUrl = source.length > 40 ? source.substring(0,40) + "..." : source;
-  var sourceLink = source
-    ? '<a href="' + source + '" target="_blank">' + displayUrl + '</a>'
-    : 'No source';
-
-  var popupHtml =
-    '<div class="popup">' +
-      '<table>' +
-        '<tr><td><b>Name:</b></td><td>' + name + '</td></tr>' +
-        '<tr><td><b>Type:</b></td><td>' + type + '</td></tr>' +
-        '<tr><td><b>Network:</b></td><td>' + network + '</td></tr>' +
-        '<tr><td><b>Jurisdiction:</b></td><td>' + municipality + '</td></tr>' +
-        '<tr><td><b>Source:</b></td><td>' +
-          '<p style="margin:0; max-width:200px; white-space:normal;">' +
-            sourceLink +
-          '</p>' +
-        '</td></tr>' +
-      '</table>' +
-    '</div>';
-
-  layer.bindPopup(popupHtml);
-
-  layer.on("click", function(e) {
-
-    L.DomEvent.stopPropagation(e);
-
-    // reset previous route highlight
-    if (activeRoute) {
-      resetRouteStyle(activeRoute);
-    }
-
-    // highlight this route
-    highlightRouteUnified(layer);
-    activeRoute = layer;
-
-    // open popup at click location
-    layer.openPopup(e.latlng);
-  });
-} */
-   /* onEachFeature: function(feature, layer) {
-
-      // tag as proposed for highlight reset logic
-      layer.routeCategory = "proposed";
-
-      // Safely get properties
-      var props = feature.properties || {};
-      var name = props.Name || 'Unnamed Route';
-      var type = props.Type || 'Unknown';
-      var network = props.Network || 'Unknown';
-      var municipality = props.Municipality || 'Unknown';
-      var source = props.Source || '';
-
-      var displayUrl = source.length > 40 ? source.substring(0, 40) + "[...]" : source;
-      var sourceLink = source
-        ? '<a href="' + source + '" target="_blank">' + displayUrl + '</a>'
-        : 'No source';
-
-      var popupHtml =
-        '<div class="popup">' +
-          '<table>' +
-            '<tr><td><b>Name:</b></td><td>' + name + '</td></tr>' +
-            '<tr><td><b>Type:</b></td><td>' + type + '</td></tr>' +
-            '<tr><td><b>Network:</b></td><td>' + network + '</td></tr>' +
-            '<tr><td><b>Jurisdiction:</b></td><td>' + municipality + '</td></tr>' +
-            '<tr><td><b>Source:</b></td><td>' + sourceLink + '</td></tr>' +
-          '</table>' +
-        '</div>';
-
-      layer.bindPopup(popupHtml);
-
-      layer.on("click", function(e) {
-
-        // reset previous highlight
-        if (highlightedRoute) {
-          resetHighlightedRoute();
-        }
-
-        // highlight this route
-        highlightRoute(layer);
-
-        // open popup where user clicked
-        openFeaturePopup(layer, e);
-
-      });
-    }
+} 
 
   }).addTo(Proposed_Routes);
 
-}); */
-
-    // Load and style Municipal Boundaries
+});
+      
+      // Load and style Municipal Boundaries
     $.getJSON("data/Municipal_Boundaries.geojson", function(data) {
         L.geoJSON(data, {
             pane: 'boundariesPane',
