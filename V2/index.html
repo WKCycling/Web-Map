@@ -577,20 +577,29 @@ var Bonnington_Scrambler = L.layerGroup();
 var Log_Jam_Loop = L.layerGroup();
 var Priority_Improvements = L.layerGroup();
 
-
 // ======================
 // Highlight globals
 // ======================
 var activeRoute = null;
 var existingRoutesFeatures = [];
 
-// Highlight helpers
+// Base styles
 function resetRouteStyle(layer) {
-  layer.setStyle({
-    color: 'rgba(252,0,0,1.0)',
-    weight: 2,
-    dashArray: '4.0,4.0'
-  });
+  if (layer.routeCategory === "existing") {
+    layer.setStyle({
+      color: 'rgba(252,0,0,1.0)',
+      weight: 2,
+      dashArray: '4.0,4.0'
+    });
+  }
+
+  if (layer.routeCategory === "proposed") {
+    layer.setStyle({
+      color: 'rgba(252,0,0,1.0)',
+      weight: 2,
+      dashArray: '4.0,4.0'
+    });
+  }
 }
 
 function highlightRouteUnified(layer) {
@@ -612,7 +621,7 @@ fetch('data/Existing_Routes.geojson')
     L.geoJSON(data, {
       pane: 'routesPane',
 
-      style: function(feature) {
+      style: function() {
         return {
           opacity: 1,
           color: 'rgba(252,0,0,1.0)',
@@ -627,51 +636,45 @@ fetch('data/Existing_Routes.geojson')
         layer.routeCategory = "existing";
         existingRoutesFeatures.push(layer);
 
-        // Safely get properties
         var props = feature.properties || {};
-        var name = props.Name || props.name || 'Unnamed Route';
-        var type = props.Type || props.type || 'Unknown';
-        var tenure = props.Tenure || props.tenure || 'Unknown';
-        var source = props.Source || props.source || '';
-        var length = props.Shape_length || props.length || props.Length || 'Unknown';
-        var description = props.description || props.Description || 'No description available';
-        var surface = props.Surface || props.surface || 'Unknown';
-        var tct = props.Trans_Canada_Trail || props.trans_canada_trail || 'No';
+        var name = props.Name || 'Unnamed Route';
+        var type = props.Type || 'Unknown';
+        var tenure = props.Tenure || 'Unknown';
+        var source = props.Source || '';
+        var length = props.Shape_length || 'Unknown';
+        var description = props.Description || 'No description available';
+        var surface = props.Surface || 'Unknown';
+        var tct = props.Trans_Canada_Trail || 'No';
 
         var displayUrl = source.length > 40 ? source.substring(0, 40) + "[...]" : source;
-        var sourceLink = source
-          ? '<a href="' + source + '" target="_blank">' + displayUrl + '</a>'
-          : 'No source';
+        var sourceLink = source ? `<a href="${source}" target="_blank">${displayUrl}</a>` : 'No source';
 
-        var popupHtml =
-          '<div class="popup">' +
-            '<table>' +
-              '<tr><td><b>Name:</b></td><td>' + name + '</td></tr>' +
-              '<tr><td><b>Type:</b></td><td>' + type + '</td></tr>' +
-              '<tr><td><b>Network:</b></td><td>' + tenure + '</td></tr>' +
-              '<tr><td><b>Source:</b></td><td>' + sourceLink + '</td></tr>' +
-              '<tr><td><b>Length (km):</b></td><td>' + length + '</td></tr>' +
-              '<tr><td><b>Description:</b></td><td><p style="margin:0; max-width:200px; white-space:normal;">' + description + '</p></td></tr>' +
-              '<tr><td><b>Surface:</b></td><td>' + surface + '</td></tr>' +
-              '<tr><td><b>Trans Canada Trail:</b></td><td>' + tct + '</td></tr>' +
-            '</table>' +
-          '</div>';
+        var popupHtml = `
+          <div class="popup">
+            <table>
+              <tr><td><b>Name:</b></td><td>${name}</td></tr>
+              <tr><td><b>Type:</b></td><td>${type}</td></tr>
+              <tr><td><b>Network:</b></td><td>${tenure}</td></tr>
+              <tr><td><b>Source:</b></td><td>${sourceLink}</td></tr>
+              <tr><td><b>Length (km):</b></td><td>${length}</td></tr>
+              <tr><td><b>Description:</b></td><td>${description}</td></tr>
+              <tr><td><b>Surface:</b></td><td>${surface}</td></tr>
+              <tr><td><b>Trans Canada Trail:</b></td><td>${tct}</td></tr>
+            </table>
+          </div>
+        `;
 
         layer.bindPopup(popupHtml);
 
-        layer.on("click", function (e) {
-
+        layer.on("click", function(e) {
           L.DomEvent.stopPropagation(e);
 
-          // reset previous route
           if (activeRoute) {
             resetRouteStyle(activeRoute);
           }
 
-          // highlight this route
           highlightRouteUnified(layer);
           activeRoute = layer;
-
           layer.openPopup(e.latlng);
         });
       }
@@ -679,7 +682,6 @@ fetch('data/Existing_Routes.geojson')
     }).addTo(Existing_Routes);
 
     populateFilterDropdowns(data);
-
   });
 
 
@@ -694,46 +696,40 @@ fetch('data/Proposed_Routes.geojson')
       pane: 'routesPane',
       bubblingMouseEvents: false,
 
-      style: function(feature) {
+      style: function() {
         return {
           opacity: 1,
           color: 'rgba(252,0,0,1.0)',
           dashArray: '4.0,4.0',
-          lineCap: 'square',
-          lineJoin: 'bevel',
-          weight: 2.0,
+          weight: 2,
           fillOpacity: 0
         };
       },
 
-      onEachFeature: function (feature, layer) {
+      onEachFeature: function(feature, layer) {
 
-        let source = feature.properties.Source;
+        layer.routeCategory = "proposed";
 
-        let sourceLink = source
-          ? `<a href="${source}" target="_blank">${source}</a>`
-          : 'No source';
+        let source = feature.properties.Source || '';
+        let sourceLink = source ? `<a href="${source}" target="_blank">${source}</a>` : 'No source';
 
         let popupContent = `
-          <strong>Name: ${feature.properties.Name}</strong><br>
-          Type: ${feature.properties.Type}<br>
-          Network: ${feature.properties.Network}<br>
-          Jurisdiction: ${feature.properties.Municipality}<br>
-          Source: ${sourceLink}
+          <strong>Name:</strong> ${feature.properties.Name}<br>
+          <strong>Type:</strong> ${feature.properties.Type}<br>
+          <strong>Network:</strong> ${feature.properties.Network}<br>
+          <strong>Jurisdiction:</strong> ${feature.properties.Municipality}<br>
+          <strong>Source:</strong> ${sourceLink}
         `;
 
         layer.bindPopup(popupContent);
 
-        layer.on('click', function (e) {
-
+        layer.on('click', function(e) {
           L.DomEvent.stopPropagation(e);
 
-          // reset previous route
           if (activeRoute) {
             resetRouteStyle(activeRoute);
           }
 
-          // highlight this route
           highlightRouteUnified(layer);
           activeRoute = layer;
 
@@ -748,183 +744,13 @@ fetch('data/Proposed_Routes.geojson')
 
 
 // ======================
-// Optional: clear highlight when clicking map
+// Clear highlight when clicking empty map
 // ======================
-map.on('click', function () {
-  if (activeRoute) {
-    resetRouteStyle(activeRoute);
-    activeRoute = null;
-  }
-});
- 
-    //Linking to tile layers used as our basemaps
-    var cartoDB = L.tileLayer("https://a.basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png", {
-        attribution: '<a href="https://cartodb.com/basemaps/">Map tiles by CartoDB, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</a>',
-    }).addTo(map);
-
-    var esri = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
-        attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
-    });
-
-    var hillshadeLayer = L.tileLayer("hillshade_tiles/{z}/{x}/{y}.png", {
-        pane: 'terrainPane',
-        maxZoom: 14,
-        minZoom: 8,
-        opacity: 0.7,
-    }).addTo(map);
-
-    var contoursLayer = L.vectorGrid.protobuf('https://api.maptiler.com/tiles/contours-v2/{z}/{x}/{y}.pbf?key=MjRuIt3YXiPwNbQiRoht', {
-        pane: 'terrainPane',
-        vectorTileLayerStyles: {"contour": {color: "#c4d4f2", weight: 0.5}, "contour_ft": {opacity: 0}, "high-res": {opacity: 0}},
-        maxZoom: 14,
-        minZoom: 8,
-        attribution: '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>'
-    });
-
-    //**This next secion establishes the functions that are used within the web map, such as filters and the legend**
-    // Global variables for filtering
-
-    var routeFilters = {
-        type: 'all',
-        surface: 'all',
-        transCanadaTrail: false
-    };
-
-    function Label_Parks(feature, layer) {
-    if (!feature.properties['park_name']) return;
-
-    if (window.innerWidth < 768) {
-        // Mobile: tap to toggle tooltip
-        layer.on('click', function () {
-        layer.bindPopup(feature.properties['park_name']).openPopup();
-            });
-    } else {
-        // Desktop: hover tooltip
-        layer.bindTooltip(feature.properties['park_name'], {
-        className: 'Label_Parks',
-        sticky: true
-            });
-        }
-    }
-
-    // Function to get route style based on filter state
-    function getRouteStyle(feature, isDimmed) {
-        if (isDimmed) {
-            return {
-                color: "rgba(17,116,6,0.3)", 
-                weight: 3, 
-                opacity: 0.4
-            };
-        } else {
-            return {
-                color: "rgba(17,116,6,1.0)", 
-                weight: 3, 
-                opacity: 0.9
-            };
-        }
-    }
-
-    function highlightRoute(layer) {
-        resetHighlightedRoute();
-
-        highlightedRoute = layer;
-        highlightedRouteOriginalStyle = layer.options.style || null;
-
-        layer.setStyle({
-            color: "#f0fc03",
-            weight: 5,
-            opacity: 1,
-        });
-
-        layer.bringToFront();
-    }
-
-    function getExistingRouteBaseStyle(feature, dimmed) {
-        return getRouteStyle(feature, dimmed);
-    }
-
-    function getProposedRouteBaseStyle() {
-        return {
-            color: 'rgba(252,0,0,1.0)',
-            dashArray: '4,2',
-            weight: 1,
-            opacity: 1
-        };
-    }
-
-    function resetHighlightedRoute() {
-        if (!highlightedRoute) return;
-
-        if (highlightedRoute.routeCategory === "existing") {
-            var matches = featureMatchesFilters(highlightedRoute.feature);
-            highlightedRoute.setStyle(
-                getExistingRouteBaseStyle(highlightedRoute.feature, !matches)
-            );
-        }
-
-        if (highlightedRoute.routeCategory === "proposed") {
-            var matches = featureMatchesFilters(highlightedRoute.feature);
-            highlightedRoute.setStyle(
-                getProposedRouteBaseStyle()
-            );
-        }
-
-        highlightedRoute = null;
-    }
-        // Function to check if a feature matches current filters
-    function featureMatchesFilters(feature) {
-        var props = feature.properties;
-        
-        // Check type filter
-        if (routeFilters.type !== 'all' && props.Type !== routeFilters.type) {
-            return false;
-        }
-        
-        // Check surface filter
-        if (routeFilters.surface !== 'all' && props.Surface !== routeFilters.surface) {
-            return false;
-        }
-        
-        // Check Trans Canada Trail filter
-        if (routeFilters.transCanadaTrail && props.Trans_Canada_Trail !== true) {
-            return false;
-        }
-        
-        return true;
-    }
-
-    // Function to update route styling based on filters
-    function updateRouteFiltering() {
-        existingRoutesFeatures.forEach(function(layer) {
-            var matches = featureMatchesFilters(layer.feature);
-            if (highlightedRoute === layer && !matches){
-                resetHighlightedRoute();
-            }
-            if (layer !== highlightedRoute){
-                layer.setStyle(getRouteStyle(layer.feature, !matches));
-            }
-        });
-    }
-
-function showCoords(e) {
-  if (e.originalEvent._stopped) return;
-
-  let lat = e.latlng.lat.toFixed(6);
-  let lng = e.latlng.lng.toFixed(6);
-
-  L.popup()
-    .setLatLng(e.latlng)
-    .setContent(`Lat: ${lat}<br>Lng: ${lng}`)
-    .openOn(map);
-}
 map.on('click', function(e) {
-  L.popup()
-    .setLatLng(e.latlng)
-    .setContent(`Lat: ${e.latlng.lat}<br>Lng: ${e.latlng.lng}`)
-    .openOn(map);
-});
-       /* map.on('click', function(e) {
-  if (e.originalEvent._stopped) return;   // a feature was tapped
+  if (activeRoute) {
+    resetRouteStyle(activeRoute);
+    activeRoute = null;
+  }
 
   let lat = e.latlng.lat.toFixed(6);
   let lng = e.latlng.lng.toFixed(6);
@@ -933,301 +759,7 @@ map.on('click', function(e) {
     .setLatLng(e.latlng)
     .setContent(`Lat: ${lat}<br>Lng: ${lng}`)
     .openOn(map);
-});*/
-
-
-   // ======================
-// EXISTING ROUTES
-// ======================
-fetch('data/Existing_Routes.geojson')
-  .then(response => response.json())
-  .then(data => {
-
-    L.geoJSON(data, {
-      pane: 'routesPane',
-
-      style: function(feature) {
-        return {
-          opacity: 1,
-          color: 'rgba(252,0,0,1.0)',
-          dashArray: '4.0,4.0',
-          weight: 2,
-          fillOpacity: 0
-        };
-      },
-
-      onEachFeature: function(feature, layer) {
-
-        layer.routeCategory = "existing";
-        existingRoutesFeatures.push(layer);
-
-        // Safely get properties
-        var props = feature.properties || {};
-        var name = props.Name || props.name || 'Unnamed Route';
-        var type = props.Type || props.type || 'Unknown';
-        var tenure = props.Tenure || props.tenure || 'Unknown';
-        var source = props.Source || props.source || '';
-        var length = props.Shape_length || props.length || props.Length || 'Unknown';
-        var description = props.description || props.Description || 'No description available';
-        var surface = props.Surface || props.surface || 'Unknown';
-        var tct = props.Trans_Canada_Trail || props.trans_canada_trail || 'No';
-
-        var displayUrl = source.length > 40 ? source.substring(0, 40) + "[...]" : source;
-        var sourceLink = source
-          ? '<a href="' + source + '" target="_blank">' + displayUrl + '</a>'
-          : 'No source';
-
-        var popupHtml =
-          '<div class="popup">' +
-            '<table>' +
-              '<tr><td><b>Name:</b></td><td>' + name + '</td></tr>' +
-              '<tr><td><b>Type:</b></td><td>' + type + '</td></tr>' +
-              '<tr><td><b>Network:</b></td><td>' + tenure + '</td></tr>' +
-              '<tr><td><b>Source:</b></td><td>' + sourceLink + '</td></tr>' +
-              '<tr><td><b>Length (km):</b></td><td>' + length + '</td></tr>' +
-              '<tr><td><b>Description:</b></td><td><p style="margin:0; max-width:200px; white-space:normal;">' + description + '</p></td></tr>' +
-              '<tr><td><b>Surface:</b></td><td>' + surface + '</td></tr>' +
-              '<tr><td><b>Trans Canada Trail:</b></td><td>' + tct + '</td></tr>' +
-            '</table>' +
-          '</div>';
-
-        layer.bindPopup(popupHtml);
-
-        layer.on("click", function (e) {
-
-          L.DomEvent.stopPropagation(e);
-
-          // reset previous route
-          if (activeRoute) {
-            resetRouteStyle(activeRoute);
-          }
-
-          // highlight this route
-          highlightRouteUnified(layer);
-          activeRoute = layer;
-
-          layer.openPopup(e.latlng);
-        });
-      }
-
-    }).addTo(Existing_Routes);
-
-    populateFilterDropdowns(data);
-
-  });
-
-         /* onEachFeature: function(feature, layer) {
-
-                // Store reference to layer for filtering
-                layer.routeCategory="existing";
-                existingRoutesFeatures.push(layer);
-
-                layer.on("click", function (e) {
-                    highlightRoute(layer);
-                    L.DomEvent.stopPropagation(e);
-                });
-                
-                // Safely get properties with fallbacks
-                var props = feature.properties || {};
-                var name = props.Name || props.name || 'Unnamed Route';
-                var type = props.Type || props.type || 'Unknown';
-                var tenure = props.Tenure || props.tenure || 'Unknown';
-                var source = props.Source || props.source || '';
-                var length = props.Shape_length || props.length || props.Length || 'Unknown';
-                var description = props.description || props.Description || 'No description available';
-                var surface = props.Surface || props.surface || 'Unknown';
-                var tct = props.Trans_Canada_Trail || props.trans_canada_trail || 'No';
-                
-                var displayUrl = source.length > 40 ? source.substring(0, 40) + "[...]" : source;
-                var sourceLink = source ? '<a href="' + source + '" target="_blank">' + displayUrl + '</a>' : 'No source';
-                
-                layer.bindPopup(
-                    '<div class="popup">' +
-                    '<table>' +
-                        '<tr><td><b>Name:</b></td><td>' + name + '</td></tr>' +
-                        '<tr><td><b>Type:</b></td><td>' + type + '</td></tr>' +
-                        '<tr><td><b>Network:</b></td><td>' + tenure + '</td></tr>' +
-                        '<tr><td><b>Source:</b></td><td>' + sourceLink + '</td></tr>' +
-                        '<tr><td><b>Length (km):</b></td><td>' + length + '</td></tr>' +
-                        '<tr><td><b>Description:</b></td><td><p style="margin:0; max-width:200px; white-space:normal;">' + description + '</p></td></tr>' +
-                        '<tr><td><b>Surface:</b></td><td>' + surface + '</td></tr>' +
-                        '<tr><td><b>Trans Canada Trail:</b></td><td>' + tct + '</td></tr>' +
-                    '</table>' +
-                    '</div>'
-                );
-            }
-        }).addTo(Existing_Routes);*/
-        
-        // Populate filter dropdowns after data is loaded
-        populateFilterDropdowns(data);
-    });
-
-    // Function to populate filter dropdowns with unique values
-    function populateFilterDropdowns(geojsonData) {
-        var types = new Set();
-        var surfaces = new Set();
-        
-        geojsonData.features.forEach(function(feature) {
-            if (feature.properties.Type) types.add(feature.properties.Type);
-            if (feature.properties.Surface) surfaces.add(feature.properties.Surface);
-        });
-        
-        // Populate type dropdown
-        var typeSelect = document.getElementById('type-filter');
-        Array.from(types).sort().forEach(function(type) {
-            var option = document.createElement('option');
-            option.value = type;
-            option.textContent = type;
-            typeSelect.appendChild(option);
-        });
-        
-        // Populate surface dropdown  
-        var surfaceSelect = document.getElementById('surface-filter');
-        Array.from(surfaces).sort().forEach(function(surface) {
-            var option = document.createElement('option');
-            option.value = surface;
-            option.textContent = surface;
-            surfaceSelect.appendChild(option);
-        });
-    }
-let lastClickedRoute = null;
-
-fetch('data/Proposed_Routes.geojson')
-  .then(response => response.json())
-  .then(data => {
-
-    L.geoJSON(data, {
-      pane: 'routesPane',
-      bubblingMouseEvents: false,
-
-      style: function(feature) {
-        return {
-          opacity: 1,
-          color: 'rgba(252,0,0,1.0)',
-          dashArray: '4.0,4.0',
-          lineCap: 'square',
-          lineJoin: 'bevel',
-          weight: 2.0,
-          fillOpacity: 0
-        };
-      },
-
-      onEachFeature: function (feature, layer) {
-
-        let source = feature.properties.Source;
-
-        let sourceLink = source
-          ? `<a href="${source}" target="_blank">${source}</a>`
-          : 'No source';
-
-        let popupContent = `
-          <strong>Name: ${feature.properties.Name}</strong><br>
-          Type: ${feature.properties.Type}<br>
-          Network: ${feature.properties.Network}<br>
-          Jurisdiction: ${feature.properties.Municipality}<br>
-          Source: ${sourceLink}
-        `;
-
-        layer.bindPopup(popupContent);
-
-        layer.on('click', function (e) {
-
-          L.DomEvent.stopPropagation(e);
-
-          // reset previous route
-          if (activeRoute) {
-            resetRouteStyle(activeRoute);
-          }
-
-          // highlight this route
-          highlightRouteUnified(layer);
-          activeRoute = layer;
-
-          map.panTo(e.latlng, { animate: true });
-          layer.openPopup(e.latlng);
-        });
-      }
-
-    }).addTo(Proposed_Routes);
-
-  });
-     
-       /* let lastClickedRoute = null;   // Add this once above your fetch()
-
-    // ======================
-// PROPOSED ROUTES
-// ======================
-fetch('data/Proposed_Routes.geojson')
-  .then(response => response.json())
-  .then(data => {
-
-    L.geoJSON(data, {
-      pane: 'routesPane',
-      bubblingMouseEvents: false,
-
-      style: function(feature) {
-        return {
-          opacity: 1,
-          color: 'rgba(252,0,0,1.0)',
-          dashArray: '4.0,4.0',
-          lineCap: 'square',
-          lineJoin: 'bevel',
-          weight: 2.0,
-          fillOpacity: 0
-        };
-      },
-
-      onEachFeature: function (feature, layer) {
-
-        let source = feature.properties.Source;
-
-        let sourceLink = source
-          ? `<a href="${source}" target="_blank">${source}</a>`
-          : 'No source';
-
-        let popupContent = `
-          <strong>Name: ${feature.properties.Name}</strong><br>
-          Type: ${feature.properties.Type}<br>
-          Network: ${feature.properties.Network}<br>
-          Jurisdiction: ${feature.properties.Municipality}<br>
-          Source: ${sourceLink}
-        `;
-
-        layer.bindPopup(popupContent);
-
-        layer.on('click', function (e) {
-
-          L.DomEvent.stopPropagation(e);
-
-          // reset previous route
-          if (activeRoute) {
-            resetRouteStyle(activeRoute);
-          }
-
-          // highlight this route
-          highlightRouteUnified(layer);
-          activeRoute = layer;
-
-          map.panTo(e.latlng, { animate: true });
-          layer.openPopup(e.latlng);
-        });
-      }
-
-    }).addTo(Proposed_Routes);
-
-  });
-
-
-// ======================
-// Optional: clear highlight when clicking map
-// ======================
-map.on('click', function () {
-  if (activeRoute) {
-    resetRouteStyle(activeRoute);
-    activeRoute = null;
-  }
-});
-     
+});     
  
         // Load and style Municipal Parks
     $.getJSON("data/Municipal_Parks.geojson", function(data) {
