@@ -1114,7 +1114,7 @@ $.getJSON("data/Priority_Improvements.geojson", function(data) {
       layer.routeCategory = "priority";
 priorityImprovementsFeatures.push(layer);
 
-layer.on("clFick", function(e) {
+layer.on("click", function(e) {
   resetHighlightedRoute();
   highlightedRoute = layer;
   layer.setIcon(priorityHighlightIcon);
