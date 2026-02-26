@@ -1095,37 +1095,6 @@ $.getJSON("data/Priority_Improvements.geojson", function(data) {
 
   }).addTo(Priority_Improvements);
 });
- /*   //Load and Style Priority Improvement layer
-    $.getJSON("data/Priority_Improvements.geojson", function(data) {
-        L.geoJSON(data, {
-            attribution: "© 2025 West Kootenay Cycling Coalition and Contributors",
-            pane: 'pointsPane',
-            pointToLayer: function(feature, latlng) {
-                var Warning = L.icon({
-                    iconUrl: 'markers/Warning.svg',
-                    iconSize: [20, 20],
-                    iconAnchor: [5, 5] 
-                });
-                return L.marker(latlng, { icon: Warning });
-            },
-            //Allowing and formating popups
-            interactive: true,
-            onEachFeature: function(feature, layer) {
-                layer.bindPopup(
-                    '<div class="popup" style="width:600px;">' +
-                    '<table style="width:100%;">' +
-                        '<tr><td style="padding-right:15px;"><b>Name:</b></td><td>' + feature.properties.Name + '</td></tr>' +
-                        '<tr><td style="padding-right:15px;"><b>Description:</b></td><td>' + feature.properties.Description + '</td></tr>' +
-                        '<tr><td style="padding-right:15px;"><b>Comments:</b></td><td>' + feature.properties.Comments + '</td></tr>' +
-                        '<tr><td style="padding-right:15px;"><b>URL:</b></td><td>' + feature.properties.URL + '</td></tr>' +
-                        '<tr><td style="padding-right:15px;"><b>Priority:</b></td><td><p style="margin:0; max-width 600px; white-space:normal;">' + feature.properties.Priority + '</p></td></tr>' +
-                    '</table>' +
-                    '</div>',
-                    {maxWidth: 800}
-                );
-            }
-        }).addTo(Priority_Improvements);
-    });*/
 
     // Load and style BC Transit Stops
     $.getJSON("data/BC_Transit_Stops.geojson", function(data) {
