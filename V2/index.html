@@ -607,7 +607,41 @@ L.marker([49.5, -117.3]).addTo(map);
     var Santa_Rosa_Valleys_and_Vistas = L.layerGroup();
     var Bonnington_Scrambler= L.layerGroup();
     var Log_Jam_Loop = L.layerGroup();
-    var Priority_Improvements = L.layerGroup();addTo(map)
+  
+      // Layer group for Priority Improvements
+      var Priority_Improvements = L.layerGroup().addTo(map);
+
+    // Highlight globals
+    var existingRoutesFeatures = [];
+    var priorityImprovementsFeatures = [];
+    var highlightedRoute = null;
+
+// Icons for Priority Improvements
+var priorityIcon = L.icon({
+  iconUrl: 'markers/Warning.svg',
+  iconSize: [20, 20],
+  iconAnchor: [10, 10]
+});
+
+var priorityHighlightIcon = L.icon({
+  iconUrl: 'markers/Warning.svg',
+  iconSize: [30, 30],
+  iconAnchor: [15, 15]
+});
+      var Priority_Improvements = L.layerGroup().addTo(map);
+
+      // Icons for Priority Improvements
+      var priorityIcon = L.icon({
+      iconUrl: 'markers/Warning.svg',
+      iconSize: [20, 20],
+      iconAnchor: [10, 10]
+      });
+
+var priorityHighlightIcon = L.icon({
+  iconUrl: 'markers/Warning.svg',
+  iconSize: [30, 30],
+  iconAnchor: [15, 15]
+});
 
     //Highlight globals
     var existingRoutesFeatures=[];
@@ -709,25 +743,28 @@ L.marker([49.5, -117.3]).addTo(map);
         };
     }
 
-    function resetHighlightedRoute() {
-        if (!highlightedRoute) return;
+      function resetHighlightedRoute() {
+  if (!highlightedRoute) return;
 
-        if (highlightedRoute.routeCategory === "existing") {
-            var matches = featureMatchesFilters(highlightedRoute.feature);
-            highlightedRoute.setStyle(
-                getExistingRouteBaseStyle(highlightedRoute.feature, !matches)
-            );
-        }
-
-        if (highlightedRoute.routeCategory === "proposed") {
-            var matches = featureMatchesFilters(highlightedRoute.feature);
-            highlightedRoute.setStyle(
-                getProposedRouteBaseStyle()
-            );
-        }
-        if (highlightedRoute.routeCategory === "priority") {
-          highlightedRoute.setIcon(priorityIcon);
+  if (highlightedRoute.routeCategory === "existing") {
+    var matches = featureMatchesFilters(highlightedRoute.feature);
+    highlightedRoute.setStyle(
+      getExistingRouteBaseStyle(highlightedRoute.feature, !matches)
+    );
   }
+
+  if (highlightedRoute.routeCategory === "proposed") {
+    highlightedRoute.setStyle(getProposedRouteBaseStyle());
+  }
+
+  if (highlightedRoute.routeCategory === "priority") {
+    highlightedRoute.setIcon(priorityIcon);
+  }
+
+  highlightedRoute = null;
+}
+      
+  
       
 //Icon for Priority_Improvements
   var priorityIcon = L.icon({
@@ -1074,15 +1111,15 @@ $.getJSON("data/Priority_Improvements.geojson", function(data) {
 
     onEachFeature: function(feature, layer) {
 
-      // 🔹 tag this layer type
       layer.routeCategory = "priority";
-      priorityImprovementsFeatures.push(layer);
+priorityImprovementsFeatures.push(layer);
 
-      // 🔹 click = highlight
-      layer.on("click", function(e) {
-        highlightRoute(layer);
-        L.DomEvent.stopPropagation(e);
-      });
+layer.on("clFick", function(e) {
+  resetHighlightedRoute();
+  highlightedRoute = layer;
+  layer.setIcon(priorityHighlightIcon);
+  L.DomEvent.stopPropagation(e);
+});
 
       // Safely get properties
       var props = feature.properties || {};
