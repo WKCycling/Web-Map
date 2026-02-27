@@ -485,7 +485,11 @@ if (layer.routeCategory === "priority") {
             highlightedRoute = null;
             return;
 }
-        if (highlightedRoute.routeCategory === "existing") {
+      if (layer.routeCategory === "priority") {
+           layer.setIcon(priorityHighlightIcon);
+           highlightedRoute = layer;
+} 
+      if (highlightedRoute.routeCategory === "existing") {
             var matches = featureMatchesFilters(highlightedRoute.feature);
             highlightedRoute.setStyle(
                 getExistingRouteBaseStyle(highlightedRoute.feature, !matches)
