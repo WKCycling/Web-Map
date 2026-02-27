@@ -852,8 +852,6 @@ $.getJSON("data/Proposed_Routes.geojson", function(data) {
 $.getJSON("data/Priority_Improvements.geojson", function(data) {
   L.geoJSON(data, {
     attribution: "© 2025 West Kootenay Cycling Coalition and Contributors",
-    pane: 'pointsPane',
-
 
     pointToLayer: function(feature, latlng) {
   return L.marker(latlng, { icon: priorityIcon });
