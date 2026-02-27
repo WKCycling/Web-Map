@@ -583,6 +583,11 @@ function openFeaturePopup(layer, e) {
                     highlightRoute(layer);
                     L.DomEvent.stopPropagation(e);
                 });
+              layer.on("click", function(e) {
+  console.log("Existing route clicked");
+  highlightRoute(layer);
+  L.DomEvent.stopPropagation(e);
+});
                 
                 // Safely get properties with fallbacks
                 var props = feature.properties || {};
