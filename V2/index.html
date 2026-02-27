@@ -861,7 +861,9 @@ $.getJSON("data/Priority_Improvements.geojson", function(data) {
     interactive: true,
 
     onEachFeature: function(feature, layer) {
-
+      layer.routeCategory = "priority";
+      priorityImprovementsFeatures.push(layer);
+    
       // Safely get properties
       var props = feature.properties || {};
       var name = props.Name || 'Unnamed Improvement';
