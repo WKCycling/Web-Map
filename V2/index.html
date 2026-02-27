@@ -374,7 +374,7 @@ var priorityHighlightIcon = L.icon({
     var Bonnington_Scrambler= L.layerGroup();
     var Log_Jam_Loop = L.layerGroup();
     var Priority_Improvements = L.layerGroup().addTo(map);
-
+ 
     //Highlight globals
     var existingRoutesFeatures=[];
     var highlightedRoute=null;
@@ -901,8 +901,8 @@ layer.on("click", function(e) {
 });
       layer.bindPopup(popupHtml);
     }
-
-  }).addTo(Priority_Improvements);
+  }).addTo(map);
+ 
 });
 
     // Load and style BC Transit Stops
