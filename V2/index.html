@@ -575,11 +575,10 @@ function openFeaturePopup(layer, e) {
             },
             interactive: true,
             onEachFeature: function(feature, layer) {
-
+               existingRoutesFeatures.push(layer);
                 // Store reference to layer for filtering
                 layer.routeCategory="existing";
-                existingRoutesFeatures.push(layer);
-
+              
                 layer.on("click", function (e) {
                     highlightRoute(layer);
                     L.DomEvent.stopPropagation(e);
