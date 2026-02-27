@@ -878,7 +878,7 @@ $.getJSON("data/Priority_Improvements.geojson", function(data) {
     interactive: true,
 
     onEachFeature: function(feature, layer) {
-
+      layer.routeCategory = "priority";
       // Safely get properties
       var props = feature.properties || {};
       var name = props.Name || 'Unnamed Improvement';
@@ -910,7 +910,7 @@ $.getJSON("data/Priority_Improvements.geojson", function(data) {
 
       layer.bindPopup(popupHtml);
       layer.routeCategory = "priority";
-priorityImprovementsFeatures.push(layer);
+      priorityImprovementsFeatures.push(layer);
 
 layer.on("click", function(e) {
   highlightRoute(layer);
