@@ -326,6 +326,18 @@
         }
     }).addTo(map);
 
+     var priorityIcon = L.icon({
+  iconUrl: 'markers/Warning.svg',
+  iconSize: [20, 20],
+  iconAnchor: [5, 5]
+});
+
+var priorityHighlightIcon = L.icon({
+  iconUrl: 'markers/Warning.svg',
+  iconSize: [28, 28],
+  iconAnchor: [7, 7]
+});
+      
     // Creating custom panes for better layer organization
     map.createPane('terrainPane');
     map.getPane('terrainPane').style.zIndex = 250;
