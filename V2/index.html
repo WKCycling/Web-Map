@@ -477,7 +477,8 @@ if (layer.routeCategory === "priority") {
     }
 
     function resetHighlightedRoute() {
-        if (!highlightedRoute) return;
+       resetHighlightedRoute(); 
+      if (!highlightedRoute) return;
 
         if (highlightedRoute.routeCategory === "priority") {
             highlightedRoute.setIcon(priorityNormalIcon);
