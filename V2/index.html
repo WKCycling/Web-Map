@@ -447,15 +447,27 @@ var priorityHighlightIcon = L.icon({
         }
     }
 
-    function highlightRoute(layer) {
-        resetHighlightedRoute();
-if (layer.routeCategory === "priority") {
+      function highlightRoute(layer) {
+    resetHighlightedRoute();
+
+    highlightedRoute = layer;
+
+    // Priority Improvements = markers (use icon)
+    if (layer.routeCategory === "priority") {
+        layer.setIcon(priorityHighlightIcon);
+        return;
+    }
+
+    // Existing & Proposed routes = lines (use style)
     layer.setStyle({
-        color: 'yellow',
-        weight: 4,
-        dashArray: ''
+        color: "#f0fc03",
+        weight: 5,
+        opacity: 1
     });
+
+    layer.bringToFront();
 }
+
         highlightedRoute = layer;
         highlightedRouteOriginalStyle = layer.options.style || null;
 
