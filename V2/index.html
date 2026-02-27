@@ -854,15 +854,10 @@ $.getJSON("data/Priority_Improvements.geojson", function(data) {
     attribution: "© 2025 West Kootenay Cycling Coalition and Contributors",
     pane: 'pointsPane',
 
-    pointToLayer: function(feature, latlng) {
-      var Warning = L.icon({
-        iconUrl: 'markers/Warning.svg',
-        iconSize: [20, 20],
-        iconAnchor: [5, 5]
-      });
-      return L.marker(latlng, { icon: Warning });
-    },
 
+    pointToLayer: function(feature, latlng) {
+  return L.marker(latlng, { icon: priorityIcon });
+},
     interactive: true,
 
     onEachFeature: function(feature, layer) {
