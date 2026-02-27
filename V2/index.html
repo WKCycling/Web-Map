@@ -449,6 +449,7 @@ var priorityHighlightIcon = L.icon({
     }
 
     function highlightRoute(layer) {
+      console.log("highlightRoute called for", layer.routeCategory);
         resetHighlightedRoute();
 if (layer.routeCategory === "priority") {
   layer.setIcon(priorityHighlightIcon);
