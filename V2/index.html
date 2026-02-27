@@ -884,6 +884,14 @@ $.getJSON("data/Priority_Improvements.geojson", function(data) {
           '</table>' +
         '</div>';
 
+      layer.routeCategory = "priority";
+
+layer.on("click", function(e) {
+  resetHighlightedRoute();
+  highlightedRoute = layer;
+  layer.setIcon(priorityHighlightIcon);
+  L.DomEvent.stopPropagation(e);
+});
       layer.bindPopup(popupHtml);
     }
 
