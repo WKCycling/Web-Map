@@ -480,6 +480,11 @@ if (layer.routeCategory === "priority") {
     function resetHighlightedRoute() {
         if (!highlightedRoute) return;
 
+        if (highlightedRoute.routeCategory === "priority") {
+            highlightedRoute.setIcon(priorityNormalIcon);
+            highlightedRoute = null;
+            return;
+}
         if (highlightedRoute.routeCategory === "existing") {
             var matches = featureMatchesFilters(highlightedRoute.feature);
             highlightedRoute.setStyle(
