@@ -690,6 +690,46 @@ $.getJSON("data/Proposed_Routes.geojson", function(data) {
   }).addTo(Proposed_Routes);
 
 });
+
+             // Load and style Municipal Parks
+    $.getJSON("data/Municipal_Parks.geojson", function(data) {
+        L.geoJSON(data, {
+            attribution: '©<a href="https://www2.gov.bc.ca/gov/content/data/policy-standards/data-policies/open-data/open-government-licence-bc">Open Government Licence - British Columbia</a>',
+            style: {
+                opacity: 1,
+                color: 'rgba(37,96,18,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(114,155,111,0.6039215686274509)'
+            },
+            interactive: true,
+            onEachFeature: Label_Parks
+        }).addTo(Municipal_Parks);
+    });
+
+    // Load and style Provincial Parks
+    $.getJSON("data/Provincial_Parks.geojson", function(data) {
+        L.geoJSON(data, {
+            attribution: '©<a href="https://www2.gov.bc.ca/gov/content/data/policy-standards/data-policies/open-data/open-government-licence-bc">Open Government Licence - British Columbia</a>',
+            style: {   
+                opacity: 1,
+                color: 'rgba(37,96,18,1.0)',
+                dashArray: '5.0,1.0',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.5, 
+                fill: true,
+                fillOpacity: 0.6,
+                fillColor: 'rgba(114,155,111,0.6039215686274509)'
+            },
+            interactive: true,
+            onEachFeature: Label_Parks
+        }).addTo(Provincial_Parks);
+    });
       
       // Load and style Municipal Boundaries
     $.getJSON("data/Municipal_Boundaries.geojson", function(data) {
