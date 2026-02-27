@@ -896,9 +896,7 @@ $.getJSON("data/Priority_Improvements.geojson", function(data) {
       layer.routeCategory = "priority";
 
 layer.on("click", function(e) {
-  resetHighlightedRoute();
-  highlightedRoute = layer;
-  layer.setIcon(priorityHighlightIcon);
+  highlightRoute(layer);
   L.DomEvent.stopPropagation(e);
 });
       layer.bindPopup(popupHtml);
