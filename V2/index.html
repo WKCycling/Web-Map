@@ -450,9 +450,14 @@ var priorityHighlightIcon = L.icon({
 
     function highlightRoute(layer) {
         resetHighlightedRoute();
-if (layer.routeCategory === "priority") {
-  layer.setIcon(priorityHighlightIcon);
-  highlightedRoute = layer;
+  if (layer.routeCategory === "priority") {
+    layer.setIcon(priorityHighlightIcon);
+}
+     highlightedRoute = layer;
+}
+      if (layer.routeCategory === "priority") {
+      layer.setIcon(priorityHighlightIcon);
+      highlightedRoute = layer;
 }
             layer.setStyle({
             color: "#f0fc03",
