@@ -460,7 +460,13 @@ if (layer.routeCategory === "priority") {
         highlightedRoute = layer;
         highlightedRouteOriginalStyle = layer.options.style || null;
 
-        layer.setStyle({
+        if (layer.routeCategory === "priority") {
+        resetHighlightedRoute();
+        highlightedRoute = layer;
+        layer.setIcon(priorityHighlightIcon);
+        return;
+}
+            layer.setStyle({
             color: "#f0fc03",
             weight: 5,
             opacity: 1,
