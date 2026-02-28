@@ -735,7 +735,7 @@ $.getJSON("data/Proposed_Routes.geojson", function(data) {
                 fillOpacity: 1,
                 fillColor: 'rgba(114,155,111,0.6039215686274509)'
             },
-            interactive: true,
+            interactive: false,
             onEachFeature: Label_Parks
         }).addTo(map);
     });
@@ -755,7 +755,7 @@ $.getJSON("data/Proposed_Routes.geojson", function(data) {
                 fillOpacity: 0.6,
                 fillColor: 'rgba(114,155,111,0.6039215686274509)'
             },
-            interactive: true,
+            interactive: false,
             onEachFeature: Label_Parks
         }).addTo(Provincial_Parks);
     });
