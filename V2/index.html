@@ -566,7 +566,8 @@ function openFeaturePopup(layer, e) {
 }
       
     // Load Existing Routes with filtering capability
-    $.getJSON("data/Existing_Routes.geojson", function(data) {
+
+      $.getJSON("data/Existing_Routes.geojson", function(data) {
         L.geoJSON(data, {
             pane: 'routesPane',
             attribution: "© 2025 West Kootenay Cycling Coalition and Contributors",
@@ -575,20 +576,28 @@ function openFeaturePopup(layer, e) {
             },
             interactive: true,
             onEachFeature: function(feature, layer) {
-               existingRoutesFeatures.push(layer);
-                // Store reference to layer for filtering
-                layer.routeCategory="existing";
-              
-                layer.on("click", function (e) {
-                    highlightRoute(layer);
-                    L.DomEvent.stopPropagation(e);
-                });
-              layer.on("click", function(e) {
-  console.log("Existing route clicked");
-  highlightRoute(layer);
-  L.DomEvent.stopPropagation(e);
-});
-                
+                  onEachFeature: function(feature, layer) {
+
+  existingRoutesFeatures.push(layer);
+
+  layer.routeCategory = "existing";
+
+  // Build popup (use your existing popupHtml code here)
+  var props = feature.properties || {};
+  var name = props.Name || "Unnamed Route";
+
+  var popupHtml =
+    "<b>Name:</b> " + name;
+
+  layer.bindPopup(popupHtml);
+
+  layer.on("click", function(e) {
+    console.log("Existing route clicked");
+    highlightRoute(layer);
+    L.DomEvent.stopPropagation(e);
+  });
+}
+               
                 // Safely get properties with fallbacks
                 var props = feature.properties || {};
                 var name = props.Name || props.name || 'Unnamed Route';
@@ -970,11 +979,14 @@ $.getJSON("data/Priority_Improvements.geojson", function(data) {
 
       layer.routeCategory = "priority";
 
-      layer.bindPopup(popupHtml).on("click", function(e) {
+
+layer.bindPopup(popupHtml);
+
+layer.on("click", function(e) {
   highlightRoute(layer);
+  // DO NOT use L.DomEvent.stopPropagation for Priority
 });
-      layer.bindPopup(popupHtml);
-    }
+       }
   }).addTo(map);
  
 });*/
