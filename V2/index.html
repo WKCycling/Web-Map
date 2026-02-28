@@ -1206,7 +1206,7 @@ defaultLayers.forEach(l => l.addTo(map));
     const legendContainer = new LegendContainer();
     legendContainer.addTo(map);
 
-//var treeControl = L.control.layers.tree(
+var treeControl = L.control.layers.tree(
   {
     label: '<b>Base Maps</b>',
     children: [
@@ -1283,7 +1283,7 @@ defaultLayers.forEach(l => l.addTo(map));
     collapsed: false,
     position: 'topright'
   }
-//).addTo(map);
+).addTo(map);
      
         const legendBody = document.querySelector('.legend-body');
         const treeEl = treeControl.getContainer();
