@@ -448,22 +448,29 @@ var priorityHighlightIcon = L.icon({
         }
     }
 
-    function highlightRoute(layer) {
-      console.log("highlightRoute called for", layer.routeCategory);
-        resetHighlightedRoute();
-if (layer.routeCategory === "priority") {
-  layer.setIcon(priorityHighlightIcon);
+      function highlightRoute(layer) {
+  console.log("highlightRoute called for", layer.routeCategory);
+
+  resetHighlightedRoute();
+
   highlightedRoute = layer;
+
+  // PRIORITY = marker (icon)
+  if (layer.routeCategory === "priority") {
+    layer.setIcon(priorityHighlightIcon);
+    return; // markers do not use setStyle
+  }
+
+  // EXISTING / PROPOSED = polylines
+  layer.setStyle({
+    color: "#f0fc03",
+    weight: 5,
+    opacity: 1
+  });
+
+  layer.bringToFront();
 }
-            layer.setStyle({
-            color: "#f0fc03",
-            weight: 5,
-            opacity: 1,
-        });
-
-        layer.bringToFront();
-    }
-
+      
     function getExistingRouteBaseStyle(feature, dimmed) {
         return getRouteStyle(feature, dimmed);
     }
@@ -477,35 +484,28 @@ if (layer.routeCategory === "priority") {
         };
     }
 
-    function resetHighlightedRoute() {
-       resetHighlightedRoute(); 
-      if (!highlightedRoute) return;
 
-        if (highlightedRoute.routeCategory === "priority") {
-            highlightedRoute.setIcon(priorityNormalIcon);
-            highlightedRoute = null;
-            return;
+      function resetHighlightedRoute() {
+  if (!highlightedRoute) return;
+
+  // PRIORITY marker reset
+  if (highlightedRoute.routeCategory === "priority") {
+    highlightedRoute.setIcon(priorityDefaultIcon);
+  }
+
+  // EXISTING routes reset
+  if (highlightedRoute.routeCategory === "existing") {
+    highlightedRoute.setStyle(getExistingRouteBaseStyle(highlightedRoute.feature));
+  }
+
+  // PROPOSED routes reset
+  if (highlightedRoute.routeCategory === "proposed") {
+    highlightedRoute.setStyle(getProposedRouteBaseStyle(highlightedRoute.feature));
+  }
+
+  highlightedRoute = null;
 }
-      if (layer.routeCategory === "priority") {
-           layer.setIcon(priorityHighlightIcon);
-           highlightedRoute = layer;
-} 
-      if (highlightedRoute.routeCategory === "existing") {
-            var matches = featureMatchesFilters(highlightedRoute.feature);
-            highlightedRoute.setStyle(
-                getExistingRouteBaseStyle(highlightedRoute.feature, !matches)
-            );
-        }
 
-        if (highlightedRoute.routeCategory === "proposed") {
-            var matches = featureMatchesFilters(highlightedRoute.feature);
-            highlightedRoute.setStyle(
-                getProposedRouteBaseStyle()
-            );
-        }
-
-        highlightedRoute = null;
-    }
         // Function to check if a feature matches current filters
     function featureMatchesFilters(feature) {
         var props = feature.properties;
