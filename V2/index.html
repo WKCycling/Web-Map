@@ -1206,95 +1206,85 @@ defaultLayers.forEach(l => l.addTo(map));
     const legendContainer = new LegendContainer();
     legendContainer.addTo(map);
 
-    var treeControl = L.control.layers.tree(
-            {
-                label: '<b>Base Maps</b>',
-                children: [
-                    {label: 'CartoDB', layer: cartoDB},
-                    {label: 'Imagery', layer: esri}
-                ]
-            },
-            {
-              
-              label: '<b>Overlays</b>',
-selectAllCheckbox: true,
-children: [
+
+      var treeControl = L.control.layers.tree(
   {
-    label: '<b>Terrain Overlays</b>',
-    selectAllCheckbox: false,
+    label: '<b>Base Maps</b>',
     children: [
-      // {label: createLegendIcon("hillshade.png", "Hillshade"), layer: hillshadeLayer},
-      // {label: createLegendIcon("contours.png", "Contours"), layer: contoursLayer}
+      { label: 'CartoDB', layer: cartoDB },
+      { label: 'Imagery', layer: esri }
     ]
   },
-]
-             /* label: '<b>Overlays</b>',
-                selectAllCheckbox: true,
-                children: [
-                    {
-                        label: '<b>Terrain Overlays</b>',
-                        selectAllCheckbox: false,
-                        children: [
-                            {label: createLegendIcon("hillshade.png", "Hillshade"), layer: hillshadeLayer},
-                            {label: createLegendIcon("contours.png", "Contours"), layer: contoursLayer}
-                        ]
-                    },*/
-                   
-{
-                        label: '<b>Bike Routes</b>',
-                        selectAllCheckbox: false,
-                        children: [
-                            {label: createLegendIcon("existing_routes.png", "Existing Routes"), layer: Existing_Routes},
-                            {label: '<span class="legend-proposed-routes">'+createLegendIcon("proposed_routes.png", "Proposed Routes")+'</span>', layer: Proposed_Routes},
-                            {label: createLegendIcon("Warning.svg", "Priority Improvements"), layer: Priority_Improvements},
-                            {
-                                label: '<b>Bike Packing Routes</b>',
-                                selectAllCheckbox: false,
-                                children: [
-                                    {label: createLegendIcon("frog_peak.png", "Frog Peak Loop"), layer: Frog_Peak_Loop},
-                                    {label: createLegendIcon("kootenay_confluence.png", "Kootenay Confluence"), layer: Kootenay_Confluence},
-                                    {label: createLegendIcon("santa_rosa.png", "Santa Rosa Valleys and Vistas"), layer: Santa_Rosa_Valleys_and_Vistas},
-                                    {label: createLegendIcon("bonnington_scrambler.png", "Bonnington Scrambler"), layer: Bonnington_Scrambler},
-                                    {label: createLegendIcon("log_jam_loop.png", "Log Jam Loop"), layer: Log_Jam_Loop}
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        label: '<b>Parks</b>',
-                        selectAllCheckbox: false,
-                        children: [
-                            {label: '<span class="legend-municipal-parks">'+createLegendIcon("municipal_parks.png", "Municipal Parks")+'</span>', layer: Municipal_Parks},
-                            {label: createLegendIcon("provincial_parks.png", "Provincial Parks"), layer: Provincial_Parks}
-                        ]
-                    },
-                    {
-                        label: '<b>Boundaries</b>',
-                        selectAllCheckbox: false,
-                        children: [
-                            {label:'<span class="legend-municipal-boundaries">'+createLegendIcon("municipal_boundaries.png", "Municipal Boundaries")+'</span>', layer: Municipal_Boundaries},
-                            {label: createLegendIcon("regional_districts.png", "Regional Districts"), layer: Regional_Districts_Boundaries}
-                        ]
-                    },
-                    {label: createLegendIcon("bike_shops.png", "Bike Shops"), layer: Bike_Shops},
-                    {label: createLegendIcon("picnic-2.png", "Recreation Sites"), layer: Recreation_Sites},
-                    {label: createLegendIcon("bc_transit.png", "BC Transit Stops"), layer: BC_Transit_Stops}
-                    //**Adding new layer element to the legend
-                    //{label: createLegendIcon("New Layer Name"), layer: New_Layer}
-                ]
-            },
-            {
-                namedToggle: true,
-                selectorBack: false,
-                closedSymbol: '&#8862; &#x1f5c0;',
-                openedSymbol: '&#8863; &#x1f5c1;',
-                spaceSymbol: '&#x00A0;&#x00A0;&#x00A0;',
-                collapsed: false,
-                position: 'topright'
-            }
-        ).addTo(map);
+  {
+    label: '<b>Overlays</b>',
+    selectAllCheckbox: true,
+    children: [
 
+      {
+        label: '<b>Terrain Overlays</b>',
+        selectAllCheckbox: false,
+        children: [
+          // { label: createLegendIcon("hillshade.png", "Hillshade"), layer: hillshadeLayer },
+          // { label: createLegendIcon("contours.png", "Contours"), layer: contoursLayer }
+        ]
+      },
 
+      {
+        label: '<b>Bike Routes</b>',
+        selectAllCheckbox: false,
+        children: [
+          { label: createLegendIcon("existing_routes.png", "Existing Routes"), layer: Existing_Routes },
+          { label: '<span class="legend-proposed-routes">' + createLegendIcon("proposed_routes.png", "Proposed Routes") + '</span>', layer: Proposed_Routes },
+          { label: createLegendIcon("Warning.svg", "Priority Improvements"), layer: Priority_Improvements },
+          {
+            label: '<b>Bike Packing Routes</b>',
+            selectAllCheckbox: false,
+            children: [
+              { label: createLegendIcon("frog_peak.png", "Frog Peak Loop"), layer: Frog_Peak_Loop },
+              { label: createLegendIcon("kootenay_confluence.png", "Kootenay Confluence"), layer: Kootenay_Confluence },
+              { label: createLegendIcon("santa_rosa.png", "Santa Rosa Valleys and Vistas"), layer: Santa_Rosa_Valleys_and_Vistas },
+              { label: createLegendIcon("bonnington_scrambler.png", "Bonnington Scrambler"), layer: Bonnington_Scrambler },
+              { label: createLegendIcon("log_jam_loop.png", "Log Jam Loop"), layer: Log_Jam_Loop }
+            ]
+          }
+        ]
+      },
+
+      {
+        label: '<b>Parks</b>',
+        selectAllCheckbox: false,
+        children: [
+          { label: '<span class="legend-municipal-parks">' + createLegendIcon("municipal_parks.png", "Municipal Parks") + '</span>', layer: Municipal_Parks },
+          { label: createLegendIcon("provincial_parks.png", "Provincial Parks"), layer: Provincial_Parks }
+        ]
+      },
+
+      {
+        label: '<b>Boundaries</b>',
+        selectAllCheckbox: false,
+        children: [
+          { label: '<span class="legend-municipal-boundaries">' + createLegendIcon("municipal_boundaries.png", "Municipal Boundaries") + '</span>', layer: Municipal_Boundaries },
+          { label: createLegendIcon("regional_districts.png", "Regional Districts"), layer: Regional_Districts_Boundaries }
+        ]
+      },
+
+      { label: createLegendIcon("bike_shops.png", "Bike Shops"), layer: Bike_Shops },
+      { label: createLegendIcon("picnic-2.png", "Recreation Sites"), layer: Recreation_Sites },
+      { label: createLegendIcon("bc_transit.png", "BC Transit Stops"), layer: BC_Transit_Stops }
+
+    ]
+  },
+  {
+    namedToggle: true,
+    selectorBack: false,
+    closedSymbol: '&#8862; &#x1f5c0;',
+    openedSymbol: '&#8863; &#x1f5c1;',
+    spaceSymbol: '&#x00A0;&#x00A0;&#x00A0;',
+    collapsed: false,
+    position: 'topright'
+  }
+).addTo(map);
+    
         const legendBody = document.querySelector('.legend-body');
         const treeEl = treeControl.getContainer();
 
