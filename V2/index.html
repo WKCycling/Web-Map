@@ -1206,8 +1206,7 @@ defaultLayers.forEach(l => l.addTo(map));
     const legendContainer = new LegendContainer();
     legendContainer.addTo(map);
 
-
-      var treeControl = L.control.layers.tree(
+var treeControl = L.control.layers.tree(
   {
     label: '<b>Base Maps</b>',
     children: [
@@ -1234,8 +1233,9 @@ defaultLayers.forEach(l => l.addTo(map));
         selectAllCheckbox: false,
         children: [
           { label: createLegendIcon("existing_routes.png", "Existing Routes"), layer: Existing_Routes },
-          { label: '<span class="legend-proposed-routes">' + createLegendIcon("proposed_routes.png", "Proposed Routes") + '</span>', layer: Proposed_Routes },
+          { label: createLegendIcon("proposed_routes.png", "Proposed Routes"), layer: Proposed_Routes },
           { label: createLegendIcon("Warning.svg", "Priority Improvements"), layer: Priority_Improvements },
+
           {
             label: '<b>Bike Packing Routes</b>',
             selectAllCheckbox: false,
@@ -1254,7 +1254,7 @@ defaultLayers.forEach(l => l.addTo(map));
         label: '<b>Parks</b>',
         selectAllCheckbox: false,
         children: [
-          { label: '<span class="legend-municipal-parks">' + createLegendIcon("municipal_parks.png", "Municipal Parks") + '</span>', layer: Municipal_Parks },
+          { label: createLegendIcon("municipal_parks.png", "Municipal Parks"), layer: Municipal_Parks },
           { label: createLegendIcon("provincial_parks.png", "Provincial Parks"), layer: Provincial_Parks }
         ]
       },
@@ -1263,7 +1263,7 @@ defaultLayers.forEach(l => l.addTo(map));
         label: '<b>Boundaries</b>',
         selectAllCheckbox: false,
         children: [
-          { label: '<span class="legend-municipal-boundaries">' + createLegendIcon("municipal_boundaries.png", "Municipal Boundaries") + '</span>', layer: Municipal_Boundaries },
+          { label: createLegendIcon("municipal_boundaries.png", "Municipal Boundaries"), layer: Municipal_Boundaries },
           { label: createLegendIcon("regional_districts.png", "Regional Districts"), layer: Regional_Districts_Boundaries }
         ]
       },
@@ -1284,7 +1284,7 @@ defaultLayers.forEach(l => l.addTo(map));
     position: 'topright'
   }
 ).addTo(map);
-    
+     
         const legendBody = document.querySelector('.legend-body');
         const treeEl = treeControl.getContainer();
 
@@ -1510,16 +1510,15 @@ defaultLayers.forEach(l => l.addTo(map));
         }
     }
 
-    function collapseFilter() {
-        var filterContent = document.querySelector('.filter-content');
-        var filterArrow = document.querySelector('.filter-arrow');
-        
-        if (!filterContent.classList.contains('collapsed')) {
-            filterContent.classList.add('collapsed');
-            filterArrow.style.transform = 'rotate(180deg)';
-        }
-    }
+   function collapseFilter() {
+  var filterContent = document.querySelector('.filter-content');
+  var filterArrow = document.querySelector('.filter-arrow');
 
+  if (!filterContent.classList.contains('collapsed')) {
+    filterContent.classList.add('collapsed');
+    filterArrow.style.transform = 'rotate(180deg)';
+  }
+} 
     if (window.innerWidth < 768) {
         if (treeControl && treeControl.collapse) {
             treeControl.collapse();
@@ -1539,8 +1538,7 @@ defaultLayers.forEach(l => l.addTo(map));
         map.on("click", function () {
         resetHighlightedRoute();
     });
-    </script>
+  </script>
 </body>
-
 </html>
 
