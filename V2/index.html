@@ -576,9 +576,8 @@ function openFeaturePopup(layer, e) {
             },
             interactive: true,
             onEachFeature: function(feature, layer) {
-                  onEachFeature: function(feature, layer) {
 
-  existingRoutesFeatures.push(layer);
+            existingRoutesFeatures.push(layer);
 
   layer.routeCategory = "existing";
 
