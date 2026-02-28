@@ -876,6 +876,35 @@ $.getJSON("data/Proposed_Routes.geojson", function(data) {
         //Load and Style Priority Improvement layer
 $.getJSON("data/Priority_Improvements.geojson", function(data) {
   L.geoJSON(data, {
+    pane: 'pointsPane',
+
+    pointToLayer: function(feature, latlng) {
+      var Warning = L.icon({
+        iconUrl: 'markers/Warning.svg',
+        iconSize: [20, 20],
+        iconAnchor: [5, 5]
+      });
+      return L.marker(latlng, { icon: Warning });
+    },
+
+    onEachFeature: function(feature, layer) {
+      layer.routeCategory = "priority";
+
+      var props = feature.properties || {};
+      var name = props.Name || "Unnamed Improvement";
+
+      layer.bindPopup("<b>Name:</b> " + name);
+
+      layer.on("click", function(e) {
+        highlightRoute(layer);
+      });
+    }
+
+  }).addTo(Priority_Improvements);
+});
+      
+     /* $.getJSON("data/Priority_Improvements.geojson", function(data) {
+  L.geoJSON(data, {
     attribution: "© 2025 West Kootenay Cycling Coalition and Contributors",
     pane: 'pointsPane',
 
@@ -943,7 +972,7 @@ onEachFeature: function(feature, layer) {
                 });
             },
         }).addTo(BC_Transit_Stops);
-    });
+    });*/
 
     // Load and style Named Routes
     $.getJSON("data/Frog_Peak_Loop.geojson", function(data) {
