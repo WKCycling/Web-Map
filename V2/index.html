@@ -566,7 +566,8 @@ function openFeaturePopup(layer, e) {
 }
       
     // Load Existing Routes with filtering capability
-$.getJSON("data/Existing_Routes.geojson", function (data) {
+
+      $.getJSON("data/Existing_Routes.geojson", function (data) {
 
     var existingLayer = L.geoJSON(data, {
         pane: "routesPane",
@@ -603,7 +604,7 @@ $.getJSON("data/Existing_Routes.geojson", function (data) {
     // populate dropdowns AFTER data loads
     populateFilterDropdowns(data);
 
-});
+}); // ✅ closes getJSON
 
 
 /* ---------- FILTER DROPDOWN FUNCTION ---------- */
@@ -614,11 +615,14 @@ function populateFilterDropdowns(geojsonData) {
     var surfaces = new Set();
 
     geojsonData.features.forEach(function (feature) {
-        if (feature.properties.Type) types.add(feature.properties.Type);
-        if (feature.properties.Surface) surfaces.add(feature.properties.Surface);
+        if (feature.properties.Type) {
+            types.add(feature.properties.Type);
+        }
+        if (feature.properties.Surface) {
+            surfaces.add(feature.properties.Surface);
+        }
     });
 
-    // Type dropdown
     var typeSelect = document.getElementById("type-filter");
     types.forEach(function (type) {
         var option = document.createElement("option");
@@ -627,7 +631,6 @@ function populateFilterDropdowns(geojsonData) {
         typeSelect.appendChild(option);
     });
 
-    // Surface dropdown
     var surfaceSelect = document.getElementById("surface-filter");
     surfaces.forEach(function (surface) {
         var option = document.createElement("option");
@@ -635,8 +638,9 @@ function populateFilterDropdowns(geojsonData) {
         option.textContent = surface;
         surfaceSelect.appendChild(option);
     });
-}
-    
+
+} // ✅ closes function
+     
 // PROPOSED ROUTES ======================
 $.getJSON("data/Proposed_Routes.geojson", function(data) {
 
