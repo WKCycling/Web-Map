@@ -1215,7 +1215,20 @@ defaultLayers.forEach(l => l.addTo(map));
                 ]
             },
             {
-                label: '<b>Overlays</b>',
+              
+              label: '<b>Overlays</b>',
+selectAllCheckbox: true,
+children: [
+  {
+    label: '<b>Terrain Overlays</b>',
+    selectAllCheckbox: false,
+    children: [
+      // {label: createLegendIcon("hillshade.png", "Hillshade"), layer: hillshadeLayer},
+      // {label: createLegendIcon("contours.png", "Contours"), layer: contoursLayer}
+    ]
+  },
+]
+             /* label: '<b>Overlays</b>',
                 selectAllCheckbox: true,
                 children: [
                     {
@@ -1225,8 +1238,9 @@ defaultLayers.forEach(l => l.addTo(map));
                             {label: createLegendIcon("hillshade.png", "Hillshade"), layer: hillshadeLayer},
                             {label: createLegendIcon("contours.png", "Contours"), layer: contoursLayer}
                         ]
-                    },
-                    {
+                    },*/
+                   
+{
                         label: '<b>Bike Routes</b>',
                         selectAllCheckbox: false,
                         children: [
