@@ -567,57 +567,49 @@ function openFeaturePopup(layer, e) {
       
     // Load Existing Routes with filtering capability
 
-      $.getJSON("data/Existing_Routes.geojson", function(data) {
+      $.getJSON("data/Existing_Routes.geojson", function(data) {  
         L.geoJSON(data, {
-            pane: 'routesPane',
-            attribution: "© 2025 West Kootenay Cycling Coalition and Contributors",
-            style: function(feature) {
-                return getRouteStyle(feature, false);
-            },
-            interactive: true,
-         
-          onEachFeature: function(feature, layer) {
+        pane: 'routesPane',
+        interactive: true,
+
+         onEachFeature: function(feature, layer) {
 
   existingRoutesFeatures.push(layer);
   layer.routeCategory = "existing";
 
-  // Safely get properties with fallbacks
+  // Get properties safely
   var props = feature.properties || {};
-  var name = props.Name || props.name || 'Unnamed Route';
-  var type = props.Type || props.type || 'Unknown';
-  var tenure = props.Tenure || props.tenure || 'Unknown';
-  var source = props.Source || props.source || '';
-  var length = props.Shape_length || props.length || props.Length || 'Unknown';
-  var description = props.description || props.Description || 'No description available';
-  var surface = props.Surface || props.surface || 'Unknown';
-  var tct = props.Trans_Canada_Trail || props.trans_canada_trail || 'No';
+  var name = props.Name || "Unnamed Route";
+  var type = props.Type || "Unknown";
+  var tenure = props.Tenure || "Unknown";
+  var surface = props.Surface || "Unknown";
+  var description = props.Description || "No description available";
+  var length = props.Shape_length || props.Length || "Unknown";
 
-  var displayUrl = source.length > 40 ? source.substring(0, 40) + "[...]" : source;
-  var sourceLink = source ? '<a href="' + source + '" target="_blank">' + displayUrl + '</a>' : 'No source';
-
+  // Build popup HTML
   var popupHtml =
     '<div class="popup">' +
-    '<table>' +
-      '<tr><td><b>Name:</b></td><td>' + name + '</td></tr>' +
-      '<tr><td><b>Type:</b></td><td>' + type + '</td></tr>' +
-      '<tr><td><b>Network:</b></td><td>' + tenure + '</td></tr>' +
-      '<tr><td><b>Source:</b></td><td>' + sourceLink + '</td></tr>' +
-      '<tr><td><b>Length (km):</b></td><td>' + length + '</td></tr>' +
-      '<tr><td><b>Description:</b></td><td><p style="margin:0; max-width:200px; white-space:normal;">' + description + '</p></td></tr>' +
-      '<tr><td><b>Surface:</b></td><td>' + surface + '</td></tr>' +
-      '<tr><td><b>Trans Canada Trail:</b></td><td>' + tct + '</td></tr>' +
-    '</table>' +
+      '<table>' +
+        '<tr><td><b>Name:</b></td><td>' + name + '</td></tr>' +
+        '<tr><td><b>Type:</b></td><td>' + type + '</td></tr>' +
+        '<tr><td><b>Network:</b></td><td>' + tenure + '</td></tr>' +
+        '<tr><td><b>Surface:</b></td><td>' + surface + '</td></tr>' +
+        '<tr><td><b>Length:</b></td><td>' + length + '</td></tr>' +
+        '<tr><td><b>Description:</b></td>' +
+          '<td><p style="margin:0; max-width:200px; white-space:normal;">' +
+            description +
+          '</p></td></tr>' +
+      '</table>' +
     '</div>';
 
   layer.bindPopup(popupHtml);
 
   layer.on("click", function(e) {
-    console.log("Existing route clicked");
     highlightRoute(layer);
     L.DomEvent.stopPropagation(e);
   });
-
-}      
+}
+             
         // Populate filter dropdowns after data is loaded
         populateFilterDropdowns(data);
     });
