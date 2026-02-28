@@ -715,7 +715,11 @@ $.getJSON("data/Proposed_Routes.geojson", function(data) {
         layer.openPopup(e.latlng);
     });
 } 
-
+layer.on("click", function(e) {
+  console.log("Proposed route clicked");
+  highlightRoute(layer);
+  L.DomEvent.stopPropagation(e);
+});
   }).addTo(Proposed_Routes);
 
 });
