@@ -1205,7 +1205,20 @@ defaultLayers.forEach(l => l.addTo(map));
 
     const legendContainer = new LegendContainer();
     legendContainer.addTo(map);
+  const legendEl = document.querySelector('.legend-container');
+  const legendHeader = legendEl.querySelector('.legend-header');
+  const legendBody = legendEl.querySelector('.legend-body');
+  const filterArrow = legendEl.querySelector('.legend-toggle');
 
+legendHeader.addEventListener('click', function () {
+    if (legendBody.style.display === 'none' || legendBody.style.display === '') {
+        legendBody.style.display = 'block';
+        filterArrow.style.transform = 'rotate(180deg)';
+    } else {
+        legendBody.style.display = 'none';
+        filterArrow.style.transform = 'rotate(0deg)';
+    }
+});
 var treeControl = L.control.layers.tree(
   {
     label: '<b>Base Maps</b>',
@@ -1517,9 +1530,10 @@ var treeControl = L.control.layers.tree(
   if (!filterContent.classList.contains('collapsed')) {
     filterContent.classList.add('collapsed');
     filterArrow.style.transform = 'rotate(180deg)';
-  }
-} 
-    if (window.innerWidth < 768) {
+    }
+    }); 
+   
+      if (window.innerWidth < 768) {
         if (treeControl && treeControl.collapse) {
             treeControl.collapse();
         }
