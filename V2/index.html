@@ -1300,7 +1300,8 @@ var treeControl = L.control.layers.tree(
      
         const treeEl = treeControl.getContainer();
 
-        legendBody.appendChild(treeEl);
+      legendBodyEl.appendChild(treeEl);
+        
 
         const legendHeader = document.querySelector('.legend-header');
         const legendToggle = document.querySelector('.legend-toggle');
@@ -1521,16 +1522,15 @@ var treeControl = L.control.layers.tree(
             abstractArrow.style.transform = 'rotate(180deg)';
         }
     }
-
-   function collapseFilter() {
+function collapseFilter() {
   var filterContent = document.querySelector('.filter-content');
   var filterArrow = document.querySelector('.filter-arrow');
 
   if (!filterContent.classList.contains('collapsed')) {
     filterContent.classList.add('collapsed');
     filterArrow.style.transform = 'rotate(180deg)';
-    }
-    }); 
+  }
+}
    
       if (window.innerWidth < 768) {
         if (treeControl && treeControl.collapse) {
