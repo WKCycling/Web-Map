@@ -1,0 +1,228 @@
+body, html, #map { height: 100%; margin: 0; padding: 0; }
+.popup { text-align: left; }
+
+.custom-legend {
+  background-color: rgba(255,255,255,0.9);
+  outline-width: 0px;
+  border: 1px solid rgba(0,0,0,0.2) !important;
+  outline: none !important;
+  box-shadow: 5px 5px 7px rgb(163,160,160,0.4) !important;
+}
+
+.leaflet-control.abstract {
+  text-align: justify;
+  font-size: 12px;
+  line-height: 20px;
+  font-family: 'Open Sans', Helvetica, sans-serif;
+  padding: 12px 16px;
+  background-color: rgba(255,255,255,0.9);
+  border-radius: 6px;
+  max-width: 350px;
+  box-shadow: 0 0 12px rgba(0,0,0,0.2);
+}
+
+.leaflet-control.filter-panel {
+  font-size: 12px;
+  font-family: 'Open Sans', Helvetica, sans-serif;
+  padding: 12px 16px;
+  background-color: rgba(255,255,255,0.95);
+  border-radius: 6px;
+  max-width: 250px;
+  box-shadow: 0 0 12px rgba(0,0,0,0.2);
+  border: 1px solid rgba(0,0,0,0.2);
+}
+
+.filter-toggle {
+  cursor: pointer;
+  margin: 0;
+  user-select: none;
+  font-weight: bold;
+}
+
+.filter-arrow {
+  display: inline-block;
+  margin-left: 5px;
+  transition: transform 0.2s ease;
+}
+
+.filter-content {
+  margin-top: 10px;
+  overflow: hidden;
+  max-height: 300px;
+  transition: max-height 0.3s ease;
+}
+
+.filter-content.collapsed { max-height: 0; }
+
+.filter-group { margin-bottom: 12px; }
+
+.filter-group label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 4px;
+  font-size: 11px;
+}
+
+.filter-group select {
+  width: 100%;
+  padding: 4px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  font-size: 11px;
+}
+
+.filter-group input[type="checkbox"] { margin-right: 6px; }
+
+.clear-filters {
+  background: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: 10px;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.clear-filters:hover { background: #e0e0e0; }
+
+#abstract-toggle {
+  cursor: pointer;
+  margin: 0;
+  user-select: none;
+}
+
+#abstract-arrow {
+  display: inline-block;
+  margin-left: 5px;
+  transition: transform 0.2s ease;
+}
+
+#abstract-content img {
+  display: block;
+  width: 76%;
+  margin: auto;
+}
+
+#abstract-content {
+  overflow: hidden;
+  max-height: 500px;
+  transition: max-height 0.3s ease;
+}
+
+#abstract-content.collapsed { max-height: 0; }
+
+.Label_Parks {
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  font-family: 'Verdana', sans-serif;
+  font-size: 10pt;
+  font-style: italic;
+  color: #294d29;
+  text-shadow:
+    -1px -1px 0 #ffffff,
+    -1px  1px 0 #ffffff,
+     1px  1px 0 #ffffff,
+     1px -1px 0 #ffffff;
+}
+
+.Label_Parks.leaflet-tooltip::before { content: none !important; }
+
+.leaflet-interactive:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.legend-disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.legend-container {
+  background-color: rgba(255,255,255,0.9);
+  border-radius: 6px;
+  border: 1px solid rgba(0,0,0,0.2);
+  box-shadow: 0 0 12px rgba(0,0,0,0.2);
+  font-family: 'Open Sans', Helvetica, sans-serif;
+  font-size: 12px;
+  max-width: 90vw;
+  padding-bottom: 10px;
+}
+
+.legend-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 10px;
+  font-weight: bold;
+  cursor: pointer;
+  user-select: none;
+  border-bottom: 1px solid #ddd;
+  gap: 8px;
+}
+
+.legend-toggle { transition: transform 0.2s ease; }
+
+.legend-toggle.collapsed { transform: rotate(-90deg); }
+
+.legend-body {
+  background-color: rgba(255,255,255,0.5);
+  padding: 5px 10px;
+  overflow: visible;
+  max-height: none;
+}
+
+.legend-body.collapsed { display: none; }
+
+.leaflet-popup-content {
+  min-width: 200px;
+  max-width: 320px;
+  white-space: normal;
+}
+
+.leaflet-popup-content,
+.leaflet-popup-content * {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  white-space: normal;
+}
+
+.popup table { width: 100%; }
+
+.popup td {
+  display: block;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+
+  .leaflet-control {
+    font-size: 11px;
+    max-width: 90vw;
+  }
+
+  .custom-legend {
+    max-height: 60vh;
+    overflow-y: auto;
+  }
+
+  .leaflet-control.filter-panel,
+  .leaflet-control.abstract {
+    max-width: 90vw;
+    padding: 8px 10px;
+  }
+
+  .leaflet-popup-content {
+    min-width: 90vw;
+    max-width: 90vw;
+  }
+
+  .leaflet-control-attribution {
+    max-width: 60vw;
+    white-space: normal;
+    text-align: right;
+    line-height: 1.2;
+  }
+}
