@@ -1,10 +1,13 @@
+// Zoom control position
 var map = L.map('map', {
     zoomControl: true,
     maxZoom: 16,
     minZoom: 8,
-    doubleClickZoom: false
+    doubleClickZoom: false,
+    attributionControl: false
 }).setView([49.8, -117.9], 9);
 
+// Location selector position
 L.control.scale({ position: 'bottomright', metric: true, imperial: false, maxWidth: 200 }).addTo(map);
 
 L.control.locate({
@@ -14,6 +17,7 @@ L.control.locate({
     strings: { title: "Show my location" }
 }).addTo(map);
 
+// priorityIcon definition
 var priorityIcon = L.icon({ iconUrl: 'markers/Warning.svg', iconSize: [20, 20], iconAnchor: [5, 5] });
 var priorityHighlightIcon = L.icon({ iconUrl: 'markers/Warning.svg', iconSize: [28, 28], iconAnchor: [7, 7] });
 
@@ -174,7 +178,7 @@ map.on('dblclick', function(e) {
 // ── Layer loading ─────────────────────────────────────────────────────
 
 var bcOGL = '&copy;<a href="https://www2.gov.bc.ca/gov/content/data/policy-standards/data-policies/open-data/open-government-licence-bc">Open Government Licence - British Columbia</a>';
-var wkccAttr = '&copy; 2025 West Kootenay Cycling Coalition and Contributors';
+var wkccAttr = '&copy; 2026 West Kootenay Cycling Coalition and Contributors';
 
 $.getJSON("data/Existing_Routes.geojson", function(data) {
     L.geoJSON(data, {
@@ -612,8 +616,18 @@ abstract.onAdd = function() {
             'Use the <b>legend</b> and <b>filters</b> to explore the network. Click features for <b>popups</b>.</p>' +
             '<p>To report issues or share ideas, contact us at:<br>' +
             '<a href="https://westkootenaycycling.ca/contact" target="_blank" rel="noopener noreferrer">westkootenaycycling.ca/contact</a></p>' +
-            '<p style="margin-bottom:0;">Include the <b>location</b> in your feedback. <b>Double-click</b> anywhere on the map to get coordinates.</p>' +
-            '<img src="images/WKCC.png" alt="WKCC logo" style="width:200px;height:auto;margin-top:0;">' +
+            '<p style="margin-bottom:2px;">Include the <b>location</b> in your feedback. <b>Double-click</b> anywhere on the map to get coordinates.</p>' +
+            '<div style="display:flex;justify-content:space-between;align-items:flex-end;gap:8px;">' +
+                '<img src="images/WKCC.png" alt="WKCC logo" style="width:120px;height:auto;flex-shrink:0;">' +
+                '<div style="text-align:right;font-size:9px;line-height:1.5;color:#555;">' +
+                    'Map data &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors<br>' +
+                    'Basemap: <a href="https://cartodb.com/basemaps/" target="_blank">CartoDB</a> CC BY 3.0 / <a href="https://www.esri.com" target="_blank">Esri</a><br>' +
+                    'Contours: <a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a><br>' +
+                    'Routes &amp; improvements: &copy; 2026 WKCC<br>' +
+                    'Bikepacking: &copy; <a href="https://bikepacking.com/west-kootenay/" target="_blank">Moe Nadeau / BikePacking.com</a><br>' +
+                    'Parks, boundaries, recreation, transit:<br><a href="https://www2.gov.bc.ca/gov/content/data/policy-standards/data-policies/open-data/open-government-licence-bc" target="_blank">BC Open Government Licence</a>' +
+                '</div>' +
+            '</div>' +
         '</div>';
 
     var toggle  = div.querySelector('#abstract-toggle');

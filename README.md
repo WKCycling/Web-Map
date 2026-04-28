@@ -4,12 +4,14 @@
 
 1. Sit down at your computer
 2. Clear out any work not committed from last time: git reset HEAD --hard
-3. Reset things to master: git checkout master && git pull origin master 
-4. Create a new feature branch for what you're going to work on: git checkout -b feature/my-feature-name-here
-5. Add your work, committing as you go
-6. Push to GitHub repo
-7. Create a PR from your branch feature/my-feature-name-here into master/main on GitHub with their UI
-8. Review & merge the PR in
+3. If you are working from the master (or main as per config), then 4+5; if continuing work on a branch, then 6
+4. Reset things to master/main: git checkout master/main && git pull origin master/main
+5. Create a new feature branch for what you're going to work on: git checkout -b feature/my-feature-name-here
+6. Confirm you are in the desired branch. If not: git checkout -b branch-name origin/branch-name 
+7. Add your work, committing as you go
+8. Push to GitHub repo
+9. As required, create a Pull Request from your branch feature/my-feature-name-here into master/main on GitHub with their UI
+10. Review & merge the Pull Request into the master/main
 
 # Git commands:
 1. git commit -am "Comment"  -  commit all included saved files
@@ -74,6 +76,7 @@ There is no tile server — polygons and lines are rendered directly by Leaflet.
 ### Terrain Overlays
 - **Hillshade** — pre-rendered PNG tiles stored locally in `hillshade_tiles/` (zoom 8–14, opacity 0.7)
 - **Contours** — vector tiles from MapTiler (`contours-v2`), styled as thin blue lines
+- **Missing Files** There are some missing PNG tiles in `hillshade_tiles/` which produce silent 404s when called
 
 ### Bike Routes
 | Layer | File | Style | Notes |

@@ -1,4 +1,15 @@
 body, html, #map { height: 100%; margin: 0; padding: 0; }
+
+.leaflet-top.leaflet-left {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+.leaflet-top.leaflet-left .leaflet-control {
+  float: none;
+  clear: none;
+}
 .popup { text-align: left; }
 
 .custom-legend {
@@ -17,7 +28,7 @@ body, html, #map { height: 100%; margin: 0; padding: 0; }
   padding: 12px 16px;
   background-color: rgba(255,255,255,0.9);
   border-radius: 6px;
-  max-width: 350px;
+  width: 66vw;
   box-shadow: 0 0 12px rgba(0,0,0,0.2);
 }
 
@@ -98,11 +109,6 @@ body, html, #map { height: 100%; margin: 0; padding: 0; }
   transition: transform 0.2s ease;
 }
 
-#abstract-content img {
-  display: block;
-  width: 76%;
-  margin: auto;
-}
 
 #abstract-content {
   overflow: hidden;
