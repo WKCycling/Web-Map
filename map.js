@@ -400,7 +400,7 @@ bikepackingRoutes.forEach(function(route) {
 });
 
 // Add default-visible layers to the map
-[Existing_Routes, Proposed_Routes, Municipal_Parks, Provincial_Parks,
+[Existing_Routes, Municipal_Parks, Provincial_Parks,
  Municipal_Boundaries, Regional_Districts_Boundaries, Priority_Improvements
 ].forEach(function(l) { l.addTo(map); });
 
@@ -479,7 +479,7 @@ var treeControl = L.control.layers.tree(
         ]
     },
     {
-        namedToggle: true, selectorBack: false,
+        namedToggle: false, selectorBack: false,
         closedSymbol: '&#8862; &#x1f5c0;', openedSymbol: '&#8863; &#x1f5c1;',
         spaceSymbol: '&#x00A0;&#x00A0;&#x00A0;',
         collapsed: false, position: 'topright'
@@ -502,8 +502,7 @@ legendHeader.addEventListener('click', function() {
 
 var zoomRestrictedLayers = [
     { layer: Municipal_Boundaries, legendClass: "legend-municipal-boundaries", minZoom: 12, maxZoom: 16 },
-    { layer: Municipal_Parks,      legendClass: "legend-municipal-parks",      minZoom: 11, maxZoom: 16 },
-    { layer: Proposed_Routes,      legendClass: "legend-proposed-routes",      minZoom: 8,  maxZoom: 16 }
+    { layer: Municipal_Parks,      legendClass: "legend-municipal-parks",      minZoom: 11, maxZoom: 16 }
 ];
 
 // Layers the user has explicitly unchecked — zoom restriction must not override this.

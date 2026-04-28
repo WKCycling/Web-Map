@@ -20,6 +20,14 @@ body, html, #map { height: 100%; margin: 0; padding: 0; }
   box-shadow: 5px 5px 7px rgb(163,160,160,0.4) !important;
 }
 
+.custom-legend .leaflet-control-layers-toggle {
+  display: none !important;
+}
+
+.custom-legend .leaflet-control-layers-list {
+  display: block !important;
+}
+
 .leaflet-control.abstract {
   text-align: justify;
   font-size: 12px;
