@@ -99,6 +99,19 @@ function linkUrl(url, fallback) {
     return '<a href="' + url + '" target="_blank">' + display + '</a>';
 }
 
+function addHitTargets(geoJsonLayer, targetGroup, pane) {
+    geoJsonLayer.eachLayer(function(subLayer) {
+        var hit = L.polyline(subLayer.getLatLngs(), {
+            weight: 20, opacity: 0, interactive: true, pane: pane
+        });
+        hit.on('click', function(e) {
+            subLayer.fire('click', { latlng: e.latlng, originalEvent: e.originalEvent });
+            L.DomEvent.stopPropagation(e);
+        });
+        targetGroup.addLayer(hit);
+    });
+}
+
 // ── Route filtering ──────────────────────────────────────────────────
 
 var routeFilters = { type: 'all', surface: 'all', transCanadaTrail: false };
@@ -181,7 +194,7 @@ var bcOGL = '&copy;<a href="https://www2.gov.bc.ca/gov/content/data/policy-stand
 var wkccAttr = '&copy; 2026 West Kootenay Cycling Coalition and Contributors';
 
 $.getJSON("data/Existing_Routes.geojson", function(data) {
-    L.geoJSON(data, {
+    var existingGeoLayer = L.geoJSON(data, {
         pane: 'routesPane',
         attribution: wkccAttr,
         style: function(feature) { return getRouteStyle(feature, false); },
@@ -207,6 +220,7 @@ $.getJSON("data/Existing_Routes.geojson", function(data) {
             ]));
         }
     }).addTo(Existing_Routes);
+    addHitTargets(existingGeoLayer, Existing_Routes, 'routesPane');
     populateFilterDropdowns(data);
 });
 
@@ -230,7 +244,7 @@ function populateFilterDropdowns(geojsonData) {
 }
 
 $.getJSON("data/Proposed_Routes.geojson", function(data) {
-    L.geoJSON(data, {
+    var proposedGeoLayer = L.geoJSON(data, {
         pane: 'routesPane',
         attribution: wkccAttr,
         bubblingMouseEvents: false,
@@ -252,6 +266,7 @@ $.getJSON("data/Proposed_Routes.geojson", function(data) {
             });
         }
     }).addTo(Proposed_Routes);
+    addHitTargets(proposedGeoLayer, Proposed_Routes, 'routesPane');
 });
 
 $.getJSON("data/Municipal_Parks.geojson", function(data) {
@@ -383,7 +398,7 @@ $.getJSON("data/BC_Transit_Stops.geojson", function(data) {
 // Bikepacking routes — driven by the bikepackingRoutes array above
 bikepackingRoutes.forEach(function(route) {
     $.getJSON('data/' + route.file + '.geojson', function(data) {
-        L.geoJSON(data, {
+        var bpGeoLayer = L.geoJSON(data, {
             pane: 'BikePackingPane',
             attribution: '&copy;<a href="https://bikepacking.com/west-kootenay/">Moe Nadeau - BikePacking.com</a>',
             style: { opacity: 1, color: route.color, dashArray: '', lineCap: 'square', lineJoin: 'bevel', weight: 2.0, fillOpacity: 0 },
@@ -396,6 +411,7 @@ bikepackingRoutes.forEach(function(route) {
                 ]));
             }
         }).addTo(route.layer);
+        addHitTargets(bpGeoLayer, route.layer, 'BikePackingPane');
     });
 });
 
