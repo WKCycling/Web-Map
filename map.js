@@ -656,6 +656,8 @@ abstract.onAdd = function() {
         arrow.style.transform = expanding ? 'rotate(0deg)' : 'rotate(180deg)';
         if (expanding) collapseFilter();
     };
+    L.DomEvent.disableClickPropagation(div);
+    L.DomEvent.disableScrollPropagation(div);
     return div;
 };
 abstract.addTo(map);
@@ -678,6 +680,13 @@ function collapseFilter() {
     }
 }
 
+function collapseLegend() {
+    if (legendBodyEl && !legendBodyEl.classList.contains('collapsed')) {
+        legendBodyEl.classList.add('collapsed');
+        legendToggle.classList.add('collapsed');
+    }
+}
+
 // ── Mobile defaults ───────────────────────────────────────────────────
 
 if (window.innerWidth < 768) {
@@ -687,4 +696,4 @@ if (window.innerWidth < 768) {
     setTimeout(collapseAbstract, 200);
 }
 
-map.on("click", function() { resetHighlightedRoute(); });
+map.on("click", function() { resetHighlightedRoute(); collapseFilter(); collapseLegend(); collapseAbstract(); });
