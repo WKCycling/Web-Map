@@ -210,6 +210,27 @@ body, html, #map { height: 100%; margin: 0; padding: 0; }
   width: 100%;
 }
 
+.coord-popup-inner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.coord-feedback-link {
+  color: #555;
+  flex-shrink: 0;
+  line-height: 0;
+}
+
+.coord-feedback-link:hover {
+  color: #007bff;
+}
+
+.coord-feedback-link svg {
+  width: 18px;
+  height: 18px;
+}
+
 @media (max-width: 768px) {
 
   .leaflet-control {
@@ -234,8 +255,8 @@ body, html, #map { height: 100%; margin: 0; padding: 0; }
   }
 
   .coord-popup .leaflet-popup-content {
-    min-width: 160px;
-    max-width: 160px;
+    min-width: 190px;
+    max-width: 190px;
   }
 
   .leaflet-control-attribution {

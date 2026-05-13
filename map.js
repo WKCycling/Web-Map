@@ -181,10 +181,20 @@ function Label_Parks(feature, layer) {
 
 // ── Coordinate popup on double-click ─────────────────────────────────
 
+function buildCoordContent(latlng) {
+    return '<div class="coord-popup-inner">' +
+        '<span>Lat: ' + latlng.lat.toFixed(6) + '<br>Lng: ' + latlng.lng.toFixed(6) + '</span>' +
+        '<a class="coord-feedback-link" href="https://westkootenaycycling.ca/contact" target="_blank" rel="noopener noreferrer" title="Send feedback">' +
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+        '<path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>' +
+        '<polyline points="22,6 12,12 2,6"/>' +
+        '</svg></a></div>';
+}
+
 map.on('dblclick', function(e) {
     L.popup({ className: 'coord-popup' })
         .setLatLng(e.latlng)
-        .setContent('Lat: ' + e.latlng.lat.toFixed(6) + '<br>Lng: ' + e.latlng.lng.toFixed(6))
+        .setContent(buildCoordContent(e.latlng))
         .openOn(map);
 });
 
@@ -196,7 +206,7 @@ map.on('click', function(e) {
     if (now - lastTapTime < 350) {
         L.popup({ className: 'coord-popup' })
             .setLatLng(e.latlng)
-            .setContent('Lat: ' + e.latlng.lat.toFixed(6) + '<br>Lng: ' + e.latlng.lng.toFixed(6))
+            .setContent(buildCoordContent(e.latlng))
             .openOn(map);
         lastTapTime = 0;
     } else {
