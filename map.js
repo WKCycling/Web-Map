@@ -213,21 +213,36 @@ map.on('dblclick', function(e) {
         .openOn(map);
 });
 
-// Mobile double-tap fallback (Leaflet does not fire dblclick on touch)
+// Mobile double-tap — native touch events bypass Leaflet's iOS/Chrome tap quirks
 var lastTapTime = 0;
-map.on('click', function(e) {
-    if (!L.Browser.touch) return;
+var tapStartX = 0, tapStartY = 0;
+map.getContainer().addEventListener('touchstart', function(e) {
+    if (e.touches.length === 1) {
+        tapStartX = e.touches[0].clientX;
+        tapStartY = e.touches[0].clientY;
+    }
+}, { passive: true });
+map.getContainer().addEventListener('touchend', function(e) {
+    if (e.changedTouches.length !== 1) { lastTapTime = 0; return; }
+    if (e.target.closest('.leaflet-control, .leaflet-popup')) { lastTapTime = 0; return; }
+    var touch = e.changedTouches[0];
+    var dx = touch.clientX - tapStartX, dy = touch.clientY - tapStartY;
+    if (dx * dx + dy * dy > 100) { lastTapTime = 0; return; }
     var now = Date.now();
     if (now - lastTapTime < 350) {
+        var rect = map.getContainer().getBoundingClientRect();
+        var latlng = map.containerPointToLatLng(
+            L.point(touch.clientX - rect.left, touch.clientY - rect.top)
+        );
         L.popup({ className: 'coord-popup' })
-            .setLatLng(e.latlng)
-            .setContent(buildCoordContent(e.latlng))
+            .setLatLng(latlng)
+            .setContent(buildCoordContent(latlng))
             .openOn(map);
         lastTapTime = 0;
     } else {
         lastTapTime = now;
     }
-});
+}, { passive: true });
 
 // ── Layer loading ─────────────────────────────────────────────────────
 
