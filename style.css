@@ -233,6 +233,11 @@ body, html, #map { height: 100%; margin: 0; padding: 0; }
     max-width: 90vw;
   }
 
+  .coord-popup .leaflet-popup-content {
+    min-width: 160px;
+    max-width: 160px;
+  }
+
   .leaflet-control-attribution {
     max-width: 60vw;
     white-space: normal;

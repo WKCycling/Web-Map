@@ -182,7 +182,7 @@ function Label_Parks(feature, layer) {
 // ── Coordinate popup on double-click ─────────────────────────────────
 
 map.on('dblclick', function(e) {
-    L.popup()
+    L.popup({ className: 'coord-popup' })
         .setLatLng(e.latlng)
         .setContent('Lat: ' + e.latlng.lat.toFixed(6) + '<br>Lng: ' + e.latlng.lng.toFixed(6))
         .openOn(map);
@@ -194,7 +194,7 @@ map.on('click', function(e) {
     if (e.originalEvent.type !== 'touchend') return;
     var now = Date.now();
     if (now - lastTapTime < 350) {
-        L.popup()
+        L.popup({ className: 'coord-popup' })
             .setLatLng(e.latlng)
             .setContent('Lat: ' + e.latlng.lat.toFixed(6) + '<br>Lng: ' + e.latlng.lng.toFixed(6))
             .openOn(map);
