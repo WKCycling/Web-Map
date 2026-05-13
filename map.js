@@ -181,9 +181,24 @@ function Label_Parks(feature, layer) {
 
 // ── Coordinate popup on double-click ─────────────────────────────────
 
+function copyCoords(btn, text) {
+    var span = btn.closest('.coord-popup-inner').querySelector('.coord-text');
+    var original = span.innerHTML;
+    navigator.clipboard.writeText(text).then(function() {
+        span.textContent = 'Copied!';
+        setTimeout(function() { span.innerHTML = original; }, 1500);
+    });
+}
+
 function buildCoordContent(latlng) {
+    var copyText = 'Lat: ' + latlng.lat.toFixed(6) + ', Lng: ' + latlng.lng.toFixed(6);
     return '<div class="coord-popup-inner">' +
-        '<span>Lat: ' + latlng.lat.toFixed(6) + '<br>Lng: ' + latlng.lng.toFixed(6) + '</span>' +
+        '<span class="coord-text">Lat: ' + latlng.lat.toFixed(6) + '<br>Lng: ' + latlng.lng.toFixed(6) + '</span>' +
+        '<button class="coord-copy-btn" onclick="copyCoords(this, \'' + copyText + '\')" title="Copy coordinates">' +
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+        '<rect x="8" y="8" width="12" height="13" rx="2"/>' +
+        '<path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h2"/>' +
+        '</svg></button>' +
         '<a class="coord-feedback-link" href="https://westkootenaycycling.ca/contact" target="_blank" rel="noopener noreferrer" title="Send feedback">' +
         '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
         '<path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>' +

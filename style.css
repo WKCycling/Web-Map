@@ -216,6 +216,25 @@ body, html, #map { height: 100%; margin: 0; padding: 0; }
   gap: 8px;
 }
 
+.coord-copy-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: #555;
+  flex-shrink: 0;
+  line-height: 0;
+}
+
+.coord-copy-btn:hover {
+  color: #007bff;
+}
+
+.coord-copy-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
 .coord-feedback-link {
   color: #555;
   flex-shrink: 0;
@@ -255,8 +274,8 @@ body, html, #map { height: 100%; margin: 0; padding: 0; }
   }
 
   .coord-popup .leaflet-popup-content {
-    min-width: 190px;
-    max-width: 190px;
+    min-width: 210px;
+    max-width: 210px;
   }
 
   .leaflet-control-attribution {
