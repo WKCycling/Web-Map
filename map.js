@@ -216,7 +216,7 @@ map.on('dblclick', function(e) {
 // Mobile double-tap fallback (Leaflet does not fire dblclick on touch)
 var lastTapTime = 0;
 map.on('click', function(e) {
-    if (e.originalEvent.type !== 'touchend') return;
+    if (!L.Browser.touch) return;
     var now = Date.now();
     if (now - lastTapTime < 350) {
         L.popup({ className: 'coord-popup' })
