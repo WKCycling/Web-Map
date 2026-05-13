@@ -188,6 +188,22 @@ map.on('dblclick', function(e) {
         .openOn(map);
 });
 
+// Mobile double-tap fallback (Leaflet does not fire dblclick on touch)
+var lastTapTime = 0;
+map.on('click', function(e) {
+    if (e.originalEvent.type !== 'touchend') return;
+    var now = Date.now();
+    if (now - lastTapTime < 350) {
+        L.popup()
+            .setLatLng(e.latlng)
+            .setContent('Lat: ' + e.latlng.lat.toFixed(6) + '<br>Lng: ' + e.latlng.lng.toFixed(6))
+            .openOn(map);
+        lastTapTime = 0;
+    } else {
+        lastTapTime = now;
+    }
+});
+
 // ── Layer loading ─────────────────────────────────────────────────────
 
 var bcOGL = '&copy;<a href="https://www2.gov.bc.ca/gov/content/data/policy-standards/data-policies/open-data/open-government-licence-bc">Open Government Licence - British Columbia</a>';
@@ -631,7 +647,7 @@ abstract.onAdd = function() {
             'Use the <b>legend</b> and <b>filters</b> to explore the network. Click features for <b>popups</b>.</p>' +
             '<p>To report issues or share ideas, contact us at:<br>' +
             '<a href="https://westkootenaycycling.ca/contact" target="_blank" rel="noopener noreferrer">westkootenaycycling.ca/contact</a></p>' +
-            '<p style="margin-bottom:2px;">Include the <b>location</b> in your feedback. <b>Double-click</b> anywhere on the map to get coordinates.</p>' +
+            '<p style="margin-bottom:2px;">Include the <b>location</b> in your feedback. <b>Double-click</b> (or double-tap on mobile) anywhere on the map to get coordinates.</p>' +
             '<div style="display:flex;justify-content:space-between;align-items:flex-end;gap:8px;">' +
                 '<img src="images/WKCC.png" alt="WKCC logo" style="width:120px;height:auto;flex-shrink:0;">' +
                 '<div style="text-align:right;font-size:9px;line-height:1.5;color:#555;">' +
